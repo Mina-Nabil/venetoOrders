@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('logout', 'HomeController@logout')->name('logout')->middleware('cors');
+Route::get('/login', 'HomeController@login')->name('login');
+Route::post('/login', 'HomeController@authenticate')->name('login');
+Route::get('/home', 'HomeController@index')->name('home');
