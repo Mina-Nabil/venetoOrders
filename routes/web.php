@@ -14,12 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+//Dashboard users
+Route::get("dash/users/all", 'DashUsersController@index');
+Route::post("dash/users/insert", 'DashUsersController@insert');
+Route::get("dash/users/edit/{id}", 'DashUsersController@edit');
+Route::post("dash/users/update", 'DashUsersController@update');
 
 
-Route::get('logout', 'HomeController@logout')->name('logout')->middleware('cors');
+Route::get('logout', 'HomeController@logout')->name('logout');
 Route::get('/login', 'HomeController@login')->name('login');
 Route::post('/login', 'HomeController@authenticate')->name('login');
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('home');

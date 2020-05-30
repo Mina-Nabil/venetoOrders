@@ -128,7 +128,7 @@
                         @endif
                         <div class="dropdown">
                             <a href="javascript:void(0)" class="dropdown-toggle u-dropdown link hide-menu" data-toggle="dropdown" role="button" aria-haspopup="true"
-                                aria-expanded="false">{{ Auth::user()->username }} <span class="caret"></span></a>
+                                aria-expanded="false">{{ Auth::user()->DASH_USNM }} <span class="caret"></span></a>
                             <div class="dropdown-menu animated flipInY">
                                 <!-- text-->
                                 <a href="{{route('logout')}}" class="dropdown-item"><i class="fa fa-power-off"></i>
@@ -239,11 +239,8 @@
                     </li>
 
 
-                    <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class=" fas fa-users"></i><span class="hide-menu">Admins</span></a>
-                        <ul aria-expanded="false" class="collapse">
-                            <li><a href="{{url('dashusers/show')}}">Show</a></li>
-                            <li><a href="{{url('dashusers/add')}}">Add</a></li>
-                        </ul>
+                    <li> <a href="{{url('dash/users/all')}}" ><i class=" fas fa-users"></i>Admins</a>
+                      
                     </li>
 
                     </ul>

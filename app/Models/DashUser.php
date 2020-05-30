@@ -33,6 +33,6 @@ class DashUser extends Authenticatable
     }
 
     public function dash_types(){
-        return $this->hasOne('dash_type', 'id', 'DASH_TYPE_ID');
+        return $this->hasOne( "App\Models\DashType" , 'id', 'DASH_TYPE_ID');
     }
 }
