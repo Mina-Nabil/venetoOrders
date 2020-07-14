@@ -53,7 +53,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $this->middleware('auth');
+        if (Auth::check()) 
         return view('home');
+        else return redirect("login");
     }
 }
