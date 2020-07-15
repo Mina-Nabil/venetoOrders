@@ -2,38 +2,32 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    protected $table="users";
+    public $timestamps = true;
+    
+    public function area(){
+        return $this->belongsTo("App\Models\Area", "USER_AREA_ID", 'id');
+    }
+    
+    public function gender(){
+        return $this->belongsTo("App\Models\Gender", "USER_GNDR_ID", 'id');
+    }
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+    public function wishlist(){
+        return $this->belongsToMany("App\Models\Product","wishlist", "WISH_PROD_ID", "WISH_USER_ID");
+    }
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    public function orders(){
+        return $this->hasMany("App\Models\Product", "ORDR_USER_ID", "id");
+    }
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function cart(){
+        return $this->belongsToMany("App\Models\Product","wishlist", "WISH_PROD_ID", "WISH_USER_ID");
+    }
 }
+
+

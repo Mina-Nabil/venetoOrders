@@ -151,19 +151,20 @@
                                 <li>
                                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)">Products</a>
                                     <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{{url('cash/show')}}">Show All Products</a></li>
-                                        <li><a href="{{url('cash/prepare/report')}}">Add a Product</a></li>
+                                        <li><a href="{{url('products/show/all')}}">All Products</a></li>
+                                        <li><a href="{{url('products/categories')}}">By Category</a></li>
+                                        <li><a href="{{url('products/add')}}">Add a Product</a></li>
                                     </ul>
                                 </li>
                                 <li>
                                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)">Special Products</a>
                                     <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{{url('bank/show')}}">New Arrivals</a></li>
-                                        <li><a href="{{url('bank/prepare/report')}}">For Sale</a></li>
-                                        <li><a href="{{url('bank/add')}}">Offers</a></li>
+                                        <li><a href="{{url('products/new')}}">New Arrivals</a></li>
+                                        <li><a href="{{url('products/sale')}}">For Sale</a></li>
+                                        <li><a href="{{url('products/offers')}}">Offers</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="{{url('transtype/show')}}">Categories</a></li>
+                                <li><a href="{{url('categories/show')}}">Categories</a></li>
                             </ul>
                         </li>
 
@@ -186,21 +187,24 @@
 
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="icon-people"></i><span class="hide-menu">Users</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{url('rawinventory/show')}}">Latest Users</a></li>
-                                <li><a href="{{url('rawinventory/tran')}}">Top Customers</a></li>
-                                <li><a href="{{url('rawinventory/add')}}">Show All</a></li>
-                                <li><a href="{{url('raw/tran/add')}}">Add User</a></li>
+                                <li><a href="{{url('users/show/latest')}}">Latest Users</a></li>
+                                <li><a href="{{url('users/show/top')}}">Top Customers</a></li>
+                                <li><a href="{{url('users/show/all')}}">Show All</a></li>
+                                <li><a href="{{url('users/add')}}">Add User</a></li>
+                            </ul>
+                        </li>
+
+                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cogs"></i><span class="hide-menu">Website Data </span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{url('images/show')}}">Website Images</a></li>
+                                <li><a href="{{url('areas/show')}}">Areas</a></li>
                             </ul>
                         </li>
 
 
-                        <li>
-                            <a href="{{url('raw/prod/show')}}" aria-expanded="false"><i class=" fas fa-cogs"></i><span class="hide-menu">Website Data </span></a>
+                        <li> <a href="{{url('dash/users/all')}}"><i class=" fas fa-users"></i>Dashboard Admins</a>
+
                         </li>
-
-                    <li> <a href="{{url('dash/users/all')}}"><i class=" fas fa-users"></i>Dashboard Admins</a>
-
-                    </li>
 
                     </ul>
                 </nav>
@@ -228,10 +232,10 @@
                     </div>
                     <div class="col-md-7 align-self-center text-right">
                         <div class="d-flex justify-content-end align-items-center">
-                            <a style="font-family: 'Oswald'" href="{{url('clients/trans/add')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Add Product</a>
-                            <a style="font-family: 'Oswald'" href="{{url('suppliers/trans/add')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Add Category</a>
-                            <a style="font-family: 'Oswald'" href="{{url('sales/add')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fas fa-info-circle"></i> Check Orders </a>
-                            <a style="font-family: 'Oswald'" href="{{url('rawinventory/add')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Add User</a>
+                            <a style="font-family: 'Oswald'" href="{{url('products/add')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Add Product</a>
+                            <a style="font-family: 'Oswald'" href="{{url('categories/show')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Add Category</a>
+                            <a style="font-family: 'Oswald'" href="{{url('orders/show/active')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fas fa-info-circle"></i> Check Orders </a>
+                            <a style="font-family: 'Oswald'" href="{{url('users/add')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Add User</a>
                         </div>
                     </div>
                 </div>

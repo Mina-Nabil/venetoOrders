@@ -23,5 +23,30 @@ class DatabaseSeeder extends Seeder
             "DASH_PASS" => bcrypt('mina@whale'),           
             "DASH_TYPE_ID" => 1,
         ]);
+
+        DB::table("categories")->insert([
+            "CATG_NAME" => "Men",
+            "CATG_ARBC_NAME" => "رجالي",
+        ]);
+
+        DB::table("categories")->insert([
+            "CATG_NAME" => "Women",
+            "CATG_ARBC_NAME" => "حريمي",
+        ]);
+
+        DB::table('genders')->insert([
+            "GNDR_NAME" => "Male",
+            "GNDR_ARBC_NAME" => "ذكر"
+        ]);
+
+        DB::table('genders')->insert([
+            "GNDR_NAME" => "Female",
+            "GNDR_ARBC_NAME" => "انثي"
+        ]);
+
+        DB::table('genders')->insert([
+            "GNDR_NAME" => "Prefer not to say",
+            "GNDR_ARBC_NAME" => "لا افضل الاختيار"
+        ]);
     }
 }

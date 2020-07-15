@@ -14,6 +14,33 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Users
+Route::get('users/show/all','UsersController@home');
+Route::get('users/show/latest','UsersController@latest');
+Route::get('users/show/top', 'UsersController@top');
+Route::get('users/edit/{id}', 'UsersController@edit');
+Route::get('users/add', 'UsersController@add');
+Route::get('users/profile/{id}', 'UsersController@profile');
+Route::post('users/insert', 'UsersController@insert');
+Route::post('users/update', 'UsersController@update');
+
+//Areas
+Route::get('areas/show', 'AreasController@home');
+Route::get('areas/edit/{id}', 'AreasController@edit');
+Route::get('areas/toggle/{id}', 'AreasController@toggle');
+Route::post('areas/insert', 'AreasController@insert');
+Route::post('areas/update', 'AreasController@update');
+
+//Categories
+Route::get('categories/show', 'CategoriesController@home');
+Route::get('categories/edit/{id}', 'CategoriesController@editCategory');
+Route::get('subcategories/edit/{id}', 'CategoriesController@editSubCategory');
+Route::post('categories/insert', 'CategoriesController@insertCategory');
+Route::post('subcategories/insert', 'CategoriesController@insertSubCategory');
+Route::post('categories/update', 'CategoriesController@updateCategory');
+Route::post('subcategories/update', 'CategoriesController@updateSubCategory');
+
+
 //Dashboard users
 Route::get("dash/users/all", 'DashUsersController@index');
 Route::post("dash/users/insert", 'DashUsersController@insert');
