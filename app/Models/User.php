@@ -8,6 +8,11 @@ class User extends Authenticatable
 {
     protected $table="users";
     public $timestamps = true;
+
+    protected $attributes = array(
+        "USER_MOBN_VRFD" => 0,
+        "USER_MAIL_VRFD" => 0,
+    );
     
     public function area(){
         return $this->belongsTo("App\Models\Area", "USER_AREA_ID", 'id');

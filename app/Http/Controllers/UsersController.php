@@ -24,16 +24,22 @@ class UsersController extends Controller
 
         $this->data['title'] = "All Registered Users";
         $this->data['type'] = $type;
-        $this->data['items'] = User::all();
+        if($type==1)
+            $this->data['items'] = User::latest()->limit(100)->get();
+        else
+            $this->data['items'] = User::all()->sortByDesc('id');
+
         $this->data['subTitle'] = "Manage Users";
-        $this->data['cols'] = ['id', 'Full Name', 'Email', 'Mob#', 'Gender', 'Area', 'Edit'];
+        $this->data['cols'] = ['id', 'Full Name', 'Email', 'Mob#', 'Gender', 'Area', 'Since', 'Edit'];
         $this->data['atts'] = [
             'id',
             ['url' => ['user/profile/', "att" =>  "USER_NAME"]],
-            'USER_MAIL',
-            'USER_MOBN',
+            ['verified' => ['att' => 'USER_MAIL', 'isVerified' => 'USER_MAIL_VRFD']],
+            ['verified' => ['att' => 'USER_MOBN', 'isVerified' => 'USER_MOBN_VRFD']],
             ['foreign' => ['gender', 'GNDR_NAME']],
             ['foreign' => ['area', 'AREA_NAME']],
+           // ['sumForeign' => ['rel' => 'orders', 'att' => 'ORDR_TOTL']],
+           ['date' => ['att' => 'created_at', 'format'=>'Y-M-d']],
             ['edit' => ['url' => 'users/edit/', 'att' => 'id']]
         ];
         $this->data['homeURL'] = $this->homeURL;
@@ -43,36 +49,37 @@ class UsersController extends Controller
     {
         if ($userID != -1) {
             $this->data['user'] = User::findOrFail($userID);
-            $this->data['formURL'] = "users/update/" . $userID;
+            $this->data['formURL'] = "users/update";
         } else {
             $this->data['formURL'] = "users/insert/";
         }
         $this->data['genders'] = Gender::all();
-        $this->data['areas']  = Area::all();
+        $this->data['areas']  = Area::where("AREA_ACTV", "1")->get();
         $this->data['formTitle'] = "Add New User";
         $this->data['isCancel'] = true;
         $this->data['homeURL'] = $this->homeURL;
     }
 
-    private function initProfileArr($id){
+    private function initProfileArr($id)
+    {
         $this->data['user'] = User::findOrFail($id);
     }
 
     public function home()
     {
-        $this->initHomeArr(1);
+        $this->initHomeArr(0);
         return view("users.table", $this->data);
     }
 
     public function latest()
     {
-        $this->initHomeArr(2);
+        $this->initHomeArr(1);
         return view("users.table", $this->data);
     }
 
     public function top()
     {
-        $this->initHomeArr(3);
+        $this->initHomeArr(2);
         return view("users.table", $this->data);
     }
 
@@ -88,7 +95,8 @@ class UsersController extends Controller
         return view("users.add", $this->data);
     }
 
-    public function profile($id){
+    public function profile($id)
+    {
         $this->initProfileArr($id);
         return view("users.profile", $this->data);
     }
@@ -100,7 +108,7 @@ class UsersController extends Controller
             "pass"              => "required|between:4,24",
             "mob"               => "required|numeric",
             "mail"              => "required|email|unique:users,USER_MAIL",
-            "gender"        => "required|exists:gender,id",
+            "gender"        => "required|exists:genders,id",
             "area"          => "required|exists:areas,id"
         ]);
 
@@ -108,9 +116,9 @@ class UsersController extends Controller
         $user->USER_NAME = $request->name;
         $user->USER_PASS = $request->pass;
         $user->USER_MOBN = $request->mob;
-        $user->USER_MOBN_VRFD = $request->isMobVerified;
+        $user->USER_MOBN_VRFD = $request->isMobVerified ? 1 : 0;
         $user->USER_MAIL = $request->mail;
-        $user->USER_MAIL_VRFD = $request->isMailVerified;
+        $user->USER_MAIL_VRFD = $request->isMailVerified ? 1 : 0;
         $user->USER_GNDR_ID = $request->gender;
         $user->USER_AREA_ID = $request->area;
 
@@ -119,15 +127,18 @@ class UsersController extends Controller
         return redirect($this->homeURL);
     }
 
-    public function update($id, Request $request)
+    public function update(Request $request)
     {
-        $user = User::findOrFail($id);
+        $request->validate([
+            "id"          => "required",
+        ]);
+        $user = User::findOrFail($request->id);
         $request->validate([
             "name"          => "required",
-            "pass"          => "required|between:4,24",
+            "pass"          => "nullable|between:4,24",
             "mob"           => "required|numeric",
             "mail"          => ["required", "email",  Rule::unique('users', "USER_MAIL")->ignore($user->USER_MAIL, "USER_MAIL"),],
-            "gender"        => "required|exists:gender,id",
+            "gender"        => "required|exists:genders,id",
             "area"          => "required|exists:areas,id"
         ]);
 
@@ -135,9 +146,9 @@ class UsersController extends Controller
         if (isset($request->pass))
             $user->USER_PASS = $request->pass;
         $user->USER_MOBN = $request->mob;
-        $user->USER_MOBN_VRFD = $request->isMobVerified;
+        $user->USER_MOBN_VRFD = $request->isMobVerified ? 1 : 0;
         $user->USER_MAIL = $request->mail;
-        $user->USER_MAIL_VRFD = $request->isMailVerified;
+        $user->USER_MAIL_VRFD = $request->isMailVerified ? 1 : 0;
         $user->USER_GNDR_ID = $request->gender;
         $user->USER_AREA_ID = $request->area;
 

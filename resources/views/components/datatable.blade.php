@@ -39,8 +39,16 @@
                         <td><a href="{{ url( $att['edit']['url'] . $item->{$att['edit']['att']}) }}"><img src="{{ asset('images/edit.png') }}" width=25 height=25></a></td>
                         @elseif(array_key_exists('foreign', $att))
                         <td>{{ $item->{$att['foreign'][0]}->{$att['foreign'][1]}  }}</td>
+                        @elseif(array_key_exists('sumForeign', $att))
+                        <td>{{ $item->{$att['sumForeign']['rel']}->sum($att['sumForeign']['att'])  }}</td>
                         @elseif(array_key_exists('url', $att))
                         <td><a href="{{ url($att['url'][0]) }}">{{ $item->{$att['url']['att']}  }}</a></td>
+                        @elseif(array_key_exists('verified', $att))
+                        <td>{{ $item->{$att['verified']['att']}  }}
+                            @if($item->{$att['verified']['isVerified']})
+                             <i class="fas fa-check-circle" style="color:lightgreen">
+                            @endif
+                            </td>
                         @elseif(array_key_exists('dynamicUrl', $att))
                         <td><a href="{{ url($att['dynamicUrl'][0].$item->{$att['dynamicUrl']['val']}) }}">{{ $item->{$att['dynamicUrl']['att']}  }}</a></td>
                         @elseif(array_key_exists('state', $att))

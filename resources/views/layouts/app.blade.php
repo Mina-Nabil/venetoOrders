@@ -198,6 +198,9 @@
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{url('images/show')}}">Website Images</a></li>
                                 <li><a href="{{url('areas/show')}}">Areas</a></li>
+                                <li><a href="{{url('colors/show')}}">Colors</a></li>
+                                <li><a href="{{url('sizes/show')}}">Sizes</a></li>
+                                <li><a href="{{url('charts/show')}}">Size Charts</a></li>
                             </ul>
                         </li>
 
@@ -423,104 +426,7 @@
         const day = d.getDay();
         const month = d.getMonth();
         const formatted = day + "/" + month + "/" + year;
-        // $(function () {
-        //     $(function () {
-
-        //         var table = $('#myTable').DataTable({
-        //             "displayLength": 25,
-        //             dom: 'Bfrtip',
-        //             buttons: [
-        //                 {
-        //                     extend: 'print',
-        //                     text: 'Print',
-        //                     title: 'Veneto',
-        //                     footer: true,
-        //                     messageTop: "Date: " + formatted,
-        //                     customize: function (win) {
-        //                         $(win.document.body)
-        //                             .prepend('<center><img src="{{asset('images / dark - logo.png')}}" style="position:absolute; margin: auto; ; margin-top: 460px ; left: 0; right: 0; opacity:0.2" /></center>')
-        //                             .css('font-size', '24px')
-
-        //                         //$('#stampHeader' ).addClass( 'stampHeader' );
-        //                         $(win.document.body).find('table')
-        //                             .css('border', 'solid')
-        //                             .css('margin-top', '20px')
-        //                             .css('font-size', 'inherit');
-        //                         $(win.document.body).find('th')
-        //                             .css('border', 'solid')
-        //                             .css('border', '!important')
-        //                             .css('border-width', '1px')
-        //                             .css('font-size', 'inherit')
-        //                         $(win.document.body).find('td')
-        //                             .css('border', 'solid')
-        //                             .css('border', '!important')
-        //                             .css('border-width', '1px');
-        //                         $(win.document.body).find('tr')
-        //                             .css('border', 'solid')
-        //                             .css('border', '!important')
-        //                             .css('border-width', '1px')
-        //                     }
-        //                 }, {
-        //                     extend: 'excel',
-        //                     title: 'Veneto',
-        //                     footer: true,
-
-        //                 }
-        //             ]
-        //         });
-        //         var table = $('#myTable2').DataTable({
-        //             "displayLength": 25,
-        //             dom: 'Bfrtip',
-        //             buttons: [
-        //                 {
-        //                     extend: 'print',
-        //                     text: 'Print',
-        //                     title: 'Veneto',
-        //                     footer: true,
-        //                     messageTop: "Date: " + formatted,
-        //                     customize: function (win) {
-        //                         $(win.document.body)
-        //                             .prepend('<center><img src="{{asset('images / dark - logo.png')}}" style="position:absolute; margin: auto; ; margin-top: 460px ; left: 0; right: 0; opacity:0.2" /></center>')
-        //                             .css('font-size', '24px')
-
-        //                         //$('#stampHeader' ).addClass( 'stampHeader' );
-        //                         $(win.document.body).find('table')
-        //                             .css('border', 'solid')
-        //                             .css('margin-top', '20px')
-        //                             .css('font-size', 'inherit');
-        //                         $(win.document.body).find('th')
-        //                             .css('border', 'solid')
-        //                             .css('border', '!important')
-        //                             .css('border-width', '1px')
-        //                             .css('font-size', 'inherit')
-        //                         $(win.document.body).find('td')
-        //                             .css('border', 'solid')
-        //                             .css('border', '!important')
-        //                             .css('border-width', '1px');
-        //                         $(win.document.body).find('tr')
-        //                             .css('border', 'solid')
-        //                             .css('border', '!important')
-        //                             .css('border-width', '1px')
-        //                     }
-        //                 }, {
-        //                     extend: 'excel',
-        //                     title: 'Veneto',
-        //                     footer: true,
-
-        //                 }
-        //             ]
-        //         });
-        //         // Order by the grouping
-        //         $('#example tbody').on('click', 'tr.group', function () {
-        //             var currentOrder = table.order()[0];
-        //             if (currentOrder[0] === 2 && currentOrder[1] === 'asc') {
-        //                 table.order([2, 'desc']).draw();
-        //             } else {
-        //                 table.order([2, 'asc']).draw();
-        //             }
-        //         });
-        //     });
-        // });
+      
 
 
         $(' .buttons-print, .buttons-pdf, .buttons-excel').addClass('btn btn-info mr-1');
@@ -600,6 +506,7 @@
 
     </script>
     <!-- End Table Search Script -->
+    @yield("js_content")
 </body>
 
 </html>

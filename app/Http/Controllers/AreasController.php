@@ -56,7 +56,7 @@ class AreasController extends Controller
         $this->initDataArr();
         $this->data['area'] = Area::findOrFail($id);
         $this->data['formTitle'] = "Edit Area ( " . $this->data['area']->AREA_NAME . " )";
-        $this->data['formURL'] = "areas/insert";
+        $this->data['formURL'] = "areas/update";
         $this->data['isCancel'] = false;
         return view('settings.area', $this->data);
     }
@@ -100,7 +100,7 @@ class AreasController extends Controller
         $area = Area::findOrFail($request->id);
         $area->AREA_NAME = $request->name;
         $area->AREA_ARBC_NAME = $request->arbcName;
-        $area->AREA_AREA = $request->area;
+        $area->AREA_RATE = $request->rate;
         $area->save();
 
         return redirect($this->homeURL);

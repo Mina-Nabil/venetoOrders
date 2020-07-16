@@ -31,6 +31,27 @@ Route::get('areas/toggle/{id}', 'AreasController@toggle');
 Route::post('areas/insert', 'AreasController@insert');
 Route::post('areas/update', 'AreasController@update');
 
+//Colors
+Route::get('colors/show', 'ColorsController@home');
+Route::get('colors/edit/{id}', 'ColorsController@edit');
+Route::get('colors/toggle/{id}', 'ColorsController@toggle');
+Route::post('colors/insert', 'ColorsController@insert');
+Route::post('colors/update', 'ColorsController@update');
+
+//Sizes
+Route::get('sizes/show', 'SizesController@home');
+Route::get('sizes/edit/{id}', 'SizesController@edit');
+Route::get('sizes/toggle/{id}', 'SizesController@toggle');
+Route::post('sizes/insert', 'SizesController@insert');
+Route::post('sizes/update', 'SizesController@update');
+
+//Charts
+Route::get('charts/show', 'ChartsController@home');
+Route::get('charts/edit/{id}', 'ChartsController@edit');
+Route::get('charts/toggle/{id}', 'ChartsController@toggle');
+Route::post('charts/insert', 'ChartsController@insert');
+Route::post('charts/update', 'ChartsController@update');
+
 //Categories
 Route::get('categories/show', 'CategoriesController@home');
 Route::get('categories/edit/{id}', 'CategoriesController@editCategory');

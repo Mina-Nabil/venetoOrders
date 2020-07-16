@@ -36,7 +36,9 @@ class CreateUsersTable extends Migration
             $table->foreignId("USER_GNDR_ID")->constrained("genders")->default(1);
             $table->string("USER_MOBN");
             $table->tinyInteger("USER_MOBN_VRFD")->default(0);
-            $table->string("USER_MAIL_VRFD")->default(0);
+            $table->tinyInteger("USER_MAIL_VRFD")->default(0);
+            $table->string("USER_PASS")->nullable();
+            $table->string("USER_FBTK")->nullable();
             $table->timestamps();
         });
     }
