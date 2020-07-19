@@ -14,6 +14,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Products 
+Route::get('products/show/all', 'ProductsController@home');
+Route::get('products/details/{id}', 'ProductsController@details');
+Route::get('products/add', 'ProductsController@add');
+Route::post('products/insert/image', 'ProductsController@attachImage');
+Route::post('products/delete/image/{id}', 'ProductsController@deleteImage');
+Route::post('products/insert', 'ProductsController@insert');
+Route::get('products/edit/{id}', 'ProductsController@edit');
+Route::post('products/update', 'ProductsController@update');
+
+
 //Users
 Route::get('users/show/all','UsersController@home');
 Route::get('users/show/latest','UsersController@latest');
@@ -34,14 +45,12 @@ Route::post('areas/update', 'AreasController@update');
 //Colors
 Route::get('colors/show', 'ColorsController@home');
 Route::get('colors/edit/{id}', 'ColorsController@edit');
-Route::get('colors/toggle/{id}', 'ColorsController@toggle');
 Route::post('colors/insert', 'ColorsController@insert');
 Route::post('colors/update', 'ColorsController@update');
 
 //Sizes
 Route::get('sizes/show', 'SizesController@home');
 Route::get('sizes/edit/{id}', 'SizesController@edit');
-Route::get('sizes/toggle/{id}', 'SizesController@toggle');
 Route::post('sizes/insert', 'SizesController@insert');
 Route::post('sizes/update', 'SizesController@update');
 

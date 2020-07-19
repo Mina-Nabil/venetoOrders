@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CategoriesController extends Controller
 {
@@ -35,7 +36,7 @@ class CategoriesController extends Controller
         $this->data['formTitle'] = "Add Sub Category";
         $this->data['formURL'] = "subcategories/insert";
         $this->data['isCancel'] = false;
-        $this->data['form2Title'] = "Add Category";
+        $this->data['form2Title'] = "Add Main Category";
         $this->data['form2URL'] = "categories/insert";
         $this->data['isCancel2'] = false;
         return view('products.categories', $this->data);
@@ -47,7 +48,7 @@ class CategoriesController extends Controller
         $this->data['formTitle'] = "Manage SubCategory (" . $this->data['subcategory']->SBCT_NAME . ")";
         $this->data['formURL'] = "subcategories/update";
         $this->data['isCancel'] = true;
-        $this->data['form2Title'] = "Add Categories";
+        $this->data['form2Title'] = "Add Main Categories";
         $this->data['form2URL'] = "categories/insert";
         $this->data['isCancel2'] = false;
         return view('products.categories', $this->data);
@@ -68,12 +69,12 @@ class CategoriesController extends Controller
     public function insertCategory(Request $request){
 
         $request->validate([
-            "name"      => "required",
+            "catgName"      => "required|unique:categories,CATG_NAME",
             "arbcName"  => "required",
         ]);
 
         $category = new Category();
-        $category->CATG_NAME = $request->name;
+        $category->CATG_NAME = $request->catgName;
         $category->CATG_ARBC_NAME = $request->arbcName;
         $category->save();
         return redirect($this->homeURL);
@@ -81,7 +82,7 @@ class CategoriesController extends Controller
     public function insertSubCategory(Request $request){
 
         $request->validate([
-            "name" => "required",
+            "name" => "required|unique:sub_categories,SBCT_NAME",
             "arbcName" => "required",
             "category" => "required"
         ]);
@@ -98,13 +99,17 @@ class CategoriesController extends Controller
 
     public function updateSubCategory(Request $request){
         $request->validate([
-            "name" => "required",
+            "id" => "required",
+        ]);
+        $subcategory = SubCategory::findOrFail($request->id);
+
+        $request->validate([
+            "name" => ["required",  Rule::unique('sub_categories', "SBCT_NAME")->ignore($subcategory->SBCT_NAME, "SBCT_NAME"),],
             "category" => "required",
             "arbcName" => "required",
             "id" => "required",
         ]);
 
-        $subcategory = SubCategory::findOrFail($request->id);
         $subcategory->SBCT_NAME = $request->name;
         $subcategory->SBCT_ARBC_NAME = $request->arbcName;
         $subcategory->SBCT_CATG_ID = $request->category;
@@ -116,13 +121,13 @@ class CategoriesController extends Controller
 
     public function updateCategory(Request $request){
         $request->validate([
-            "name" => "required",
+            "catgName" => "required",
             "arbcName" => "required",
             "id" => "required",
         ]);
 
         $category = Category::findOrFail($request->id);
-        $category->CATG_NAME = $request->name;
+        $category->CATG_NAME = $request->catgName;
         $category->CATG_ARBC_NAME = $request->arbcName;
         $category->save();
 

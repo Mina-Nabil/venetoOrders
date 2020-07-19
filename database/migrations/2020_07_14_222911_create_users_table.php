@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('areas', function (Blueprint $table){
             $table->id();
-            $table->string("AREA_NAME");
+            $table->string("AREA_NAME")->unique();
             $table->string("AREA_ARBC_NAME");
             $table->double("AREA_RATE")->default(20);
             $table->tinyInteger("AREA_ACTV")->default(1);
@@ -23,14 +23,14 @@ class CreateUsersTable extends Migration
 
         Schema::create('genders', function (Blueprint $table){
             $table->id();
-            $table->string("GNDR_NAME");
+            $table->string("GNDR_NAME")->unique();
             $table->string("GNDR_ARBC_NAME");
         });
 
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string("USER_NAME");
-            $table->string("USER_MAIL");
+            $table->string("USER_MAIL")->unique();
             $table->string("USER_ADRS")->nullable();
             $table->foreignId("USER_AREA_ID")->constrained("areas")->nullable();
             $table->foreignId("USER_GNDR_ID")->constrained("genders")->default(1);

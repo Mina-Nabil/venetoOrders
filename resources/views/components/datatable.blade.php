@@ -59,6 +59,8 @@
                         </td>
                         @elseif(array_key_exists('date', $att))
                         <td>{{ $item->{$att['date']['att']}->format($att['date']['format'])  }}</a></td>
+                        @elseif(array_key_exists('attUrl', $att))
+                        <td><a href="{{ url($att['attUrl']['url'] . '/' . $item->{$att['attUrl']['urlAtt']}) }}">{{ $item->{$att['attUrl']['shownAtt']}  }}</a></td>
                         @elseif(array_key_exists('foreignUrl', $att))
                         <td><a href="{{ url($att['foreignUrl'][0] . '/' . $item->{$att['foreignUrl']['1']}) }}">{{ $item->{$att['foreignUrl'][2]}->{$att['foreignUrl'][3]}  }}</a></td>
                         @endif

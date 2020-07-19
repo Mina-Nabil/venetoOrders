@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Size;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class SizesController extends Controller
 {
@@ -46,9 +47,8 @@ class SizesController extends Controller
     public function insert(Request $request){
 
         $request->validate([
-            "name"      => "required",
-            "arbcName"  => "required",
-            "code"      => "required",
+            "name"      => "required|unique:sizes,SIZE_NAME",
+            "code"      => "required|unique:sizes,SIZE_CODE",
         ]);
 
         $size = new Size();
@@ -61,13 +61,16 @@ class SizesController extends Controller
 
     public function update(Request $request){
         $request->validate([
-            "name"      => "required",
-            "arbcName"  => "required",
-            "code"      => "required",
+            "id" => "required",
+        ]);
+        $size = Size::findOrFail($request->id);
+
+        $request->validate([
+            "name" => ["required",  Rule::unique('sizes', "SIZE_NAME")->ignore($size->SIZE_NAME, "SIZE_NAME"),],
+            "code"      => ["required",  Rule::unique('sizes', "SIZE_CODE")->ignore($size->SIZE_CODE, "SIZE_CODE"),],
             "id"        => "required",
         ]);
 
-        $size = Size::findOrFail($request->id);
         $size->SIZE_NAME = $request->name;
         $size->SIZE_ARBC_NAME = $request->arbcName;
         $size->SIZE_CODE = $request->code;

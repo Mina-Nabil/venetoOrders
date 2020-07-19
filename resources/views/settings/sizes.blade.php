@@ -22,14 +22,14 @@
                         <small class="text-danger">{{$errors->first('name')}}</small>
                     </div>
                     <div class="form-group">
-                        <label>Arabic Name*</label>
+                        <label>Arabic Name</label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Arabic Name" name=arbcName value="{{ (isset($size)) ? $size->SIZE_ARBC_NAME : old('arbcName')}}" required>
+                            <input type="text" class="form-control" placeholder="Arabic Name" name=arbcName value="{{ (isset($size)) ? $size->SIZE_ARBC_NAME : old('arbcName')}}" >
                         </div>
                         <small class="text-danger">{{$errors->first('arbcName')}}</small>
                     </div>
                     <div class="form-group">
-                        <label>Code</label>
+                        <label>Code*</label>
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" placeholder="Size Code .. Example: 2XL" name=code value="{{ (isset($size)) ? $size->SIZE_CODE : old('rate')}}">
                         </div>

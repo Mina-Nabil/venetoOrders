@@ -22,14 +22,14 @@ class UsersController extends Controller
     private function initHomeArr($type = -1) // 0 all - 1 latest - 2 top
     {
 
-        $this->data['title'] = "All Registered Users";
+        $this->data['title'] = "All Registered Clients";
         $this->data['type'] = $type;
         if($type==1)
             $this->data['items'] = User::latest()->limit(100)->get();
         else
             $this->data['items'] = User::all()->sortByDesc('id');
 
-        $this->data['subTitle'] = "Manage Users";
+        $this->data['subTitle'] = "Manage Clients";
         $this->data['cols'] = ['id', 'Full Name', 'Email', 'Mob#', 'Gender', 'Area', 'Since', 'Edit'];
         $this->data['atts'] = [
             'id',

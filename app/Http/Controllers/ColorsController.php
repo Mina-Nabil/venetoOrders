@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Color;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ColorsController extends Controller
 {
@@ -46,7 +47,7 @@ class ColorsController extends Controller
     public function insert(Request $request){
 
         $request->validate([
-            "name"      => "required",
+            "name"      => "required|unique:colors,COLR_NAME",
             "arbcName"  => "required",
             "code"      => "required",
         ]);
@@ -61,13 +62,17 @@ class ColorsController extends Controller
 
     public function update(Request $request){
         $request->validate([
-            "name"      => "required",
+            "id" => "required",
+        ]);
+        $color = Color::findOrFail($request->id);
+
+        $request->validate([
+            "name" => ["required",  Rule::unique('colors', "COLR_NAME")->ignore($color->COLR_NAME, "COLR_NAME"),],
             "arbcName"  => "required",
             "code"      => "required",
             "id"        => "required",
         ]);
 
-        $color = Color::findOrFail($request->id);
         $color->COLR_NAME = $request->name;
         $color->COLR_ARBC_NAME = $request->arbcName;
         $color->COLR_CODE = $request->code;

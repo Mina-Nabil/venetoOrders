@@ -14,18 +14,13 @@ class CreateInventoryTable extends Migration
     public function up()
     {
 
-        Schema::create('colors', function (Blueprint $table){
-            $table->id();
-            $table->string('COLR_NAME');
-            $table->string('COLR_ARBC_NAME');
-            $table->string('COLR_CODE');
-        });
+     
 
         Schema::create('sizes', function (Blueprint $table){
             $table->id();
-            $table->string("SIZE_NAME");
+            $table->string("SIZE_NAME")->unique();
             $table->string("SIZE_ARBC_NAME")->nullable();
-            $table->string("SIZE_CODE");  //X - XL - S
+            $table->string("SIZE_CODE")->unique();  //X - XL - S
         });
 
         Schema::create('inventory', function (Blueprint $table) {
@@ -47,6 +42,5 @@ class CreateInventoryTable extends Migration
     {
         Schema::dropIfExists('inventory');
         Schema::dropIfExists('sizes');
-        Schema::dropIfExists('colors');
     }
 }

@@ -65,16 +65,16 @@
                     <div class="form-group">
                         <label>Category Name*</label>
                         <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Category Name" name=name value="{{ (isset($category)) ? $category->CATG_NAME : old('name')}}" required>
+                            <input type="text" class="form-control" placeholder="Category Name" name=catgName value="{{ (isset($category)) ? $category->CATG_NAME : old('catgName')}}" required>
                         </div>
-                        <small class="text-danger">{{$errors->first('name')}}</small>
+                        <small class="text-danger">{{$errors->first('catgName')}}</small>
                     </div>
                     <div class="form-group">
                         <label>Arabic Name*</label>
                         <div class="input-group mb-3">
                             <input type="text" class="form-control" placeholder="Arabic Category Name" name=arbcName value="{{ (isset($category)) ? $category->CATG_ARBC_NAME : old('arbcName')}}" required>
                         </div>
-                        <small class="text-danger">{{$errors->first('name')}}</small>
+                        <small class="text-danger">{{$errors->first('arbcName')}}</small>
                     </div>
                     
                     
