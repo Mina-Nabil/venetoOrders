@@ -32,7 +32,7 @@ class CreateUsersTable extends Migration
             $table->string("USER_NAME");
             $table->string("USER_MAIL")->unique();
             $table->string("USER_ADRS")->nullable();
-            $table->foreignId("USER_AREA_ID")->constrained("areas")->nullable();
+            $table->foreignId("USER_AREA_ID")->nullable()->constrained("areas");
             $table->foreignId("USER_GNDR_ID")->constrained("genders")->default(1);
             $table->string("USER_MOBN");
             $table->tinyInteger("USER_MOBN_VRFD")->default(0);

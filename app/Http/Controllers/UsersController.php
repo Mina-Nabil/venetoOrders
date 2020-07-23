@@ -33,7 +33,7 @@ class UsersController extends Controller
         $this->data['cols'] = ['id', 'Full Name', 'Email', 'Mob#', 'Gender', 'Area', 'Since', 'Edit'];
         $this->data['atts'] = [
             'id',
-            ['url' => ['user/profile/', "att" =>  "USER_NAME"]],
+            ['attUrl' => ["url" => 'users/profile',"urlAtt" => 'id', "shownAtt" =>  "USER_NAME"]],
             ['verified' => ['att' => 'USER_MAIL', 'isVerified' => 'USER_MAIL_VRFD']],
             ['verified' => ['att' => 'USER_MOBN', 'isVerified' => 'USER_MOBN_VRFD']],
             ['foreign' => ['gender', 'GNDR_NAME']],
@@ -63,6 +63,9 @@ class UsersController extends Controller
     private function initProfileArr($id)
     {
         $this->data['user'] = User::findOrFail($id);
+        $this->data['formURL'] = "users/update";
+        $this->data['genders'] = Gender::all();
+        $this->data['areas']  = Area::where("AREA_ACTV", "1")->get();
     }
 
     public function home()
@@ -124,7 +127,7 @@ class UsersController extends Controller
 
         $user->save();
 
-        return redirect($this->homeURL);
+        return redirect("users/profile/" . $user->id);
     }
 
     public function update(Request $request)
@@ -155,6 +158,6 @@ class UsersController extends Controller
         $user->save();
 
 
-        return redirect($this->homeURL);
+        return redirect("users/profile/" . $user->id);
     }
 }

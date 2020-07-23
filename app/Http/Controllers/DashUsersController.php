@@ -10,6 +10,12 @@ class DashUsersController extends Controller
 {
     protected $data;
     //init page data
+
+    public function __construct()
+    {
+        $this->middleware("auth");
+    }
+
     private function initDataArr()
     {
         $this->data['items'] = DashUser::with('dash_types')->get();

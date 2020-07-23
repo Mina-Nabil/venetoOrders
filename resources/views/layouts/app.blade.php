@@ -37,6 +37,7 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
+@yield("head_content")
 </head>
 
 <body class="skin-default fixed-layout">
@@ -148,35 +149,31 @@
 
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cart-plus"></i><span class="hide-menu">Orders</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li>
-                                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)">Orders</a>
-                                    <ul aria-expanded="false" class="collapse">
                                         <li><a href="{{url('orders/show/active')}}">Active Orders</a></li>
                                         <li><a href="{{url('orders/history')}}">History</a></li>
                                         <li><a href="{{url('orders/add')}}">Place an Order</a></li>
                                     </ul>
-                                </li>
-                            </ul>
+                             
+                         
                         </li>
 
 
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-list"></i><span class="hide-menu">Catalogue</span></a>
+                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-list"></i><span class="hide-menu"> Catalogue</span></a>
                             <ul aria-expanded="false" class="collapse">
                                
                                 <li>
-                                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)">Products</a>
+                                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Products</a>
                                     <ul aria-expanded="false" class="collapse">
                                         <li><a href="{{url('products/show/all')}}">All Products</a></li>
-                                        <li><a href="{{url('products/categories')}}">By Category</a></li>
+                                        <li><a href="{{url('products/filter/category')}}">By Category</a></li>
                                         <li><a href="{{url('products/add')}}">Add a Product</a></li>
                                     </ul>
                                 </li>
                                 <li>
-                                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)">Special Products</a>
+                                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Special Products</a>
                                     <ul aria-expanded="false" class="collapse">
                                         <li><a href="{{url('products/new')}}">New Arrivals</a></li>
                                         <li><a href="{{url('products/sale')}}">For Sale</a></li>
-                                        <li><a href="{{url('products/offers')}}">Offers</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="{{url('categories/show')}}">Categories</a></li>
@@ -184,15 +181,15 @@
                         </li>
 
                         <li>
-                            <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-boxes"></i><span class="hide-menu">Inventory</span></a>
+                            <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-boxes"></i><span class="hide-menu"> Inventory</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{url('ledger/show')}}">Add New Stock</a></li>
-                                <li><a href="{{url('ledger/prepare/report')}}">Current Stock List</a></li>
-                                <li><a href="{{url('ledger/add')}}">Transactions</a></li>
+                                <li><a href="{{url('inventory/current/stock')}}">Current Stock List</a></li>
+                                <li><a href="{{url('inventory/new/entry')}}">Add New Stock</a></li>
+                                <li><a href="{{url('inventory/transactions')}}">Transactions</a></li>
                             </ul>
                         </li>
 
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-chart-bar"></i><span class="hide-menu">Reports</span></a>
+                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-chart-bar"></i><span class="hide-menu"> Reports</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{url('suppliers/trans/prepare')}}">Inventory</a></li>
                                 <li><a href="{{url('suppliers/trans/quick')}}">Sales</a></li>
@@ -200,7 +197,7 @@
                             </ul>
                         </li>
 
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="icon-people"></i><span class="hide-menu">Clients</span></a>
+                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="icon-people"></i><span class="hide-menu"> Clients</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{url('users/show/latest')}}">Latest Clients</a></li>
                                 <li><a href="{{url('users/show/top')}}">Top Customers</a></li>
@@ -209,18 +206,20 @@
                             </ul>
                         </li>
 
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cogs"></i><span class="hide-menu">Website Data </span></a>
+                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cogs"></i><span class="hide-menu"> Website Data </span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{url('images/show')}}">Website Images</a></li>
                                 <li><a href="{{url('areas/show')}}">Areas</a></li>
                                 <li><a href="{{url('colors/show')}}">Colors</a></li>
                                 <li><a href="{{url('sizes/show')}}">Sizes</a></li>
                                 <li><a href="{{url('charts/show')}}">Size Charts</a></li>
+                                <li><a href="{{url('tags/show')}}">Tags</a></li>
+                                <li><a href="{{url('paymentoptions/show')}}">Payment Options</a></li>
                             </ul>
                         </li>
 
 
-                        <li> <a href="{{url('dash/users/all')}}"><i class=" fas fa-users"></i>Dashboard Admins</a>
+                        <li> <a href="{{url('dash/users/all')}}"><i class=" fas fa-users"></i><span class="hide-menu">Dashboard Admins</span></a>
 
                         </li>
 
@@ -483,39 +482,6 @@
         $(function () {
             // For select 2
             $(".select2").select2();
-            $(".ajax").select2({
-                ajax: {
-                    url: "https://api.github.com/search/repositories",
-                    dataType: 'json',
-                    delay: 250,
-                    data: function (params) {
-                        return {
-                            q: params.term, // search term
-                            page: params.page
-                        };
-                    },
-                    processResults: function (data, params) {
-                        // parse the results into the format expected by Select2
-                        // since we are using custom formatting functions we do not need to
-                        // alter the remote JSON data, except to indicate that infinite
-                        // scrolling can be used
-                        params.page = params.page || 1;
-                        return {
-                            results: data.items,
-                            pagination: {
-                                more: (params.page * 30) < data.total_count
-                            }
-                        };
-                    },
-                    cache: true
-                },
-                escapeMarkup: function (markup) {
-                    return markup;
-                }, // let our custom formatter work
-                minimumInputLength: 1,
-                //templateResult: formatRepo, // omitted for brevity, see the source of this page
-                //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
-            });
         });
 
 

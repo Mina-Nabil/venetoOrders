@@ -50,9 +50,9 @@
 
 <script>
     var myWidget = cloudinary.createUploadWidget({
-    cloudName: 'msquchartpps', 
-    folder: "petmatch/vets",
-    uploadPreset: 'petmatch'}, (error, result) => { 
+    cloudName: 'sasawhale', 
+    folder: "whale/sizechart",
+    uploadPreset: 'whalesec'}, (error, result) => { 
       if (!error && result && result.event === "success") { 
         document.getElementById('uploaded').value = result.info.url;
       }

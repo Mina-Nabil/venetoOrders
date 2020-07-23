@@ -14,12 +14,38 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Orders
+Route::get("orders/active", "OrdersController@active");
+Route::get("orders/history", "OrdersController@history");
+Route::get("orders/history/{year}", "OrdersController@history");
+Route::get("orders/details/{id}", "OrdersController@details");
+Route::get("orders/new", "OrdersController@addNew");
+Route::get("orders/inser", "OrdersController@insert");
+
+
+//Inventory
+Route::get("inventory/new/entry", "InventoryController@entry");
+Route::post("inventory/insert/entry", "InventoryController@insert");
+Route::get("inventory/current/stock", "InventoryController@stock");
+Route::get("inventory/transactions", "InventoryController@transactions");
+Route::get("inventory/transaction/{code}", "InventoryController@transactionDetails");
+
 //Products 
 Route::get('products/show/all', 'ProductsController@home');
+Route::get('products/sale', 'ProductsController@sale');
+Route::get('products/new', 'ProductsController@new');
+Route::get('products/filter/category', 'ProductsController@filterCategory');
+Route::post('products/category', 'ProductsController@showCategory');
+Route::post('products/subcategory', 'ProductsController@showSubCategory');
+Route::get('products/show/catg/sub/{id}', 'ProductsController@home');
 Route::get('products/details/{id}', 'ProductsController@details');
 Route::get('products/add', 'ProductsController@add');
-Route::post('products/insert/image', 'ProductsController@attachImage');
+Route::post('producs/add/image/{id}', 'ProductsController@attachImage');
+Route::get('products/setimage/{prodID}/{imageID}', 'ProductsController@setMainImage');
+Route::post('products/setchart/{prodID}', 'ProductsController@setChartImage');
+Route::get('products/unsetchart/{prodID}', 'ProductsController@unsetChartImage');
 Route::post('products/delete/image/{id}', 'ProductsController@deleteImage');
+Route::post('products/linktags/{id}', 'ProductsController@linkTags');
 Route::post('products/insert', 'ProductsController@insert');
 Route::get('products/edit/{id}', 'ProductsController@edit');
 Route::post('products/update', 'ProductsController@update');
@@ -36,11 +62,21 @@ Route::post('users/insert', 'UsersController@insert');
 Route::post('users/update', 'UsersController@update');
 
 //Areas
+Route::get('paymentoptions/show', 'PaymentOptionsController@home');
+Route::get('paymentoptions/toggle/{id}', 'PaymentOptionsController@toggle');
+
+//Areas
 Route::get('areas/show', 'AreasController@home');
 Route::get('areas/edit/{id}', 'AreasController@edit');
 Route::get('areas/toggle/{id}', 'AreasController@toggle');
 Route::post('areas/insert', 'AreasController@insert');
 Route::post('areas/update', 'AreasController@update');
+
+//Tags
+Route::get('tags/show', 'TagsController@home');
+Route::get('tags/edit/{id}', 'TagsController@edit');
+Route::post('tags/insert', 'TagsController@insert');
+Route::post('tags/update', 'TagsController@update');
 
 //Colors
 Route::get('colors/show', 'ColorsController@home');

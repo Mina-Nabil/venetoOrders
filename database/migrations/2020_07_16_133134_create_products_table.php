@@ -52,8 +52,8 @@ class CreateProductsTable extends Migration
             $table->double("PROD_PRCE");
             $table->double("PROD_COST")->nullable();
             $table->double("PROD_OFFR")->default(0); //percentage
-            $table->foreignId("PROD_PIMG_ID")->constrained("prod_images")->nullable(); // main image
-            $table->foreignId("PROD_SZCT_ID")->constrained("size_chart")->nullable(); // size chart image showing the size details
+            $table->foreignId("PROD_PIMG_ID")->nullable()->constrained("prod_images"); // main image
+            $table->foreignId("PROD_SZCT_ID")->nullable()->constrained("size_chart"); // size chart image showing the size details
             $table->string("PROD_BRCD")->nullable();
             $table->timestamps();
         });
