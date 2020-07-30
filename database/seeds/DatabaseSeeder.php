@@ -65,20 +65,20 @@ class DatabaseSeeder extends Seeder
         //     "STTS_NAME" => "Cancelled"
         // ]);
 
-        DB::table("payment_options")->insert([
-            "PYOP_NAME" => "Cash On Delivery",
-            "PYOP_ARBC_NAME" => "كاش"
-        ]);
+        // DB::table("payment_options")->insert([
+        //     "PYOP_NAME" => "Cash On Delivery",
+        //     "PYOP_ARBC_NAME" => "كاش"
+        // ]);
     
 
-        DB::table("payment_options")->insert([
-            "PYOP_NAME" => "Credit Card",
-            "PYOP_ARBC_NAME" => "بطاقه ائتمان"
-        ]);
+        // DB::table("payment_options")->insert([
+        //     "PYOP_NAME" => "Credit Card",
+        //     "PYOP_ARBC_NAME" => "بطاقه ائتمان"
+        // ]);
 
-        DB::table("payment_options")->insert([
-            "PYOP_NAME" => "Credit Card On Delivery",
-            "PYOP_ARBC_NAME" => "بطاقه ائتمان عند التوصيل"
-        ]);
+        // DB::table("payment_options")->insert([
+        //     "PYOP_NAME" => "Credit Card On Delivery",
+        //     "PYOP_ARBC_NAME" => "بطاقه ائتمان عند التوصيل"
+        // ]);
     }
 }

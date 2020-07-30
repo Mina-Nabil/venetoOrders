@@ -17,9 +17,11 @@
 
 <div class="card">
     <div class="card-body">
+        @if($cardTitle)
         <h4 class="card-title">{{$title}}</h4>
         <h6 class="card-subtitle">{{$subtitle}}</h6>
-        <div class="table-responsive m-t-40">
+        @endif
+        <div class="table-responsive m-t-5">
             <table id="{{$id}}" class="table color-bordered-table table-striped full-color-table full-info-table hover-table" data-display-length='-1' data-order="[]">
                 <thead>
                     <tr>
@@ -45,25 +47,44 @@
                         <td><a href="{{ url($att['url'][0]) }}">{{ $item->{$att['url']['att']}  }}</a></td>
                         @elseif(array_key_exists('remoteURL', $att))
                         <td><a target="_blank" href="{{ url($item->{$att['remoteURL']['att']}) }}">
-                            {{ (strlen($item->{$att['remoteURL']['att']}) < 15 ) ? $item->{$att['remoteURL']['att']} : substr($item->{$att['remoteURL']['att']},0,26).'..'  }}</a></td>
+                                {{ (strlen($item->{$att['remoteURL']['att']}) < 15 ) ? $item->{$att['remoteURL']['att']} : substr($item->{$att['remoteURL']['att']},0,26).'..'  }}</a></td>
                         @elseif(array_key_exists('verified', $att))
                         <td>{{ $item->{$att['verified']['att']}  }}
                             @if($item->{$att['verified']['isVerified']})
-                             <i class="fas fa-check-circle" style="color:lightgreen">
-                            @endif
-                            </td>
+                            <i class="fas fa-check-circle" style="color:lightgreen">
+                                @endif
+                        </td>
                         @elseif(array_key_exists('dynamicUrl', $att))
                         <td><a href="{{ url($att['dynamicUrl'][0].$item->{$att['dynamicUrl']['val']}) }}">{{ $item->{$att['dynamicUrl']['att']}  }}</a></td>
                         @elseif(array_key_exists('state', $att))
                         <td><span class="label {{ $att['state']['classes'][$item->{$att['state']['att']}] }}">{{ $item->{$att['state']['rel']}->{$att['state']['foreignAtt']}  }}</span></td>
+                        @elseif(array_key_exists('stateQuery', $att))
+                        <td>
+                            @if(array_key_exists('url', $att['stateQuery']))
+                            <a href="{{ url($att['stateQuery']['url'] . $item->{$att['stateQuery']['urlAtt']})}}">
+                                @endif
+                                <button class="label {{ $att['stateQuery']['classes'][$item->{$att['stateQuery']['att']}] }}">{{ $item->{$att['stateQuery']['foreignAtt']}  }}</button>
+                                @if(array_key_exists('url', $att['stateQuery']))
+                            </a>
+                            @endif
+                        </td>
                         @elseif(array_key_exists('toggle', $att))
-                        <td><a href="javascript:void(0);"><div class="label {{ $att['toggle']['classes'][$item->{$att['toggle']['att']}] }}"
-                                onclick="confirmAndGoTo('{{url($att['toggle']['url'] . $item->id)}}', '{{ $att['toggle']['actions'][$item->{$att['toggle']['att']}] }}')">{{ $att['toggle']['states'][$item->{$att['toggle']['att']}]  }}</div></a>
+                        <td><a href="javascript:void(0);">
+                                <button class="label {{ $att['toggle']['classes'][$item->{$att['toggle']['att']}] }}"
+                                    onclick="confirmAndGoTo('{{url($att['toggle']['url'] . $item->id)}}', '{{ $att['toggle']['actions'][$item->{$att['toggle']['att']}] }}')">
+                                    {{ $att['toggle']['states'][$item->{$att['toggle']['att']}]  }}</button>
+                            </a>
                         </td>
                         @elseif(array_key_exists('date', $att))
                         <td>{{ $item->{$att['date']['att']}->format($att['date']['format'])  }}</a></td>
                         @elseif(array_key_exists('attUrl', $att))
                         <td><a href="{{ url($att['attUrl']['url'] . '/' . $item->{$att['attUrl']['urlAtt']}) }}">{{ $item->{$att['attUrl']['shownAtt']}  }}</a></td>
+                        @elseif(array_key_exists('urlOrStatic', $att))
+                        @isset($item->{$att['urlOrStatic']['shownAtt']})
+                        <td><a href="{{ url($att['urlOrStatic']['url'] . '/' . $item->{$att['urlOrStatic']['urlAtt']}) }}">{{ $item->{$att['urlOrStatic']['shownAtt']}  }}</a></td>
+                        @else 
+                        <td>{{ $item->{$att['urlOrStatic']['static']}  }}</td>
+                        @endisset
                         @elseif(array_key_exists('foreignUrl', $att))
                         <td><a href="{{ url($att['foreignUrl'][0] . '/' . $item->{$att['foreignUrl']['1']}) }}">{{ $item->{$att['foreignUrl'][2]}->{$att['foreignUrl'][3]}  }}</a></td>
                         @endif
@@ -90,7 +111,7 @@
                     buttons: [
                         {
                             extend: 'excel',
-                            title: 'PetMatch',
+                            title: 'Whale Dashboard',
                             footer: true,
                         }
                     ]

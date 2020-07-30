@@ -16,11 +16,30 @@ use Illuminate\Support\Facades\Route;
 
 //Orders
 Route::get("orders/active", "OrdersController@active");
-Route::get("orders/history", "OrdersController@history");
-Route::get("orders/history/{year}", "OrdersController@history");
+Route::get("orders/month", "OrdersController@monthly");
+Route::get("orders/month/{id}", "OrdersController@monthly");
+Route::get("orders/state/{id}", "OrdersController@state");
+Route::get("orders/history/{year}/{month}", "OrdersController@history");
+Route::get("orders/history/{year}/{month}/{state}", "OrdersController@history");
+Route::get("orders/load/history", "OrdersController@loadHistory");
 Route::get("orders/details/{id}", "OrdersController@details");
-Route::get("orders/new", "OrdersController@addNew");
-Route::get("orders/inser", "OrdersController@insert");
+Route::get("orders/edit/details", "OrdersController@editOrderInfo");
+Route::get("orders/set/new/{id}", "OrdersController@setNew");
+Route::get("orders/set/ready/{id}", "OrdersController@setReady");
+Route::get("orders/set/cancelled/{id}", "OrdersController@setCancelled");
+Route::get("orders/set/indelivery/{id}", "OrdersController@setInDelivery");
+Route::get("orders/set/delivered/{id}", "OrdersController@setDelivered");
+Route::get("orders/toggle/item/{id}", "OrdersController@toggleItem");
+Route::get("orders/delete/item/{id}", "OrdersController@deleteItem");
+Route::post("orders/edit/details", "OrdersController@editOrderInfo");
+Route::post("orders/collect/payment", "OrdersController@collectNormalPayment");
+Route::post("orders/collect/delivery", "OrdersController@collectDeliveryPayment");
+Route::post("orders/set/discount", "OrdersController@setDiscount");
+Route::post("orders/assign/driver", "OrdersController@assignDriver");
+Route::post("orders/add/items/{id}", "OrdersController@insertNewItems");
+Route::get("orders/add", "OrdersController@addNew");
+Route::post("orders/insert", "OrdersController@insert");
+Route::post("orders/change/quantity", "OrdersController@changeQuantity");
 
 
 //Inventory
@@ -61,9 +80,16 @@ Route::get('users/profile/{id}', 'UsersController@profile');
 Route::post('users/insert', 'UsersController@insert');
 Route::post('users/update', 'UsersController@update');
 
-//Areas
+//Payment Options
 Route::get('paymentoptions/show', 'PaymentOptionsController@home');
 Route::get('paymentoptions/toggle/{id}', 'PaymentOptionsController@toggle');
+
+//Areas
+Route::get('drivers/show', 'DriversController@home');
+Route::get('drivers/edit/{id}', 'DriversController@edit');
+Route::get('drivers/toggle/{id}', 'DriversController@toggle');
+Route::post('drivers/insert', 'DriversController@insert');
+Route::post('drivers/update', 'DriversController@update');
 
 //Areas
 Route::get('areas/show', 'AreasController@home');

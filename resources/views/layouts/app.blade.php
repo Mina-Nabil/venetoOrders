@@ -37,7 +37,7 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
-@yield("head_content")
+    @yield("head_content")
 </head>
 
 <body class="skin-default fixed-layout">
@@ -149,18 +149,19 @@
 
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cart-plus"></i><span class="hide-menu">Orders</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{{url('orders/show/active')}}">Active Orders</a></li>
-                                        <li><a href="{{url('orders/history')}}">History</a></li>
-                                        <li><a href="{{url('orders/add')}}">Place an Order</a></li>
-                                    </ul>
-                             
-                         
+                                <li><a href="{{url('orders/active')}}">Active Orders</a></li>
+                                <li><a href="{{url('orders/month')}}">Current Month</a></li>
+                                <li><a href="{{url('orders/load/history')}}">History</a></li>
+                                <li><a href="{{url('orders/add')}}">Place an Order</a></li>
+                            </ul>
+
+
                         </li>
 
 
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-list"></i><span class="hide-menu"> Catalogue</span></a>
                             <ul aria-expanded="false" class="collapse">
-                               
+
                                 <li>
                                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Products</a>
                                     <ul aria-expanded="false" class="collapse">
@@ -209,11 +210,21 @@
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cogs"></i><span class="hide-menu"> Website Data </span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{url('images/show')}}">Website Images</a></li>
-                                <li><a href="{{url('areas/show')}}">Areas</a></li>
-                                <li><a href="{{url('colors/show')}}">Colors</a></li>
-                                <li><a href="{{url('sizes/show')}}">Sizes</a></li>
-                                <li><a href="{{url('charts/show')}}">Size Charts</a></li>
-                                <li><a href="{{url('tags/show')}}">Tags</a></li>
+                                <li><a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Delivery</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{{url('areas/show')}}">Areas</a></li>
+                                        <li><a href="{{url('drivers/show')}}">Drivers</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Models</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{{url('colors/show')}}">Colors</a></li>
+                                        <li><a href="{{url('sizes/show')}}">Sizes</a></li>
+                                        <li><a href="{{url('charts/show')}}">Size Charts</a></li>
+                                        <li><a href="{{url('tags/show')}}">Tags</a></li>
+                                    </ul>
+                                </li>
                                 <li><a href="{{url('paymentoptions/show')}}">Payment Options</a></li>
                             </ul>
                         </li>

@@ -1,53 +1,49 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="row">
 
-    <div class="row m-t-40">
-        <!-- Column -->
-        <div class="col-md-6 col-lg-3 col-xlg-3">
-            <div class="card">
-                <div class="box bg-info text-center">
-                    <h1 class="font-light text-white">2,064</h1>
-                    <h6 class="text-white">Total Tickets</h6>
+<div class="row">
+    <div class="col-12">
+        <div class="row ">
+            <!-- Column -->
+            <div class="col-md-6 col-lg-4 col-xlg-3">
+                <div class="card">
+                    <a href="{{url('orders/state/1')}}">
+                        <div class="box bg-info text-center">
+                            <h1 class="font-light text-white">{{$newCount}}</h1>
+                            <h6 class="text-white">New</h6>
+                        </div>
+                    </a>
                 </div>
             </div>
-        </div>
-        <!-- Column -->
-        <div class="col-md-6 col-lg-3 col-xlg-3">
-            <div class="card">
-                <div class="box bg-primary text-center">
-                    <h1 class="font-light text-white">1,738</h1>
-                    <h6 class="text-white">Responded</h6>
+            <!-- Column -->
+            <div class="col-md-6 col-lg-4 col-xlg-3">
+                <div class="card">
+                    <a href="{{url('orders/state/2')}}">
+                        <div class="box bg-warning text-center">
+                            <h1 class="font-light text-white">{{$readyCount}}</h1>
+                            <h6 class="text-white">Ready</h6>
+                        </div>
+                    </a>
                 </div>
             </div>
-        </div>
-        <!-- Column -->
-        <div class="col-md-6 col-lg-3 col-xlg-3">
-            <div class="card">
-                <div class="box bg-success text-center">
-                    <h1 class="font-light text-white">1100</h1>
-                    <h6 class="text-white">Resolve</h6>
+            <!-- Column -->
+            <div class="col-md-6 col-lg-4 col-xlg-3">
+                <div class="card">
+                    <a href="{{url('orders/state/3')}}">
+                        <div class="box bg-dark text-center">
+                            <h1 class="font-dark text-light">{{$inDeliveryCount}}</h1>
+                            <h6 class="text-white">In Delivery</h6>
+                        </div>
+                    </a>
                 </div>
             </div>
+            <!-- Column -->
         </div>
-        <!-- Column -->
-        <div class="col-md-6 col-lg-3 col-xlg-3">
-            <div class="card">
-                <div class="box bg-dark text-center">
-                    <h1 class="font-light text-white">964</h1>
-                    <h6 class="text-white">Pending</h6>
-                </div>
-            </div>
-        </div>
-        <!-- Column -->
     </div>
 
-    
     <div class="col-12">
-        <x-datatable id="myTable"  :title="$title" :subtitle="$subTitle" :cols="$cols" :items="$items" :atts="$atts" />
+        <x-datatable id="myTable" :title="$title ?? 'Active Orders'" :subtitle="$subTitle ?? ''" :cols="$cols" :items="$items" :atts="$atts" :cardTitle="$cardTitle" />
     </div>
 </div>
 @endsection
-
-

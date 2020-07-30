@@ -12,12 +12,13 @@ class Datatable extends Component
     public $cols;
     public $items;
     public $atts;
+    public $cardTitle;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($id, $title, $subtitle, $cols, $items, $atts)
+    public function __construct($id, $title, $subtitle, $cols, $items, $atts, $cardTitle=true)
     {
         $this->id = $id;
         $this->title = $title;
@@ -25,6 +26,7 @@ class Datatable extends Component
         $this->cols = $cols;
         $this->items = $items;
         $this->atts = $atts;
+        $this->cardTitle = $cardTitle;
     }
 
     /**
