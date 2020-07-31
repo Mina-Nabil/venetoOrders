@@ -5,16 +5,15 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Dashboard</div>
-
+                <div class="card-header bg-dark text-light">{{$catgCardTitle}}</div>
                 <div class="card-body">
-                    @if (session('status'))
-                        <div class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    You are logged in!
+                    <x-line-chart :chartTitle="$catgTitle" :chartSubtitle="$catgSubtitle" :graphs="$catgGraphs" :totals="$catgTotals"  />
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header bg-dark text-light">{{$totalCardTitle}}</div>
+                <div class="card-body">
+                    <x-simple-chart :chartTitle="$totalTitle" :chartSubtitle="$totalSubtitle" :graphs="$totalGraphs" :totals="$totalTotals"  />
                 </div>
             </div>
         </div>

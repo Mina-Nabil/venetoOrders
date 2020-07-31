@@ -54,8 +54,30 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if (Auth::check()) 
-        return view('home');
+        if (Auth::check()) {
+            //Totals by Sub category
+            $data['catgGraphs'] =  [
+                ['color' => "info", "name" => "Men"],
+                ['color' => "success", "name" => "Women"],
+            ];
+            $data['catgTotals'] =  [
+                ["name" => "Shorts", "value" => "100", "unit" => "EGP" ],
+                ["name" => "T-Shirts", "value" => "200", "unit" => "EGP" ],
+            ];
+            $data['catgCardTitle'] =  "Total Sales By Subcategories";
+            $data['catgTitle'] =  "Totals Sales";
+            $data['catgSubtitle'] =  "Check total money recieved for each subcategory";
+
+            //Totals Sales
+            $data['totalGraphs'] =  [];
+            $data['totalTotals'] =  [];
+            $data['totalCardTitle'] =  "Total Revenue";
+            $data['totalTitle'] =  "Overall Sales Total";
+            $data['totalSubtitle'] =  "Check total money recieved and number of items sold";
+
+            //Total Sales
+            return view('home', $data);
+        }
         else return redirect("login");
     }
 

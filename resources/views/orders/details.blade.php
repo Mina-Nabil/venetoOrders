@@ -46,7 +46,15 @@
                         <div class="font-bold">
                             Client Name
                         </div>
-                        <p>{{($order->ORDR_GEST_NAME) ? $order->ORDR_GEST_NAME . " (Guest)": $order->USER_NAME . " (User)"}}</p>
+                        <p>
+                            @if(!$order->ORDR_GEST_NAME)
+                            <a href="{{url('users/profile/' . $order->ORDR_USER_ID )}}" >
+                            @endif
+                            {{($order->ORDR_GEST_NAME) ? $order->ORDR_GEST_NAME . " (Guest)": $order->USER_NAME . " (User)"}}
+                            @if(!$order->ORDR_GEST_NAME)
+                            </a>
+                            @endif
+                        </p>
                     </div>
                     <div class="col-md-2">
                         <div class="font-bold">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use App\Models\Gender;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -24,7 +25,7 @@ class UsersController extends Controller
 
         $this->data['title'] = "All Registered Clients";
         $this->data['type'] = $type;
-        if($type==1)
+        if ($type == 1)
             $this->data['items'] = User::latest()->limit(100)->get();
         else
             $this->data['items'] = User::all()->sortByDesc('id');
@@ -33,13 +34,13 @@ class UsersController extends Controller
         $this->data['cols'] = ['id', 'Full Name', 'Email', 'Mob#', 'Gender', 'Area', 'Since', 'Edit'];
         $this->data['atts'] = [
             'id',
-            ['attUrl' => ["url" => 'users/profile',"urlAtt" => 'id', "shownAtt" =>  "USER_NAME"]],
+            ['attUrl' => ["url" => 'users/profile', "urlAtt" => 'id', "shownAtt" =>  "USER_NAME"]],
             ['verified' => ['att' => 'USER_MAIL', 'isVerified' => 'USER_MAIL_VRFD']],
             ['verified' => ['att' => 'USER_MOBN', 'isVerified' => 'USER_MOBN_VRFD']],
             ['foreign' => ['gender', 'GNDR_NAME']],
             ['foreign' => ['area', 'AREA_NAME']],
-           // ['sumForeign' => ['rel' => 'orders', 'att' => 'ORDR_TOTL']],
-           ['date' => ['att' => 'created_at', 'format'=>'Y-M-d']],
+            // ['sumForeign' => ['rel' => 'orders', 'att' => 'ORDR_TOTL']],
+            ['date' => ['att' => 'created_at', 'format' => 'Y-M-d']],
             ['edit' => ['url' => 'users/edit/', 'att' => 'id']]
         ];
         $this->data['homeURL'] = $this->homeURL;
@@ -63,9 +64,68 @@ class UsersController extends Controller
     private function initProfileArr($id)
     {
         $this->data['user'] = User::findOrFail($id);
+        $this->data['userMoney'] = $this->data['user']->moneyPaid();
         $this->data['formURL'] = "users/update";
         $this->data['genders'] = Gender::all();
         $this->data['areas']  = Area::where("AREA_ACTV", "1")->get();
+
+        //Orders Array
+        $this->data['orderList']    = Order::getOrdersByUser($id);
+        $this->data['cardTitle'] = false;
+        $this->data['ordersCols'] = ['id', 'Status', 'Payment',  'Items', 'Ordered On', 'Total'];
+        $this->data['orderAtts'] = [
+            ['attUrl' => ['url' => "orders/details", "shownAtt" => 'id', "urlAtt" => 'id']],
+            [
+                'stateQuery' => [
+                    "classes" => [
+                        "1" => "label-info",
+                        "2" => "label-warning",
+                        "3" =>  "label-dark bg-dark",
+                        "4" =>  "label-success",
+                        "5" =>  "label-danger",
+                    ],
+                    "att"           =>  "ORDR_STTS_ID",
+                    'foreignAtt'    => "STTS_NAME",
+                    'url'           => "orders/details/",
+                    'urlAtt'        =>  'id'
+                ]
+            ],
+            'PYOP_NAME',
+            'itemsCount',
+            'ORDR_OPEN_DATE',
+            'ORDR_TOTL'
+        ];
+
+        //Cart Array
+        $this->data['cartList'] = $this->data['user']->cart;
+        $this->data['cartCols'] = ['Model', 'Color', 'Size', 'Count'];
+        $this->data['cartAtts'] = [
+            ['foreignUrl' => ['products/details', 'INVT_PROD_ID', 'product', 'PROD_NAME']],
+            ['foreign' => ['color', 'COLR_NAME']],
+            ['foreign' => ['size', 'SIZE_NAME']],
+            'INVT_CUNT'
+        ];
+
+        //Wishlist Array
+        $this->data['wishlistList'] = $this->data['user']->cart;
+        $this->data['wishlistCols'] = ['Barcode', 'Model Title', 'Arabic Title', "in Stock", 'Price', 'Offer'];
+        $this->data['wishlistAtts'] = [
+            'PROD_BRCD',
+            ['attUrl' => ['url' => 'products/details', 'urlAtt' => "id", "shownAtt" => "PROD_NAME"]],
+            ['attUrl' => ['url' => 'products/details', 'urlAtt' => "id", "shownAtt" => "PROD_ARBC_NAME"]],
+            ['sumForeign' => ['rel'=>"stock", "att"=>"INVT_CUNT"]] ,
+            'PROD_PRCE',
+            'PROD_OFFR',
+        ];
+        //Items Bought
+        $this->data['boughtList'] = $this->data['user']->itemsBought();
+        $this->data['boughtCols'] = ['Model', 'Color', 'Size', 'Count'];
+        $this->data['boughtAtts'] = [
+            'PROD_NAME',
+             'COLR_NAME',
+            'SIZE_NAME',
+            'itemCount'
+        ];
     }
 
     public function home()

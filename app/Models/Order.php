@@ -24,6 +24,10 @@ class Order extends Model
         return $this->belongsTo("App\Models\Area", "ORDR_AREA_ID", "id");
     }
 
+    public function status(){
+        return $this->belongsTo("order_status", "ORDR_STTS_ID", "id");
+    }
+
     public function driver(){
         return $this->belongsTo("App\Models\Driver", "ORDR_DRVR_ID", "id");
     }
@@ -66,14 +70,7 @@ class Order extends Model
         }
 
 
-        $query = DB::table("orders")
-        ->join("order_status", "ORDR_STTS_ID", "=", "order_status.id")
-        ->join("areas", "ORDR_AREA_ID", "=", "areas.id")
-        ->Leftjoin("users", "ORDR_USER_ID", "=", "users.id")
-        ->Leftjoin("order_items", "ORIT_ORDR_ID", "=", "orders.id")
-        ->join("payment_options", "ORDR_PYOP_ID", "=", "payment_options.id")
-        ->select("orders.id","orders.ORDR_STTS_ID","orders.ORDR_USER_ID", "orders.ORDR_TOTL", "orders.ORDR_PAID", "orders.ORDR_OPEN_DATE", "orders.ORDR_GEST_NAME", "orders.ORDR_GEST_MOBN","order_status.STTS_NAME", "areas.AREA_NAME", "users.USER_NAME", "users.USER_MOBN", "payment_options.PYOP_NAME")->selectRaw("SUM(ORIT_CUNT) as itemsCount")
-        ->groupBy("orders.id","orders.ORDR_STTS_ID","orders.ORDR_USER_ID", "orders.ORDR_OPEN_DATE", "order_status.STTS_NAME", "areas.AREA_NAME", "users.USER_NAME", "users.USER_MOBN", "payment_options.PYOP_NAME");
+        $query =  self::tableQuery();
         
         if($state>0 && $state<6){
             $query = $query->where("ORDR_STTS_ID", "=", $state);
@@ -86,15 +83,14 @@ class Order extends Model
 
     }
 
+    public static function getOrdersByUser($userID) {
+        $query = self::tableQuery();
+        $query = $query->where('ORDR_USER_ID', $userID);
+        return $query->get();
+    }
+
     public static function getActiveOrders($state=-1){
-        $query = DB::table("orders")
-        ->join("order_status", "ORDR_STTS_ID", "=", "order_status.id")
-        ->join("areas", "ORDR_AREA_ID", "=", "areas.id")
-        ->Leftjoin("users", "ORDR_USER_ID", "=", "users.id")
-        ->Leftjoin("order_items", "ORIT_ORDR_ID", "=", "orders.id")
-        ->join("payment_options", "ORDR_PYOP_ID", "=", "payment_options.id")
-        ->select("orders.id","orders.ORDR_STTS_ID","orders.ORDR_USER_ID", "orders.ORDR_TOTL", "orders.ORDR_OPEN_DATE", "orders.ORDR_GEST_NAME", "orders.ORDR_GEST_MOBN","order_status.STTS_NAME", "areas.AREA_NAME", "users.USER_NAME", "users.USER_MOBN", "payment_options.PYOP_NAME")->selectRaw("SUM(ORIT_CUNT) as itemsCount")
-        ->groupBy("orders.id","orders.ORDR_STTS_ID","orders.ORDR_USER_ID", "orders.ORDR_OPEN_DATE", "order_status.STTS_NAME", "areas.AREA_NAME", "users.USER_NAME", "users.USER_MOBN", "payment_options.PYOP_NAME");
+        $query = self::tableQuery();
         if($state>0 && $state<6){
             $query = $query->where("ORDR_STTS_ID", "=", $state);
         } else {
@@ -134,6 +130,25 @@ class Order extends Model
         }
 
         return $query->get()->count();
+    }
+
+    public static function getSalesIncome($month, $year, $catg=-1, $subCatg=-1){
+
+    }
+
+    public static function getModelsIncome($month, $year, $product){
+
+    }
+
+    private static function tableQuery() {
+        return DB::table("orders")
+        ->join("order_status", "ORDR_STTS_ID", "=", "order_status.id")
+        ->join("areas", "ORDR_AREA_ID", "=", "areas.id")
+        ->Leftjoin("users", "ORDR_USER_ID", "=", "users.id")
+        ->Leftjoin("order_items", "ORIT_ORDR_ID", "=", "orders.id")
+        ->join("payment_options", "ORDR_PYOP_ID", "=", "payment_options.id")
+        ->select("orders.id","orders.ORDR_STTS_ID","orders.ORDR_USER_ID", "orders.ORDR_TOTL", "orders.ORDR_OPEN_DATE", "orders.ORDR_GEST_NAME", "orders.ORDR_GEST_MOBN","order_status.STTS_NAME", "areas.AREA_NAME", "users.USER_NAME", "users.USER_MOBN", "payment_options.PYOP_NAME")->selectRaw("SUM(ORIT_CUNT) as itemsCount")
+        ->groupBy("orders.id","orders.ORDR_STTS_ID","orders.ORDR_USER_ID", "orders.ORDR_OPEN_DATE", "order_status.STTS_NAME", "areas.AREA_NAME", "users.USER_NAME", "users.USER_MOBN", "payment_options.PYOP_NAME");
     }
 
 }

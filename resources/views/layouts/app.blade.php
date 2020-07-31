@@ -11,7 +11,7 @@
     <meta name="csrf-token" content="{{ Session::token() }}">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/whaleLogo.png') }}">
-    <title>{{  config('app.name', 'PetMatch') }}</title>
+    <title>{{  config('app.name', 'Whale') }}</title>
     <!-- Custom CSS -->
     <link href="{{asset('dist/css/style.min.css')}}" rel="stylesheet">
     <link href="{{asset('dist/css/style.min.css')}}" media=print rel="stylesheet">
@@ -38,6 +38,7 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 <![endif]-->
     @yield("head_content")
+    @stack('head')
 </head>
 
 <body class="skin-default fixed-layout">
@@ -201,7 +202,7 @@
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="icon-people"></i><span class="hide-menu"> Clients</span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{url('users/show/latest')}}">Latest Clients</a></li>
-                                <li><a href="{{url('users/show/top')}}">Top Customers</a></li>
+                                {{-- <li><a href="{{url('users/show/top')}}">Top Customers</a></li> --}}
                                 <li><a href="{{url('users/show/all')}}">Show All</a></li>
                                 <li><a href="{{url('users/add')}}">Add User</a></li>
                             </ul>
@@ -499,6 +500,7 @@
     </script>
     <!-- End Table Search Script -->
     @yield("js_content")
+    @stack('scripts')
 </body>
 
 </html>
