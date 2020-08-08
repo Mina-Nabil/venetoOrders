@@ -10,8 +10,10 @@ use App\Models\OrderItem;
 use App\Models\PaymentOption;
 use App\Models\Product;
 use App\Models\User;
+use DateInterval;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class OrdersController extends Controller
@@ -39,9 +41,10 @@ class OrdersController extends Controller
             $this->data['newCount'] = Order::getOrdersCountByState(1);
             $this->data['readyCount'] = Order::getOrdersCountByState(2);
             $this->data['inDeliveryCount'] = Order::getOrdersCountByState(3);
-        } elseif ($stateID > 3 && $stateID < 6) {
+        } elseif ($stateID > 3 && $stateID < 7) {
             $this->data['deliveredCount'] = Order::getOrdersCountByState(4);
             $this->data['cancelledCount'] = Order::getOrdersCountByState(5);
+            $this->data['returnedCount'] = Order::getOrdersCountByState(6);
             return view("orders.history", $this->data);
         } else {
             abort(404);
@@ -52,8 +55,11 @@ class OrdersController extends Controller
     public function monthly(int $stateID = -1)
     {
         $this->initTableArr(false, $stateID, date('m'), date('Y'));
-        $this->data['deliveredCount'] = Order::getOrdersCountByState(4);
-        $this->data['cancelledCount'] = Order::getOrdersCountByState(5);
+        $startDate  = $this->getStartDate(date('m'), date('Y'));
+        $endDate    = $this->getEndDate(date('m'), date('Y'));
+        $this->data['deliveredCount'] = Order::getOrdersCountByState(4,$startDate,$endDate);
+        $this->data['cancelledCount'] = Order::getOrdersCountByState(5,$startDate,$endDate);
+        $this->data['returnedCount'] = Order::getOrdersCountByState(6,$startDate,$endDate);
         $this->data['historyURL'] = "orders/month";
         return view("orders.history", $this->data);
     }
@@ -72,6 +78,7 @@ class OrdersController extends Controller
         $this->data['historyURL'] = url('orders/history/' . $year . '/' . $month);
         $this->data['deliveredCount'] = Order::getOrdersCountByState(4, $startDate, $endDate);
         $this->data['cancelledCount'] = Order::getOrdersCountByState(5, $startDate, $endDate);
+        $this->data['returnedCount'] = Order::getOrdersCountByState(6, $startDate, $endDate);
         return view("orders.history", $this->data);
     }
 
@@ -100,11 +107,17 @@ class OrdersController extends Controller
                 $data['isOrderReady'] = false;
                 break;
             }
-        $data['setOrderNewUrl']           =   url('orders/set/new/' . $data['order']->id);
+        $data['isPartiallyReturned']    =   (($data['order']->ORDR_STTS_ID == 4 || $data['order']->ORDR_STTS_ID == 3) && isset($data['order']->ORDR_RTRN_ID) && is_numeric($data['order']->ORDR_RTRN_ID));
+        $data['isFullyReturned']        =   ($data['order']->ORDR_STTS_ID == 6);
+        $data['isCancelled']        =   ($data['order']->ORDR_STTS_ID == 5);
+
+        $data['setOrderNewUrl']             =   url('orders/set/new/' . $data['order']->id);
         $data['setOrderReadyUrl']           =   url('orders/set/ready/' . $data['order']->id);
         $data['setOrderInDeliveryUrl']      =   url('orders/set/indelivery/' . $data['order']->id);
-        $data['setOrderCancelledUrl']      =   url('orders/set/cancelled/' . $data['order']->id);
-        $data['setOrderDeliveredUrl']      =   url('orders/set/delivered/' . $data['order']->id);
+        $data['setOrderCancelledUrl']       =   url('orders/set/cancelled/' . $data['order']->id);
+        $data['setOrderDeliveredUrl']       =   url('orders/set/delivered/' . $data['order']->id);
+        $data['linkNewReturnUrl']           =   url('orders/create/return/' . $data['order']->id);
+        $data['returnUrl']                  =   url('orders/return/' . $data['order']->id);
 
         //Add Items Panel
         $data['inventory']      =   Inventory::with("color", "size", "product")->where("INVT_CUNT", ">", 0)->get();
@@ -119,7 +132,7 @@ class OrdersController extends Controller
         $data['paymentURL']             =   url('orders/collect/payment');
         $data['deliveryPaymentURL']     =   url('orders/collect/delivery');
         $data['discountURL']            =   url('orders/set/discount');
-        
+
         //Edit Info Panel
         $data['areas']                  = Area::where('AREA_ACTV', 1)->get();
         $data['editInfoURL']             =   url('orders/edit/details');
@@ -220,8 +233,58 @@ class OrdersController extends Controller
         $remainingMoney = $order->ORDR_TOTL - $order->ORDR_DISC - $order->ORDR_PAID;
         if ($order->ORDR_STTS_ID == 3 && $remainingMoney == 0) {
             $order->ORDR_STTS_ID = 4;
+            $order->ORDR_DLVR_DATE = date('Y-m-d H:i:s');
             $order->save();
         }
+        return redirect("orders/details/" . $order->id);
+    }
+
+    public function setFullyReturned($id)
+    {
+        $order = Order::findOrFail($id);
+        DB::transaction(function () use ($order) {
+            $isReturned = true;
+            foreach ($order->order_items as $item) {
+                $inventory = Inventory::findOrfail($item->ORIT_INVT_ID);
+                $inventory->INVT_CUNT += $item->ORIT_CUNT;
+                if (!$inventory->save()) {
+                    $isReturned = false;
+                    break;
+                }
+            }
+            if ($isReturned) {
+                $order->ORDR_STTS_ID = 6;
+                $order->ORDR_PAID = 0;
+                $order->ORDR_DLVR_DATE = date('Y-m-d H:i:s');
+                $order->save();
+            }
+        });
+    }
+
+    public function setPartiallyReturned($id)
+    {
+        //This function will create new return order 
+        $order = Order::findOrFail($id);
+        $retOrder = new Order();
+        DB::transaction(function () use ($order, $retOrder) {
+            if (isset($order->ORDR_USER_ID))
+                $retOrder->ORDR_USER_ID = $order->ORDR_USER_ID;
+            else {
+                $retOrder->ORDR_GEST_NAME = $order->ORDR_GEST_NAME;
+                $retOrder->ORDR_GEST_MOBN = $order->ORDR_GEST_MOBN;
+            }
+            $retOrder->ORDR_OPEN_DATE = date('Y-m-d H:i:s');
+            $retOrder->ORDR_DLVR_DATE =  $retOrder->ORDR_OPEN_DATE;
+            $retOrder->ORDR_ADRS = $order->ORDR_ADRS;
+            $retOrder->ORDR_NOTE = "New Return Order for order number " . $order->id;
+            $retOrder->ORDR_AREA_ID = $order->ORDR_AREA_ID;
+            $retOrder->ORDR_PYOP_ID = $order->ORDR_PYOP_ID;
+            $retOrder->ORDR_STTS_ID = 6; // new returned order
+            $retOrder->ORDR_TOTL = 0;
+            $retOrder->save();
+            $order->ORDR_RTRN_ID = $retOrder->id; // new returned order
+            $order->save();
+        });
         return redirect("orders/details/" . $order->id);
     }
 
@@ -247,7 +310,7 @@ class OrdersController extends Controller
             'id' => "required",
             'payment' => "required|min:0|max:" . $order->ORDR_TOTL
         ]);
-        if($order->ORDR_STTS_ID < 4) {
+        if ($order->ORDR_STTS_ID < 4) {
             $order->ORDR_PAID += $request->payment;
             $order->save();
         }
@@ -276,9 +339,9 @@ class OrdersController extends Controller
             'discount' => "required|min:0|max:" . $order->ORDR_TOTL
         ]);
 
-        if($order->ORDR_STTS_ID < 4) {
-        $order->ORDR_DISC += $request->discount;
-        $order->save();
+        if ($order->ORDR_STTS_ID < 4) {
+            $order->ORDR_DISC = $request->discount;
+            $order->save();
         }
         return redirect("orders/details/" . $order->id);
     }
@@ -326,13 +389,39 @@ class OrdersController extends Controller
         $orderItem = OrderItem::findOrFail($request->itemID);
         $order = Order::findOrfail($orderItem->ORIT_ORDR_ID);
         DB::transaction(function () use ($order, $orderItem, $request) {
-            if ($order->ORDR_STTS_ID != 1) { //still new
+            if (($order->ORDR_STTS_ID == 4 || $order->ORDR_STTS_ID == 3) && isset($order->ORDR_RTRN_ID) && is_numeric($order->ORDR_RTRN_ID)) {
+                //if and in delivery or delivered and has a returned order
+
+                //create new return item and add count to return item
+                $returnOrder = Order::findOrFail($order->ORDR_RTRN_ID);
+                $returnedItem = $returnOrder->order_items()->firstOrNew([
+                    'ORIT_INVT_ID' => $orderItem->ORIT_INVT_ID
+                ]);
+                $returnedItem->ORIT_CUNT += $request->count;
+                $returnedItem->ORIT_VRFD = 1;
+                $returnedItem->save();
+                $returnOrder->recalculateTotal();
+
+                //Adjust inventory
+                $inventory = Inventory::findOrFail($orderItem->ORIT_INVT_ID);
+                $inventory->INVT_CUNT += $request->count;
+                $inventory->save();
+
+                //Adjust old order
+                $orderItem->ORIT_CUNT -= $request->count;
+                if ($orderItem->ORIT_CUNT < 1)
+                    $orderItem->delete();
+                else
+                    $orderItem->save();
+                $order->recalculateTotal();
+            } elseif ($order->ORDR_STTS_ID != 1) { //if it is not still new
                 return redirect("orders/details/" . $orderItem->ORIT_ORDR_ID);
+            } else {
+                $orderItem->ORIT_CUNT = $request->count;
+                $orderItem->ORIT_VRFD = 0;
+                $orderItem->save();
+                $order->recalculateTotal();
             }
-            $orderItem->ORIT_CUNT = $request->count;
-            $orderItem->ORIT_VRFD = 0;
-            $orderItem->save();
-            $order->recalculateTotal();
         });
         return redirect("orders/details/" . $orderItem->ORIT_ORDR_ID);
     }
@@ -377,6 +466,7 @@ class OrdersController extends Controller
         $order->ORDR_AREA_ID = $request->area;
         $order->ORDR_PYOP_ID = $request->option;
         $order->ORDR_STTS_ID = 1; // new order
+        $order->ORDR_DASH_ID = Auth::user()->id; // new order
 
         $orderItemArray = $this->getOrderItemsObjectArray($request);
         $order->ORDR_TOTL = $this->getOrderTotal($request);
@@ -410,10 +500,10 @@ class OrdersController extends Controller
         elseif ($month == -1 && $year == -1) {
             $this->data['items']    = Order::getActiveOrders($state);
         } else {
-            $this->data['items']    = Order::getOrdersByDate(true, $month, $year, $state);
+            $this->data['items']    = Order::getOrdersByDate(false, $month, $year, $state);
         }
         $this->data['cardTitle'] = true;
-        $this->data['cols'] = ['id', 'Client', 'Status', 'Area', 'Payment',  'Items', 'Ordered On', 'Total'];
+        $this->data['cols'] = ['id', 'Client', 'Status', 'Area', 'Payment',  'Items', 'Ordered On', 'Closed On', 'Total'];
         $this->data['atts'] = [
             ['attUrl' => ['url' => "orders/details", "shownAtt" => 'id', "urlAtt" => 'id']],
             ['urlOrStatic' => ['url' => "users/profile", "shownAtt" => 'USER_NAME', "urlAtt" => 'ORDR_USER_ID', 'static' => 'ORDR_GEST_NAME']],
@@ -425,6 +515,7 @@ class OrdersController extends Controller
                         "3" =>  "label-dark bg-dark",
                         "4" =>  "label-success",
                         "5" =>  "label-danger",
+                        "6" =>  "label-primary",
                     ],
                     "att"           =>  "ORDR_STTS_ID",
                     'foreignAtt'    => "STTS_NAME",
@@ -436,6 +527,7 @@ class OrdersController extends Controller
             'PYOP_NAME',
             'itemsCount',
             'ORDR_OPEN_DATE',
+            'ORDR_DLVR_DATE',
             'ORDR_TOTL'
         ];
     }

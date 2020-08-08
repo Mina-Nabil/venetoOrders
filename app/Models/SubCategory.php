@@ -12,4 +12,7 @@ class SubCategory extends Model
     public function category(){
         return $this->belongsTo("App\Models\Category", "SBCT_CATG_ID", "id");
     }
+    public function icon(){
+        return $this->belongsTo("App\Models\Icon", "SBCT_ICON_ID", "id");
+    }
 }

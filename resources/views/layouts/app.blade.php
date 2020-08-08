@@ -216,7 +216,7 @@
                                         <li><a href="{{url('areas/show')}}">Areas</a></li>
                                         <li><a href="{{url('drivers/show')}}">Drivers</a></li>
                                     </ul>
-                                </li>
+                                </li>          
                                 <li>
                                     <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Models</a>
                                     <ul aria-expanded="false" class="collapse">
@@ -224,6 +224,11 @@
                                         <li><a href="{{url('sizes/show')}}">Sizes</a></li>
                                         <li><a href="{{url('charts/show')}}">Size Charts</a></li>
                                         <li><a href="{{url('tags/show')}}">Tags</a></li>
+                                    </ul>
+                                </li>
+                                <li><a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Categories</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{{url('icons/show')}}">Icons</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="{{url('paymentoptions/show')}}">Payment Options</a></li>

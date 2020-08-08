@@ -64,6 +64,9 @@ class DatabaseSeeder extends Seeder
         // DB::table('order_status')->insert([
         //     "STTS_NAME" => "Cancelled"
         // ]);
+        // DB::table('order_status')->insert([
+        //     "STTS_NAME" => "Returned"
+        // ]);
 
         // DB::table("payment_options")->insert([
         //     "PYOP_NAME" => "Cash On Delivery",

@@ -45,6 +45,30 @@
                         </div>
                         <small class="text-danger">{{$errors->first('category')}}</small>
                     </div>
+
+                    <div class="form-group">
+                        <label for="input-file-now-custom-1">Image</label>
+                          <div class="input-group mb-3">
+                              <input type="file" id="input-file-now-custom-1" name=photo class="dropify" data-default-file="{{ (isset($subcategory->SBCT_IMGE)) ? asset( 'storage/'. $subcategory->SBCT_IMGE ) : old('photo') }}" />
+                          </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Icon</label>
+                        <div class="input-group mb-3">
+                            <select name=icon class="select2 form-control custom-select" style="width: 100%; height:36px;" required>
+                                <option value="" disabled selected >Pick From Icons</option>
+                                @foreach($icons as $icon)
+                                <option value="{{ $icon->id }}"
+                                @if(isset($subcategory) && $icon->id == $subcategory->SBCT_ICON_ID)
+                                    selected
+                                @endif
+                                >{{$icon->ICON_NAME}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <small class="text-danger">{{$errors->first('icon')}}</small>
+                    </div>
                     
                     
 

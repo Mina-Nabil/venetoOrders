@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Site
+Route::get("site/home", 'SiteController@home');
+
+
 //Orders
 Route::get("orders/active", "OrdersController@active");
 Route::get("orders/month", "OrdersController@monthly");
@@ -29,6 +33,8 @@ Route::get("orders/set/ready/{id}", "OrdersController@setReady");
 Route::get("orders/set/cancelled/{id}", "OrdersController@setCancelled");
 Route::get("orders/set/indelivery/{id}", "OrdersController@setInDelivery");
 Route::get("orders/set/delivered/{id}", "OrdersController@setDelivered");
+Route::get("orders/create/return/{id}", "OrdersController@setPartiallyReturned");
+Route::get("orders/return/{id}", "OrdersController@setFullyReturned");
 Route::get("orders/toggle/item/{id}", "OrdersController@toggleItem");
 Route::get("orders/delete/item/{id}", "OrdersController@deleteItem");
 Route::post("orders/edit/details", "OrdersController@editOrderInfo");
@@ -109,6 +115,12 @@ Route::get('colors/show', 'ColorsController@home');
 Route::get('colors/edit/{id}', 'ColorsController@edit');
 Route::post('colors/insert', 'ColorsController@insert');
 Route::post('colors/update', 'ColorsController@update');
+
+//Icons
+Route::get('icons/show', 'IconsController@home');
+Route::get('icons/edit/{id}', 'IconsController@edit');
+Route::post('icons/insert', 'IconsController@insert');
+Route::post('icons/update', 'IconsController@update');
 
 //Sizes
 Route::get('sizes/show', 'SizesController@home');

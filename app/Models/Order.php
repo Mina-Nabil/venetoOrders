@@ -16,6 +16,10 @@ class Order extends Model
         return $this->hasMany("App\Models\OrderItem", "ORIT_ORDR_ID", "id");
     }
 
+    public function timeline(){
+        return $this->hasMany("timeline", "ORIT_ORDR_ID", "id");
+    }
+
     public function client(){
         return $this->belongsTo("App\Models\User", "ORDR_USER_ID", "id");
     }
@@ -55,14 +59,14 @@ class Order extends Model
         if($currentMonth){
             $startDate = (new DateTime("first day of this month"))->format('Y-m-d 0:0:0');
             $endDate = (date_add((new DateTime('now')), new DateInterval("P01M")))->format('Y-m-1 0:0:0');
-        } elseif($month != -1 && $year == -1) {
+        } elseif ($month != -1 && $year == -1) {
             assert((0 < $month) && ($month < 13), 'Invalid Month');
             $year = date('Y');
             $startDate = $year . '-' . $month . '-01';
             $endDate   = date_add((new DateTime($startDate)), new DateInterval("P01M"))->format('Y-m-1 0:0:0');
         } elseif ($month == -1 && $year != -1){
             $startDate = $year . '-01-01 00:00:00';
-            $startDate = $year . '-12-31 12:59:59';
+            $endDate = $year . '-12-31 12:59:59';
         } else {
             assert((0 < $month) && ($month < 13), 'Invalid Month');
             $startDate = $year . '-' . $month . '-01';
@@ -72,10 +76,10 @@ class Order extends Model
 
         $query =  self::tableQuery();
         
-        if($state>0 && $state<6){
+        if($state>0 && $state<7){
             $query = $query->where("ORDR_STTS_ID", "=", $state);
         } else {
-            $query = $query->where("ORDR_STTS_ID", "=", 4)->orWhere("ORDR_STTS_ID", "=", 5);
+            $query = $query->where("ORDR_STTS_ID", ">", 3);
         }
         $query->whereBetween("ORDR_DLVR_DATE", [$startDate, $endDate]);
  
@@ -104,10 +108,11 @@ class Order extends Model
         ->join("order_status", "ORDR_STTS_ID", "=", "order_status.id")
         ->join("areas", "ORDR_AREA_ID", "=", "areas.id")
         ->Leftjoin("users", "ORDR_USER_ID", "=", "users.id")
+        ->Leftjoin("dash_users", "ORDR_DASH_ID", "=", "dash_users.id")
         ->Leftjoin("drivers", "ORDR_DRVR_ID", "=", "drivers.id")
         ->Leftjoin("order_items", "ORIT_ORDR_ID", "=", "orders.id")
         ->join("payment_options", "ORDR_PYOP_ID", "=", "payment_options.id")
-        ->select("orders.*",'drivers.DRVR_NAME',"orders.ORDR_GEST_NAME", "order_status.STTS_NAME", "areas.AREA_NAME", "AREA_RATE", "users.USER_NAME", "users.USER_MOBN", "payment_options.PYOP_NAME")->selectRaw("SUM(ORIT_CUNT) as itemsCount")
+        ->select("orders.*",'drivers.DRVR_NAME',"orders.ORDR_GEST_NAME", "order_status.STTS_NAME", "areas.AREA_NAME", "AREA_RATE", "users.USER_NAME", "users.USER_MOBN", "dash_users.DASH_USNM", "payment_options.PYOP_NAME")->selectRaw("SUM(ORIT_CUNT) as itemsCount")
         ->groupBy("orders.id", "order_status.STTS_NAME", "areas.AREA_NAME", "users.USER_NAME", "users.USER_MOBN", "payment_options.PYOP_NAME")
         ->where('orders.id', $id)->get()->first();
 
@@ -119,6 +124,8 @@ class Order extends Model
                         ->where("ORIT_ORDR_ID", "=", $id)
                         ->get();
 
+        $ret['timeline'] = DB::table('timeline')->where('TMLN_ORDR_ID', $id)->get();
+
         return $ret;
     }
 
@@ -126,7 +133,7 @@ class Order extends Model
         $query = DB::table("orders")->where("ORDR_STTS_ID", $state);
 
         if(!is_null($startDate) && !is_null($endDate)){
-            $query->whereBetween('ORDR_OPEN_DATE', [$startDate, $endDate]);
+            $query->whereBetween('ORDR_DLVR_DATE', [$startDate, $endDate]);
         }
 
         return $query->get()->count();
@@ -145,9 +152,10 @@ class Order extends Model
         ->join("order_status", "ORDR_STTS_ID", "=", "order_status.id")
         ->join("areas", "ORDR_AREA_ID", "=", "areas.id")
         ->Leftjoin("users", "ORDR_USER_ID", "=", "users.id")
+        ->Leftjoin("dash_users", "ORDR_DASH_ID", "=", "dash_users.id")
         ->Leftjoin("order_items", "ORIT_ORDR_ID", "=", "orders.id")
         ->join("payment_options", "ORDR_PYOP_ID", "=", "payment_options.id")
-        ->select("orders.id","orders.ORDR_STTS_ID","orders.ORDR_USER_ID", "orders.ORDR_TOTL", "orders.ORDR_OPEN_DATE", "orders.ORDR_GEST_NAME", "orders.ORDR_GEST_MOBN","order_status.STTS_NAME", "areas.AREA_NAME", "users.USER_NAME", "users.USER_MOBN", "payment_options.PYOP_NAME")->selectRaw("SUM(ORIT_CUNT) as itemsCount")
+        ->select("orders.*","order_status.STTS_NAME", "dash_users.DASH_USNM", "areas.AREA_NAME", "users.USER_NAME", "users.USER_MOBN", "payment_options.PYOP_NAME")->selectRaw("SUM(ORIT_CUNT) as itemsCount")
         ->groupBy("orders.id","orders.ORDR_STTS_ID","orders.ORDR_USER_ID", "orders.ORDR_OPEN_DATE", "order_status.STTS_NAME", "areas.AREA_NAME", "users.USER_NAME", "users.USER_MOBN", "payment_options.PYOP_NAME");
     }
 

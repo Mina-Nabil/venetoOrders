@@ -24,6 +24,9 @@
             @case(5)
             <div class="card-header bg-danger text-light">Order Cancelled :(</div>
             @break
+            @case(6)
+            <div class="card-header bg-primary text-light">Return Order :(</div>
+            @break
             @default
             <div class="card-header bg-dark text-light">Order Details</div>
             @endswitch
@@ -48,10 +51,10 @@
                         </div>
                         <p>
                             @if(!$order->ORDR_GEST_NAME)
-                            <a href="{{url('users/profile/' . $order->ORDR_USER_ID )}}" >
-                            @endif
-                            {{($order->ORDR_GEST_NAME) ? $order->ORDR_GEST_NAME . " (Guest)": $order->USER_NAME . " (User)"}}
-                            @if(!$order->ORDR_GEST_NAME)
+                            <a href="{{url('users/profile/' . $order->ORDR_USER_ID )}}">
+                                @endif
+                                {{($order->ORDR_GEST_NAME) ? $order->ORDR_GEST_NAME . " (Guest)": $order->USER_NAME . " (User)"}}
+                                @if(!$order->ORDR_GEST_NAME)
                             </a>
                             @endif
                         </p>
@@ -113,8 +116,25 @@
                         <h4 class="card-title">Order Status</h4>
                         <h6 class="card-subtitle">Showing Order Status Summary before proceeding to delivery</h6>
                         <ul>
+                            @if(isset($order->ORDR_DASH_ID) && is_numeric($order->ORDR_DASH_ID))
+                            <li>
+                                <p class="text-muted">Order opened by {{$order->DASH_USNM}} </p>
+                            </li>
+                            @else
+                            <li>
+                                <p class="text-muted">Order opened by client directly </p>
+                            </li>
+                            @endif
+                            @if($isPartiallyReturned)
+                            <li>
+                                <p class="text-muted"><strong>Order Partially Returned</strong> items can be returned from 'Order Details' tab</p>
+                            </li>
+                            @endif
                             <li id=readyStatement>
-                                @if($isOrderReady)
+                                @if($isFullyReturned || $isCancelled)
+                                <p class="text-muted"><strong>Returned or Cancelled order</strong>, check returned items id 'Order Details'
+                                </p>
+                                @elseif($isOrderReady)
                                 <p class="text-muted">All Items Ready, you can set the Order as "Ready"
                                     <i class="fas fa-check-circle" style="color:lightgreen"></i>
                                 </p>
@@ -130,7 +150,7 @@
                                     <i class="fas fa-check-circle" style="color:lightgreen"></i>
                                 </p>
                             </li>
-                            @else
+                            @elseif(!$isFullyReturned && !$isCancelled)
                             <li>
                                 <p class="text-muted">Please assign a driver before changing status to (In Delivery)
                                     <i class=" fas fa-exclamation-triangle" style="color:#fec107"></i>
@@ -141,6 +161,9 @@
                                 @if($remainingMoney != 0)
                                 <p class="text-muted">Payment not yet fully collected please collect payment before setting order as Delivered, {{$remainingMoney}}EGP remaining
                                     <i class=" fas fa-exclamation-triangle" style="color:#fec107"></i>
+                                </p>
+                                @elseif($isFullyReturned)
+                                <p class="text-muted">Total returned items cost {{$order->ORDR_TOTL}}
                                 </p>
                                 @else
                                 <p class="text-muted">Payment fully collected
@@ -162,10 +185,18 @@
                         <button class="btn btn-danger mr-2" onclick="confirmAndGoTo('{{url($setOrderCancelledUrl)}}', 'Cancel the Order')">Cancel Order</button>
                         @break
                         @case(3)
-                        <button class="btn btn-info mr-2" onclick="confirmAndGoTo('{{url($setOrderNewUrl)}}', 'Set Order as New')">Set Order as New</button>
-                        <button class="btn btn-success mr-2" onclick="confirmAndGoTo('{{url($setOrderDeliveredUrl)}}', 'Set Order as Delivered')" @if($remainingMoney !=0) disabled @endif>Set Order as
-                            Delivered</button>
+                        @if(!$isPartiallyReturned)
+                        <button class="btn btn-info mr-2" onclick="confirmAndGoTo('{{url($linkNewReturnUrl)}}', 'Link new Return Order')">Link New Return</button>
+                        @else
+                        <button class="btn btn-info mr-2" onclick="confirmAndGoTo('{{url('orders/details/' . $order->ORDR_RTRN_ID)}}', 'Go to the Return Order')">
+                            Check Return Order</button>
+                        @endif
+                        <button class="btn btn-success mr-2" onclick="confirmAndGoTo('{{url($setOrderDeliveredUrl)}}', 'Set Order as Delivered')" 
+                        @if($remainingMoney !=0) disabled @endif>Set Order as Delivered</button>
                         <button class="btn btn-danger mr-2" onclick="confirmAndGoTo('{{url($setOrderCancelledUrl)}}', 'Cancel the Order')">Cancel Order</button>
+                        @break
+                        @case(4)
+                        <button class="btn btn-danger mr-2" onclick="confirmAndGoTo('{{url($returnUrl)}}', 'Return the Order')">Return Order</button>
                         @break
                         @default
                         @endswitch
@@ -192,7 +223,7 @@
                                     <th>Quantity</th>
                                     <th>Price</th>
                                     <th>Total</th>
-                                    @if($order->ORDR_STTS_ID==1)
+                                    @if($order->ORDR_STTS_ID==1 || $isPartiallyReturned)
                                     <th>Action</th>
                                     @endif
                                 </thead>
@@ -213,13 +244,18 @@
                                         <td>{{$item->ORIT_CUNT}}</td>
                                         <td>{{$item->PROD_PRCE - $item->PROD_OFFR}}</td>
                                         <td>{{$item->ORIT_CUNT * ($item->PROD_PRCE - $item->PROD_OFFR)}}</td>
-                                        @if($order->ORDR_STTS_ID==1)
+                                        @if($order->ORDR_STTS_ID==1 || $isPartiallyReturned)
                                         <td>
                                             <div class="btn-group">
                                                 <button style="padding:.1rem .2rem" type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                                                     aria-expanded="false">
                                                     Action
                                                 </button>
+                                                @if($isPartiallyReturned)
+                                                <div class="dropdown-menu">
+                                                    <button class="dropdown-item" data-toggle="modal" data-target="#changeQuantity{{$item->id}}">Return Item</button>
+                                                </div>
+                                                @else
                                                 <div class="dropdown-menu">
                                                     @if(!$item->ORIT_VRFD)
                                                     <button class="dropdown-item" onclick="toggleReady({{$item->id}}, this)">Set as Ready!</button>
@@ -229,10 +265,12 @@
                                                     <button class="dropdown-item" data-toggle="modal" data-target="#changeQuantity{{$item->id}}">Change Quantity</button>
                                                     <button class="dropdown-item" onclick="deleteItem({{$item->id}})">Remove Item</button>
                                                 </div>
+                                                @endif
+                                            </div>
                                         </td>
                                         @endif
                                     </tr>
-                                    @if($order->ORDR_STTS_ID==1)
+                                    @if($order->ORDR_STTS_ID==1 || $isPartiallyReturned)
                                     <div id="changeQuantity{{$item->id}}" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -359,9 +397,9 @@
                 <div class="tab-pane" id="payment" role="tabpanel">
                     <div class="card-body">
                         <h4 class="card-title">Order Payments</h4>
-                        <h6 class="card-subtitle">Total: {{$order->ORDR_TOTL}} - Paid: {{$order->ORDR_PAID}} - Discount: {{$order->ORDR_DISC}} - Remaining: {{$remainingMoney}} - Delivery {{$order->ORDR_DLFE}} </h6>
-                        @if($order->ORDR_STTS_ID < 4 )
-                        <form class="form pt-3" method="post" action="{{ url($paymentURL) }}" enctype="multipart/form-data">
+                        <h6 class="card-subtitle">Total: {{$order->ORDR_TOTL}} - Paid: {{$order->ORDR_PAID}} - Discount: {{$order->ORDR_DISC}} - Remaining: {{$remainingMoney}} - Delivery
+                            {{$order->ORDR_DLFE}} </h6>
+                        @if($order->ORDR_STTS_ID < 4 ) <form class="form pt-3" method="post" action="{{ url($paymentURL) }}" enctype="multipart/form-data">
                             <input type="hidden" name=id value={{$order->id}}>
                             @csrf
                             <div class="form-group">
@@ -371,37 +409,38 @@
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-success mr-2">Collect Normal Payment</button>
-                        </form>
-                        <hr>
-                        <form class="form pt-3" method="post" action="{{ url($discountURL) }}" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name=id value={{$order->id}}>
-                            <div class="form-group">
-                                <label>Discount</label>
-                                <div class="input-group mb-3">
-                                    <input type="number" step=.01 class="form-control amount" placeholder="Items Count" min=0 max={{$remainingMoney}} name=discount value="{{$order->ORDR_DISC}}" required>
+                            </form>
+                            <hr>
+                            <form class="form pt-3" method="post" action="{{ url($discountURL) }}" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name=id value={{$order->id}}>
+                                <div class="form-group">
+                                    <label>Discount</label>
+                                    <div class="input-group mb-3">
+                                        <input type="number" step=.01 class="form-control amount" placeholder="Items Count" min=0 max={{$remainingMoney}} name=discount value="{{$order->ORDR_DISC}}"
+                                            required>
+                                    </div>
                                 </div>
-                            </div>
-                            <button type="submit" class="btn btn-success mr-2" >Set Discount</button>
-                        </form>
+                                <button type="submit" class="btn btn-success mr-2">Set Discount</button>
+                            </form>
 
-                        @else
-                        <p class="text-muted">Old Orders Payment & Discounts Can't be modified, only Delivery Payment can be modified</p>
-                        @endif
-                        <hr>
-                        <form class="form pt-3" method="post" action="{{ url($deliveryPaymentURL) }}" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name=id value={{$order->id}}>
-                            <div class="form-group">
-                                <label>Delivery Paid</label>
-                                <small class="text-italic">Delivery Area Rate: {{$order->AREA_RATE}}</small>
-                                <div class="input-group mb-3">
-                                    <input type="number" step=.01 class="form-control amount" placeholder="Items Count" min=0 name=deliveryPaid value="{{$order->ORDR_DLFE}}" required>
+                            @else
+                            <p class="text-muted">Old Orders Payment & Discounts Can't be modified, only Delivery Payment can be modified</p>
+                            @endif
+                            <hr>
+                            <form class="form pt-3" method="post" action="{{ url($deliveryPaymentURL) }}" enctype="multipart/form-data">
+                                @csrf
+                                <input type="hidden" name=id value={{$order->id}}>
+                                <div class="form-group">
+                                    <label>Delivery Paid</label>
+                                    <small class="text-italic">Delivery Area Rate: {{$order->AREA_RATE}}</small>
+                                    <div class="input-group mb-3">
+                                        <input type="number" step=.01 class="form-control amount" placeholder="Items Count" min=0 name=deliveryPaid value="{{$order->ORDR_DLFE}}" required>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <button type="submit" class="btn btn-success mr-2">Collect Delivery Payment</button>
-                        </form>
+                                <button type="submit" class="btn btn-success mr-2">Collect Delivery Payment</button>
+                            </form>
                     </div>
                 </div>
 
@@ -411,8 +450,7 @@
                         <div class="card-body">
                             <h4 class="card-title">Order Info</h4>
                             <h6 class="card-subtitle">Edit Order Info, Notes and Address</h6>
-                            @if($order->ORDR_STTS_ID < 4 )
-                            <form class="form pt-3" method="post" action="{{ url($paymentURL) }}" enctype="multipart/form-data">
+                            @if($order->ORDR_STTS_ID < 4 ) <form class="form pt-3" method="post" action="{{ url($paymentURL) }}" enctype="multipart/form-data">
                                 <div class="form-group">
                                     <label>Area</label>
                                     <div class="input-group mb-3">
@@ -439,15 +477,15 @@
                                 <div class="form-group">
                                     <label>Additional Notes</label>
                                     <div class="input-group mb-3">
-                                        <textarea class="form-control" name="note"  rows="3" >{{$order->ORDR_NOTE}}</textarea>
+                                        <textarea class="form-control" name="note" rows="3">{{$order->ORDR_NOTE}}</textarea>
                                     </div>
                                     <small class="text-danger">{{$errors->first('note')}}</small>
                                 </div>
                                 <button type="submit" class="btn btn-success mr-2">Submit</button>
-                            </form>
-                            @else 
-                            <p class="text-muted" >Old Order Info can't be modified</p> 
-                            @endif
+                                </form>
+                                @else
+                                <p class="text-muted">Old Order Info can't be modified</p>
+                                @endif
                         </div>
                     </div>
                 </div>
