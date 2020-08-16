@@ -12,64 +12,46 @@
                 <div class="card-body">
                     <h4 class="card-title">{{ $formTitle }}</h4>
                     <h6 class="card-subtitle">Order Details</h6>
-                    {{$errors}}
+
                     @csrf
+
+
+
                     <div class="form-group">
-                        <label>User Or Guest?</label>
+                        <label>Order Source</label>
                         <div class="input-group mb-3">
-                            <select name=guest id=guest class="form-control custom-select" style="width: 100%; height:36px;" onchange="toggleGuest()" required>
-                                <option value=1 
-                                @if(old('guest')==1)
-                                selected
-                                @endif
-                                >Guest</option>
-                                <option value=2
-                                @if(old('guest')==2)
-                                selected
-                                @endif>Registered User</option>
+                            <select name=source class="select2 form-control custom-select" style="width: 100%; height:36px;">
+                                <option value="" disabled selected>Pick From Order Sources</option>
+                                @foreach($sources as $source)
+                                <option value="{{ $source->id }}" @if(old('source')==$source->id)
+                                    selected
+                                    @endif
+                                    >
+                                    {{$source->ORSC_NAME}} - Account: {{$source->client_account->CLNT_NAME}}
+                                </option>
+                                @endforeach
                             </select>
                         </div>
-                        <small class="text-danger">{{$errors->first('guest')}}</small>
+                        <small class="text-danger">{{$errors->first('user')}}</small>
                     </div>
 
-                    <div id=isuser style="display: none">
-                        <input type="hidden" name=user id=userID>
-                        <div class="form-group">
-                            <label>User</label>
-                            <div class="input-group mb-3">
-                                <select name=userSel id=userSel class="select2 form-control custom-select" style="width: 100%; height:36px;" onchange="loadUser()">
-                                    <option value="" disabled selected>Pick From Users</option>
-                                    @foreach($users as $user)
-                                    <option value="{{ $user->id }}%%{{ $user->USER_AREA_ID}}%%{{$user->USER_ADRS}}" @if(old('user')==$user->id)
-                                        selected
-                                        @endif
-                                        >
-                                        {{$user->USER_NAME}} - {{$user->USER_MOBN}}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <small class="text-danger">{{$errors->first('user')}}</small>
+
+                    <div class="form-group">
+                        <label>Client Name</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Full Name" name=guestName value="{{ old('guestName')}}">
                         </div>
+                        <small class="text-danger">{{$errors->first('guestName')}}</small>
                     </div>
 
-                    <div id=isguest style="display: block">
-                        <div class="form-group">
-                            <label>Guest Name</label>
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Full Name" name=guestName value="{{ old('guestName')}}">
-                            </div>
-                            <small class="text-danger">{{$errors->first('guestName')}}</small>
+                    <div class="form-group">
+                        <label>Client Mobile Number</label>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Client Mobile Number" name=guestMob value="{{ old('guestMob')}}">
                         </div>
-
-                        <div class="form-group">
-                            <label>Guest Mobile Number</label>
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Guest Mobile Number" name=guestMob value="{{ old('guestMob')}}">
-                            </div>
-                            <small class="text-danger">{{$errors->first('guestMob')}}</small>
-                        </div>
+                        <small class="text-danger">{{$errors->first('guestMob')}}</small>
                     </div>
+
 
                     <div class="form-group">
                         <label>Area</label>
@@ -113,7 +95,7 @@
                     <div class="form-group">
                         <label>Additional Notes</label>
                         <div class="input-group mb-3">
-                            <textarea class="form-control" name="note"  rows="3">{{old('note')}}</textarea>
+                            <textarea class="form-control" name="note" rows="3">{{old('note')}}</textarea>
                         </div>
                         <small class="text-danger">{{$errors->first('note')}}</small>
                     </div>
@@ -132,22 +114,37 @@
                         </div>
 
                         <div class="row col-lg-12">
-                            <div class="col-lg-9">
+                            <div class="col-lg-6">
                                 <div class="input-group mb-2">
-                                    <select name=item[] class="form-control select2  custom-select" id=inventory1 onchange="changeMax(inventory1)" required>
+                                    <select name=item[] class="form-control select2  custom-select" style="width:100%"  required>
                                         <option disabled hidden selected value="">Model</option>
-                                        @foreach($inventory as $item)
+                                        @foreach($finished as $item)
                                         <option value="{{ $item->id }}">
-                                            {{$item->product->PROD_NAME}} - {{$item->color->COLR_NAME}} - {{$item->size->SIZE_NAME}} - Available:{{$item->INVT_CUNT}}</option>
+                                            {{$item->BRND_NAME}} - {{$item->MODL_UNID}} - Price: {{$item->FNSH_PRCE}}EGP</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
-    
+                            <div class="col-lg-3">
+                                <div class="input-group mb-2">
+                                    <select name=size[] class="form-control select2  custom-select" style="width:100%"  required>
+                                        <option disabled hidden selected value="">Pick a Size</option>
+                                        <option value="36">36</option>
+                                        <option value="38">38</option>
+                                        <option value="40">40</option>
+                                        <option value="42">42</option>
+                                        <option value="44">44</option>
+                                        <option value="46">46</option>
+                                        <option value="48">48</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                </div>
+                            </div>
+
 
                             <div class="col-lg-3">
                                 <div class="input-group mb-3">
-                                    <input type="number" step=1 id=count1 class="form-control amount" placeholder="Items Count" min=0 name=count[] aria-describedby="basic-addon11" required>
+                                    <input type="number" step=1 class="form-control amount" placeholder="Items Count" min=0 name=count[] aria-describedby="basic-addon11" required>
                                     <div class="input-group-append">
                                         <button class="btn btn-success" id="dynamicAddButton" type="button" onclick="addToab();"><i class="fa fa-plus"></i></button>
                                     </div>
@@ -170,9 +167,7 @@
 
 @section('js_content')
 <script>
-
-
-var room = 1;
+    var room = 1;
    function addToab() {
    
    room++;
@@ -181,14 +176,29 @@ var room = 1;
    divtest.setAttribute("class", "nopadding row col-lg-12 removeclass" + room);
    var rdiv = 'removeclass' + room;
    var concatString = "";
-   concatString +=   '<div class="col-lg-9">\
+   concatString +=   '<div class="col-lg-6">\
                                 <div class="input-group mb-2">\
-                                    <select name=item[] class="form-control select2  custom-select" id=inventory' + room + ' onchange="changeMax(inventory' + room + ')" required>\
+                                    <select name=item[] class="form-control select2  custom-select" required>\
                                         <option disabled hidden selected value="">Model</option>\
-                                        @foreach($inventory as $item)\
+                                        @foreach($finished as $item)\
                                         <option value="{{ $item->id }}">\
-                                            {{$item->product->PROD_NAME}} - {{$item->color->COLR_NAME}} - {{$item->size->SIZE_NAME}} - Available:{{$item->INVT_CUNT}}</option>\
+                                            {{$item->BRND_NAME}} - {{$item->MODL_UNID}} - Price: {{$item->FNSH_PRCE}}EGP</option>\
                                         @endforeach\
+                                    </select>\
+                                </div>\
+                            </div>\
+                            <div class="col-lg-3">\
+                                <div class="input-group mb-2">\
+                                    <select name=size[] class="form-control select2  custom-select" required>\
+                                        <option disabled hidden selected value="">Pick a Size</option>\
+                                        <option value="36">36</option>\
+                                        <option value="38">38</option>\
+                                        <option value="40">40</option>\
+                                        <option value="42">42</option>\
+                                        <option value="44">44</option>\
+                                        <option value="46">46</option>\
+                                        <option value="48">48</option>\
+                                        <option value="50">50</option>\
                                     </select>\
                                 </div>\
                             </div>';
@@ -215,53 +225,5 @@ var room = 1;
 
     }
    
-   function changeMax(callerID) {
-       itemIndex = callerID.id.substring(9, callerID.id.length)
-        count = document.getElementById('count' + itemIndex) 
-        optionString = callerID.options[callerID.selectedIndex].innerHTML
-        count.max = optionString.substring(optionString.indexOf(":", optionString.length-10)+1 ,optionString.length)
-   }
-
-
-    function toggleGuest(){
-    var selectaya = document.getElementById("guest");
-        var userDiv = document.getElementById("isuser");
-        var guestDiv = document.getElementById("isguest");
-        if(selectaya.value == "1") // Guest
-        {
-            userDiv.style.display = "none";
-            guestDiv.style.display = "block";
-            $('#areaSel').val(null); // Select the option with a value of '1'
-            $('#areaSel').trigger('change');
-        } else { // User
-     
-            userDiv.style.display = "block";
-            guestDiv.style.display = "none";
-            loadUser();
-        }
-}
-
-        function loadUser(){
-            var selectaya = document.getElementById("userSel");
-            var areaSelect = document.getElementById("areaSel");
-            userInfo = selectaya.value.split('%%') 
-            userInput = document.getElementById("userID");
-            userInput.value = userInfo[0]
-            var opts = areaSelect.options;
-
-            for (var opt, j = 0; opt = opts[j]; j++) {
-                if (opt.value == userInfo[1]) {                 
-                    $('#areaSel').val(userInfo[1]); // Select the option with a value of '1'
-                    $('#areaSel').trigger('change');
-                    break;
-                }
-            }  
-            if(typeof userInfo[2] !== 'undefined'){
-            var userAdrs = document.getElementById("userAdrs");
-            userAdrs.innerHTML =  userInfo[2]       
-
-            }
-
-        }
 </script>
 @endsection

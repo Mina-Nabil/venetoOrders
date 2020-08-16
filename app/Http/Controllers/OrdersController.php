@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Models\Client;
 use App\Models\Driver;
-use App\Models\Inventory;
+use App\Models\Finished;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\OrderSource;
 use App\Models\PaymentOption;
-use App\Models\Product;
-use App\Models\User;
 use DateInterval;
 use DateTime;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -57,9 +58,9 @@ class OrdersController extends Controller
         $this->initTableArr(false, $stateID, date('m'), date('Y'));
         $startDate  = $this->getStartDate(date('m'), date('Y'));
         $endDate    = $this->getEndDate(date('m'), date('Y'));
-        $this->data['deliveredCount'] = Order::getOrdersCountByState(4,$startDate,$endDate);
-        $this->data['cancelledCount'] = Order::getOrdersCountByState(5,$startDate,$endDate);
-        $this->data['returnedCount'] = Order::getOrdersCountByState(6,$startDate,$endDate);
+        $this->data['deliveredCount'] = Order::getOrdersCountByState(4, $startDate, $endDate);
+        $this->data['cancelledCount'] = Order::getOrdersCountByState(5, $startDate, $endDate);
+        $this->data['returnedCount'] = Order::getOrdersCountByState(6, $startDate, $endDate);
         $this->data['historyURL'] = "orders/month";
         return view("orders.history", $this->data);
     }
@@ -84,9 +85,9 @@ class OrdersController extends Controller
 
     public function addNew()
     {
-        $this->data['inventory']    =   Inventory::with("color", "size", "product")->where("INVT_CUNT", ">", 0)->get();
+        $this->data['finished']    =   Finished::getAllFinished();
         $this->data['areas']        =   Area::where('AREA_ACTV', 1)->get();
-        $this->data['users']        =   User::all();
+        $this->data['sources']        =   OrderSource::all();
         $this->data['payOptions']   =  PaymentOption::all();
         $this->data['formTitle'] = "Add New Order";
         $this->data['formURL'] = "orders/insert";
@@ -99,6 +100,7 @@ class OrdersController extends Controller
     public function details($id)
     {
         $data = Order::getOrderDetails($id); //returns order Array and Items Array
+        if (!isset($data['order']->ORDR_STTS_ID)) abort(404);
 
         //Status Panel
         $data['isOrderReady'] = true;
@@ -119,8 +121,14 @@ class OrdersController extends Controller
         $data['linkNewReturnUrl']           =   url('orders/create/return/' . $data['order']->id);
         $data['returnUrl']                  =   url('orders/return/' . $data['order']->id);
 
+        //Usertype
+        $data['userType']       = Auth::user()->DASH_TYPE_ID;
+        $data['isAdmin']        = ($data['userType'] == 1);
+        $data['isInventory']    = ($data['userType'] == 2) || $data['isAdmin'];
+        $data['isSales']        = ($data['userType'] == 3) || $data['isAdmin'];
+
         //Add Items Panel
-        $data['inventory']      =   Inventory::with("color", "size", "product")->where("INVT_CUNT", ">", 0)->get();
+        $data['finished']      =   Finished::getAllFinished();
         $data['isCancel']       =   false;
         $data['addFormURL']     =   url('orders/add/items/' . $id);
 
@@ -149,16 +157,17 @@ class OrdersController extends Controller
             $orderItemArray = $this->getOrderItemsArray($request);
             foreach ($orderItemArray as $item) {
                 $orderItem = $order->order_items()->firstOrNew(
-                    ['ORIT_INVT_ID' => $item['ORIT_INVT_ID']]
+                    ['ORIT_FNSH_ID' => $item['ORIT_FNSH_ID'], "ORIT_SIZE" => $item['ORIT_SIZE']]
                 );
                 $orderItem->ORIT_CUNT += $item['ORIT_CUNT'];
+                $orderItem->ORIT_SIZE = $item['ORIT_SIZE'];
                 $orderItem->ORIT_VRFD = 0;
-                $inventory = Inventory::findOrFail($item['ORIT_INVT_ID']);
-                $inventory->INVT_CUNT -= $item['ORIT_CUNT'];
                 $orderItem->save();
-                $inventory->save();
             }
+            $oldTotal = $order->ORDR_TOTL;
             $order->recalculateTotal();
+            Client::insertTrans($order->source->ORSC_CLNT_ID, $order->ORDR_TOTL - $oldTotal, 0, 0, 0, 0, "Automatically Added from Orders System", "New Items added on (" . $order->id . ")");
+            $order->addTimeline("Items added on order - New Items Amount: " . ($order->ORDR_TOTL - $oldTotal));
         });
         return redirect("orders/details/" . $order->id);
     }
@@ -177,6 +186,7 @@ class OrdersController extends Controller
             }
             if ($isReady) {
                 $order->ORDR_STTS_ID = 2;
+                $order->addTimeline("Order set as Ready");
                 $order->save();
             }
         });
@@ -190,9 +200,9 @@ class OrdersController extends Controller
         DB::transaction(function () use ($order) {
             $isReturned = true;
             foreach ($order->order_items as $item) {
-                $inventory = Inventory::findOrfail($item->ORIT_INVT_ID);
-                $inventory->INVT_CUNT += $item->ORIT_CUNT;
-                if (!$inventory->save()) {
+                $finished = Finished::findOrfail($item->ORIT_FNSH_ID);
+                $finished->FNSH_CUNT += $item->ORIT_CUNT;
+                if (!$finished->save()) {
                     $isReturned = false;
                     break;
                 }
@@ -203,6 +213,8 @@ class OrdersController extends Controller
                 $order->ORDR_DLVR_DATE = date('Y-m-d H:i:s');
                 $order->ORDR_DRVR_ID = null;
                 $order->save();
+                $order->addTimeline("Order set as Cancelled");
+                Client::insertTrans($order->source->ORSC_CLNT_ID, 0, 0, 0, 0,  $order->ORDR_TOTL, "Automatically Added from Orders System", "Order(" . $order->id . ") Cancelled");
             }
         });
         return redirect("orders/details/" . $order->id);
@@ -212,30 +224,39 @@ class OrdersController extends Controller
     {
 
         $order = Order::findOrFail($id);
-        $order->ORDR_STTS_ID = 1;
-        $order->save();
+        DB::transaction(function () use ($order) {
+            $order->ORDR_STTS_ID = 1;
+            $order->save();
+            $order->addTimeline("Order set as New");
+        });
         return redirect("orders/details/" . $order->id);
     }
 
     public function setInDelivery($id)
     {
         $order = Order::findOrFail($id);
-        if ($order->ORDR_STTS_ID == 2 && isset($order->driver) && $order->driver->DRVR_ACTV) {
-            $order->ORDR_STTS_ID = 3;
-            $order->save();
-        }
+        DB::transaction(function () use ($order) {
+            if ($order->ORDR_STTS_ID == 2 && isset($order->driver) && $order->driver->DRVR_ACTV) {
+                $order->ORDR_STTS_ID = 3;
+                $order->save();
+                $order->addTimeline("Order set as In Delivery");
+            }
+        });
         return redirect("orders/details/" . $order->id);
     }
 
     public function setDelivered($id)
     {
         $order = Order::findOrFail($id);
-        $remainingMoney = $order->ORDR_TOTL - $order->ORDR_DISC - $order->ORDR_PAID;
-        if ($order->ORDR_STTS_ID == 3 && $remainingMoney == 0) {
-            $order->ORDR_STTS_ID = 4;
-            $order->ORDR_DLVR_DATE = date('Y-m-d H:i:s');
-            $order->save();
-        }
+        DB::transaction(function () use ($order) {
+            $remainingMoney = $order->ORDR_TOTL - $order->ORDR_DISC - $order->ORDR_PAID;
+            if ($order->ORDR_STTS_ID == 3 && $remainingMoney == 0) {
+                $order->ORDR_STTS_ID = 4;
+                $order->ORDR_DLVR_DATE = date('Y-m-d H:i:s');
+                $order->save();
+                $order->addTimeline("Order set as Delivered");
+            }
+        });
         return redirect("orders/details/" . $order->id);
     }
 
@@ -245,9 +266,11 @@ class OrdersController extends Controller
         DB::transaction(function () use ($order) {
             $isReturned = true;
             foreach ($order->order_items as $item) {
-                $inventory = Inventory::findOrfail($item->ORIT_INVT_ID);
-                $inventory->INVT_CUNT += $item->ORIT_CUNT;
-                if (!$inventory->save()) {
+                $finished = Finished::findOrfail($item->ORIT_FNSH_ID);
+                $isSaved = true;
+                if ($item->ORIT_VRFD)
+                    $isSaved = $finished->incrementSizeQuantity($item->ORIT_CUNT, $item->ORIT_SIZE);
+                if (!$isSaved) {
                     $isReturned = false;
                     break;
                 }
@@ -257,8 +280,11 @@ class OrdersController extends Controller
                 $order->ORDR_PAID = 0;
                 $order->ORDR_DLVR_DATE = date('Y-m-d H:i:s');
                 $order->save();
+                $order->addTimeline("Order set as Returned");
+                Client::insertTrans($order->source->ORSC_CLNT_ID, 0, 0, 0, 0,  $order->ORDR_TOTL, "Automatically Added from Orders System", "Order(" . $order->id . ") Returned");
             }
         });
+        return redirect("orders/details/" . $order->id);
     }
 
     public function setPartiallyReturned($id)
@@ -278,12 +304,14 @@ class OrdersController extends Controller
             $retOrder->ORDR_ADRS = $order->ORDR_ADRS;
             $retOrder->ORDR_NOTE = "New Return Order for order number " . $order->id;
             $retOrder->ORDR_AREA_ID = $order->ORDR_AREA_ID;
+            $retOrder->ORDR_ORSC_ID = $order->ORDR_ORSC_ID;
             $retOrder->ORDR_PYOP_ID = $order->ORDR_PYOP_ID;
             $retOrder->ORDR_STTS_ID = 6; // new returned order
             $retOrder->ORDR_TOTL = 0;
             $retOrder->save();
             $order->ORDR_RTRN_ID = $retOrder->id; // new returned order
             $order->save();
+            $order->addTimeline("New Return Order linked");
         });
         return redirect("orders/details/" . $order->id);
     }
@@ -296,10 +324,14 @@ class OrdersController extends Controller
         ]);
 
         $order = Order::findOrFail($request->id);
-        if ($order->ORDR_STTS_ID < 3) { // New or ready
-            $order->ORDR_DRVR_ID = $request->driver;
-            $order->save();
-        }
+        DB::transaction(function () use ($order, $request) {
+            if ($order->ORDR_STTS_ID < 3) { // New or ready
+                $order->ORDR_DRVR_ID = $request->driver;
+                $order->save();
+                $driver = Driver::findOrFail($request->driver);
+                $order->addTimeline($driver->DRVR_NAME . " assigned as the order delivery man");
+            }
+        });
         return redirect("orders/details/" . $order->id);
     }
 
@@ -310,10 +342,14 @@ class OrdersController extends Controller
             'id' => "required",
             'payment' => "required|min:0|max:" . $order->ORDR_TOTL
         ]);
-        if ($order->ORDR_STTS_ID < 4) {
-            $order->ORDR_PAID += $request->payment;
-            $order->save();
-        }
+        DB::transaction(function () use ($order, $request) {
+            if ($order->ORDR_STTS_ID < 4) {
+                $order->ORDR_PAID += $request->payment;
+                $order->save();
+                Client::insertTrans($order->source->ORSC_CLNT_ID, 0, $request->payment, 0, 0, 0, "Automatically Added from Orders System", "Order(" . $order->id . ") Payment");
+                $order->addTimeline("Normal Payment ( " . $request->payment . "EGP ) Collected");
+            }
+        });
         return redirect("orders/details/" . $order->id);
     }
 
@@ -325,9 +361,11 @@ class OrdersController extends Controller
             'deliveryPaid' => "required|min:0"
         ]);
 
-
-        $order->ORDR_DLFE = $request->deliveryPaid;
-        $order->save();
+        DB::transaction(function () use ($order, $request) {
+            $order->ORDR_DLFE = $request->deliveryPaid;
+            $order->save();
+            $order->addTimeline("Delivery Payment ( " . $request->deliveryPaid . "EGP ) Collected");
+        });
         return redirect("orders/details/" . $order->id);
     }
 
@@ -338,11 +376,14 @@ class OrdersController extends Controller
             'id' => "required",
             'discount' => "required|min:0|max:" . $order->ORDR_TOTL
         ]);
-
-        if ($order->ORDR_STTS_ID < 4) {
-            $order->ORDR_DISC = $request->discount;
-            $order->save();
-        }
+        DB::transaction(function () use ($order, $request) {
+            if ($order->ORDR_STTS_ID < 4) {
+                $order->ORDR_DISC = $request->discount;
+                $order->save();
+                Client::insertTrans($order->source->ORSC_CLNT_ID, 0, 0, 0, $request->discount, 0, "Automatically Added from Orders System", "Order(" . $order->id . ") Discount");
+                $order->addTimeline("Discount Set ( " . $request->discount . "EGP )");
+            }
+        });
         return redirect("orders/details/" . $order->id);
     }
 
@@ -350,16 +391,29 @@ class OrdersController extends Controller
     {
 
         $item = OrderItem::findOrfail($id);
+        $finished = Finished::findOrFail($item->ORIT_FNSH_ID);
         $order = Order::findOrfail($item->ORIT_ORDR_ID);
         if ($order->ORDR_STTS_ID != 1) { //still new
             return 'failed';
         }
-        if ($item->ORIT_VRFD) {
-            $item->ORIT_VRFD = 0;
-        } else {
-            $item->ORIT_VRFD = 1;
+        try {
+            DB::transaction(function () use ($finished, $item, $order) {
+                if ($item->ORIT_VRFD) {
+                    $finished->incrementSizeQuantity($item->ORIT_CUNT, $item->ORIT_SIZE);
+                    $item->ORIT_VRFD = 0;
+                    $item->save();
+                    $order->addTimeline("Item set as Not Ready");
+                } else {
+                    $finished->incrementSizeQuantity(-1 * $item->ORIT_CUNT, $item->ORIT_SIZE);
+                    $item->ORIT_VRFD = 1;
+                    $item->save();
+                    $order->addTimeline("Item set as Ready");
+                }
+            });
+        } catch (Exception $e) {
+            return 'failed';
         }
-        return (($item->save()) ? 1 : 'failed');
+        return 1;
     }
 
     public function deleteItem($id)
@@ -371,11 +425,15 @@ class OrdersController extends Controller
             if ($order->ORDR_STTS_ID != 1) { //still new
                 return 'failed';
             }
-            $inventory = Inventory::findOrFail($item->ORIT_INVT_ID);
-            $inventory->INVT_CUNT += $item->ORIT_CUNT;
+            if ($item->ORIT_VRFD == 1) {
+                $finished = Finished::findOrFail($item->ORIT_FNSH_ID);
+                $finished->incrementSizeQuantity($item->ORIT_CUNT, $item->ORIT_SIZE);
+            }
             $item->delete();
-            $inventory->save();
+            $oldTotal = $order->ORDR_TOTL;
             $order->recalculateTotal();
+            Client::insertTrans($order->source->ORSC_CLNT_ID, 0, 0, 0, 0, $oldTotal - $order->ORDR_TOTL, "Automatically Added from Orders System", "Item deleted on Order(" . $order->id . ")");
+            $order->addTimeline("Items deleted, worth: " . $oldTotal - $order->ORDR_TOTL . "EGP");
         });
         return redirect("orders/details/" . $order->id);
     }
@@ -390,22 +448,26 @@ class OrdersController extends Controller
         $order = Order::findOrfail($orderItem->ORIT_ORDR_ID);
         DB::transaction(function () use ($order, $orderItem, $request) {
             if (($order->ORDR_STTS_ID == 4 || $order->ORDR_STTS_ID == 3) && isset($order->ORDR_RTRN_ID) && is_numeric($order->ORDR_RTRN_ID)) {
+                if ($request->count > $orderItem->ORIT_CUNT)
+                    return redirect("orders/details/" . $orderItem->ORIT_ORDR_ID);
                 //if and in delivery or delivered and has a returned order
 
                 //create new return item and add count to return item
                 $returnOrder = Order::findOrFail($order->ORDR_RTRN_ID);
                 $returnedItem = $returnOrder->order_items()->firstOrNew([
-                    'ORIT_INVT_ID' => $orderItem->ORIT_INVT_ID
+                    'ORIT_FNSH_ID' => $orderItem->ORIT_FNSH_ID,
+                    "ORIT_SIZE" => $orderItem->ORIT_SIZE
                 ]);
+
                 $returnedItem->ORIT_CUNT += $request->count;
                 $returnedItem->ORIT_VRFD = 1;
                 $returnedItem->save();
                 $returnOrder->recalculateTotal();
 
-                //Adjust inventory
-                $inventory = Inventory::findOrFail($orderItem->ORIT_INVT_ID);
-                $inventory->INVT_CUNT += $request->count;
-                $inventory->save();
+                //Adjust finished
+                $finished = Finished::findOrFail($orderItem->ORIT_FNSH_ID);
+                if ($orderItem->ORIT_VRFD)
+                    $finished->incrementSizeQuantity($request->count, $orderItem->ORIT_SIZE);
 
                 //Adjust old order
                 $orderItem->ORIT_CUNT -= $request->count;
@@ -413,14 +475,27 @@ class OrdersController extends Controller
                     $orderItem->delete();
                 else
                     $orderItem->save();
+                $oldTotal = $order->ORDR_TOTL;
                 $order->recalculateTotal();
+                Client::insertTrans($order->source->ORSC_CLNT_ID, 0, 0, 0, 0, $oldTotal - $order->ORDR_TOTL, "Automatically Added from Orders System", "Item deleted on Order(" . $order->id . ")");
+                $order->addTimeline("Items returned, worth: " . $oldTotal - $order->ORDR_TOTL . "EGP");
             } elseif ($order->ORDR_STTS_ID != 1) { //if it is not still new
                 return redirect("orders/details/" . $orderItem->ORIT_ORDR_ID);
             } else {
+                //returning order to inventory before changing count
+                $finished = Finished::findOrFail($orderItem->ORIT_FNSH_ID);
+                $finished->incrementSizeQuantity($orderItem->ORIT_CUNT, $orderItem->ORIT_SIZE);
                 $orderItem->ORIT_CUNT = $request->count;
                 $orderItem->ORIT_VRFD = 0;
                 $orderItem->save();
+                $oldTotal = $order->ORDR_TOTL;
                 $order->recalculateTotal();
+                $orderDiff = $oldTotal - $order->ORDR_TOTL;
+                if ($orderDiff > 0)
+                    Client::insertTrans($order->source->ORSC_CLNT_ID, $orderDiff, 0, 0, 0, 0, "Automatically Added from Orders System", "Item changed on Order(" . $order->id . ")");
+                elseif ($orderDiff < 0)
+                    Client::insertTrans($order->source->ORSC_CLNT_ID, 0, 0, 0, 0, -1 * $orderDiff, "Automatically Added from Orders System", "Item changed on Order(" . $order->id . ")");
+                $order->addTimeline("Items Quantity Changed, worth: " . $orderDiff . "EGP");
             }
         });
         return redirect("orders/details/" . $orderItem->ORIT_ORDR_ID);
@@ -449,36 +524,43 @@ class OrdersController extends Controller
             "guestName"     =>  "required_if:guest,1",
             "guestMob"      =>  "required_if:guest,1",
             "area"          =>  "required",
+            "source"          =>  "required",
             "option"        =>  "required",
             "address"      =>  "required"
         ]);
-
         $order = new Order();
-        if (isset($request->user))
-            $order->ORDR_USER_ID = $request->user;
-        else {
-            $order->ORDR_GEST_NAME = $request->guestName;
-            $order->ORDR_GEST_MOBN = $request->guestMob;
+        try {
+            DB::transaction(function () use ($order, $request) {
+                if (isset($request->user))
+                    $order->ORDR_USER_ID = $request->user;
+                else {
+                    $order->ORDR_GEST_NAME = $request->guestName;
+                    $order->ORDR_GEST_MOBN = $request->guestMob;
+                }
+                $order->ORDR_OPEN_DATE = date('Y-m-d H:i:s');
+                $order->ORDR_ADRS = $request->address;
+                $order->ORDR_NOTE = $request->note;
+                $order->ORDR_AREA_ID = $request->area;
+                $order->ORDR_ORSC_ID = $request->source;
+                $order->ORDR_PYOP_ID = $request->option;
+                $order->ORDR_STTS_ID = 1; // new order
+                $order->ORDR_DASH_ID = Auth::user()->id; // new order
+
+                $orderItemArray = $this->getOrderItemsObjectArray($request);
+                $order->ORDR_TOTL = $this->getOrderTotal($request);
+                // foreach ($orderItemArray as $item) { removing items from inventory
+                //     $finished = Finished::findOrFail($item->ORIT_FNSH_ID);
+                //     $finished->FNSH_CUNT -= $item->ORIT_CUNT;
+                //     $finished->save();
+                // }
+                $order->save();
+                $order->order_items()->saveMany($orderItemArray);
+                Client::insertTrans($order->source->ORSC_CLNT_ID, $order->ORDR_TOTL, 0, 0, 0, 0, "Automatically Added from Orders System", "New Order(" . $order->id . ")");
+                $order->addTimeline("Order Created");
+            });
+        } catch (Exception $e) {
+            abort(404);
         }
-        $order->ORDR_OPEN_DATE = date('Y-m-d H:i:s');
-        $order->ORDR_ADRS = $request->address;
-        $order->ORDR_NOTE = $request->note;
-        $order->ORDR_AREA_ID = $request->area;
-        $order->ORDR_PYOP_ID = $request->option;
-        $order->ORDR_STTS_ID = 1; // new order
-        $order->ORDR_DASH_ID = Auth::user()->id; // new order
-
-        $orderItemArray = $this->getOrderItemsObjectArray($request);
-        $order->ORDR_TOTL = $this->getOrderTotal($request);
-
-        $order->save();
-        $order->order_items()->saveMany($orderItemArray);
-        foreach ($orderItemArray as $item) {
-            $inventory = Inventory::findOrFail($item->ORIT_INVT_ID);
-            $inventory->INVT_CUNT -= $item->ORIT_CUNT;
-            $inventory->save();
-        }
-
         return redirect("orders/details/" . $order->id);
     }
 
@@ -536,9 +618,10 @@ class OrdersController extends Controller
     {
         $retArr = array();
         foreach ($request->item as $index => $item) {
+
             array_push(
                 $retArr,
-                ["ORIT_INVT_ID" => $item, "ORIT_CUNT" => $request->count[$index]]
+                ["ORIT_FNSH_ID" => $item, "ORIT_CUNT" => $request->count[$index], "ORIT_SIZE" => $request->size[$index]]
             );
         }
         return $retArr;
@@ -549,7 +632,7 @@ class OrdersController extends Controller
         $retArr = array();
         foreach ($request->item as $index => $item) {
             array_push($retArr, new OrderItem(
-                ["ORIT_INVT_ID" => $item, "ORIT_CUNT" => $request->count[$index]]
+                ["ORIT_FNSH_ID" => $item, "ORIT_CUNT" => $request->count[$index], "ORIT_SIZE" => $request->size[$index]]
             ));
         }
         return $retArr;
@@ -559,8 +642,7 @@ class OrdersController extends Controller
     {
         $total = 0;
         foreach ($request->item as $index => $item) {
-            $product = Inventory::with("product")->findOrFail($item)->product;
-            $price = $product->PROD_PRCE - $product->PROD_OFFR;
+            $price = Finished::findOrFail($item)->FNSH_PRCE;
             $total += $request->count[$index] * $price;
         }
         return $total;

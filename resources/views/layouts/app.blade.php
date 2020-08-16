@@ -11,7 +11,7 @@
     <meta name="csrf-token" content="{{ Session::token() }}">
     <!-- Favicon icon -->
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/whaleLogo.png') }}">
-    <title>{{  config('app.name', 'Whale') }}</title>
+    <title>{{  env('APP_NAME', 'Laravel') }}</title>
     <!-- Custom CSS -->
     <link href="{{asset('dist/css/style.min.css')}}" rel="stylesheet">
     <link href="{{asset('dist/css/style.min.css')}}" media=print rel="stylesheet">
@@ -48,7 +48,7 @@
     <div class="preloader">
         <div class="loader">
             <div class="loader__figure"></div>
-            <p class="loader__label">{{ config('app.name', 'Laravel') }}</p>
+            <p class="loader__label">{{ env('APP_NAME', 'Laravel') }}</p>
         </div>
     </div>
     <!-- ============================================================== -->
@@ -68,20 +68,16 @@
                         <!-- Logo icon --><b>
                             <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
                             <!-- Dark Logo icon -->
-                            <img src="{{ asset('images/whaleLogo.png') }}" height=70px alt="homepage" class="dark-logo" />
+                            <img src="{{ asset('images/dark-logo.png') }}" height=40px alt="homepage" class="dark-logo" />
                             <!-- Light Logo icon -->
-                            <img src="{{ asset('images/whaleLogo.png') }}" height=70px alt="homepage" class="light-logo" />
+                            <img src="{{ asset('images/light-logo.png') }}" height=40px alt="homepage" class="light-logo" />
                         </b>
                         <!--End Logo icon -->
                         <!-- Logo text --><span>
-
-                            <h4 class="text-themecolor" style="text-align: center; font-family: 'Oregano' ; font-size:33px ; display: inline; ">Whale</h4>
-
                             <!-- dark Logo text -->
-                            {{-- <img src="{{ asset('images/dark-text.png') }}" height=40px alt="homepage" class="dark-logo" /> --}}
+                            <img src="{{ asset('images/dark-text.png') }}" height=40px alt="homepage" class="dark-logo" />
                             <!-- Light Logo text -->
-                            {{-- <img src="{{ asset('images/light-text.png') }}" height=40px class="light-logo" alt="homepage" />
-                        </span> </a> --}}
+                            <img src="{{ asset('images/light-text.png') }}" height=40px class="light-logo" alt="homepage" /></span> </a>
                 </div>
                 <!-- ============================================================== -->
                 <!-- End Logo -->
@@ -155,40 +151,6 @@
                                 <li><a href="{{url('orders/load/history')}}">History</a></li>
                                 <li><a href="{{url('orders/add')}}">Place an Order</a></li>
                             </ul>
-
-
-                        </li>
-
-
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-list"></i><span class="hide-menu"> Catalogue</span></a>
-                            <ul aria-expanded="false" class="collapse">
-
-                                <li>
-                                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Products</a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{{url('products/show/all')}}">All Products</a></li>
-                                        <li><a href="{{url('products/filter/category')}}">By Category</a></li>
-                                        <li><a href="{{url('products/add')}}">Add a Product</a></li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Special Products</a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{{url('products/new')}}">New Arrivals</a></li>
-                                        <li><a href="{{url('products/sale')}}">For Sale</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="{{url('categories/show')}}">Categories</a></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-boxes"></i><span class="hide-menu"> Inventory</span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{url('inventory/current/stock')}}">Current Stock List</a></li>
-                                <li><a href="{{url('inventory/new/entry')}}">Add New Stock</a></li>
-                                <li><a href="{{url('inventory/transactions')}}">Transactions</a></li>
-                            </ul>
                         </li>
 
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-chart-bar"></i><span class="hide-menu"> Reports</span></a>
@@ -199,39 +161,16 @@
                             </ul>
                         </li>
 
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="icon-people"></i><span class="hide-menu"> Clients</span></a>
+                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cogs"></i><span class="hide-menu"> Settings </span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{url('users/show/latest')}}">Latest Clients</a></li>
-                                {{-- <li><a href="{{url('users/show/top')}}">Top Customers</a></li> --}}
-                                <li><a href="{{url('users/show/all')}}">Show All</a></li>
-                                <li><a href="{{url('users/add')}}">Add User</a></li>
-                            </ul>
-                        </li>
-
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cogs"></i><span class="hide-menu"> Website Data </span></a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{url('images/show')}}">Website Images</a></li>
                                 <li><a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Delivery</a>
                                     <ul aria-expanded="false" class="collapse">
                                         <li><a href="{{url('areas/show')}}">Areas</a></li>
                                         <li><a href="{{url('drivers/show')}}">Drivers</a></li>
                                     </ul>
                                 </li>          
-                                <li>
-                                    <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Models</a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{{url('colors/show')}}">Colors</a></li>
-                                        <li><a href="{{url('sizes/show')}}">Sizes</a></li>
-                                        <li><a href="{{url('charts/show')}}">Size Charts</a></li>
-                                        <li><a href="{{url('tags/show')}}">Tags</a></li>
-                                    </ul>
-                                </li>
-                                <li><a class="has-arrow waves-effect waves-dark" href="javascript:void(0)"> Categories</a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{{url('icons/show')}}">Icons</a></li>
-                                    </ul>
-                                </li>
                                 <li><a href="{{url('paymentoptions/show')}}">Payment Options</a></li>
+                                <li><a href="{{url('sources/show')}}">Online Sources</a></li>
                             </ul>
                         </li>
 
@@ -262,14 +201,12 @@
                 <!-- ============================================================== -->
                 <div class="row page-titles">
                     <div class="col-md-5 align-self-center">
-                        <h4 class="text-themecolor" style="font-family: 'Oregano' ; font-size:33px">Whale Dashboard</h4>
+                        <h4 class="text-themecolor" style="font-family: 'Oregano' ; font-size:33px">{{env('APP_NAME')}} Dashboard</h4>
                     </div>
                     <div class="col-md-7 align-self-center text-right">
                         <div class="d-flex justify-content-end align-items-center">
-                            <a style="font-family: 'Oswald'" href="{{url('products/add')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Add Product</a>
-                            <a style="font-family: 'Oswald'" href="{{url('categories/show')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Add Category</a>
-                            <a style="font-family: 'Oswald'" href="{{url('orders/show/active')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fas fa-info-circle"></i> Check Orders </a>
-                            <a style="font-family: 'Oswald'" href="{{url('users/add')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Add User</a>
+                            <a style="font-family: 'Oswald'" href="{{url('orders/add')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Add Order</a>
+                            <a style="font-family: 'Oswald'" href="{{url('orders/active')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fas fa-info-circle"></i> Check Orders </a>
                         </div>
                     </div>
                 </div>

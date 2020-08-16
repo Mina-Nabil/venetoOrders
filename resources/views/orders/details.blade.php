@@ -49,14 +49,14 @@
                         <div class="font-bold">
                             Client Name
                         </div>
-                        <p>
-                            @if(!$order->ORDR_GEST_NAME)
+                        <p> {{$order->ORDR_GEST_NAME}}
+                            {{-- @if(!$order->ORDR_GEST_NAME)
                             <a href="{{url('users/profile/' . $order->ORDR_USER_ID )}}">
                                 @endif
                                 {{($order->ORDR_GEST_NAME) ? $order->ORDR_GEST_NAME . " (Guest)": $order->USER_NAME . " (User)"}}
                                 @if(!$order->ORDR_GEST_NAME)
                             </a>
-                            @endif
+                            @endif --}}
                         </p>
                     </div>
                     <div class="col-md-2">
@@ -77,17 +77,23 @@
                         </div>
                         <p>{{$order->ORDR_TOTL ." EGP"}} {{($order->ORDR_DISC > 0) ? "(" .$order->ORDR_DISC. "EGP)" : ""}}</p>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="font-bold">
                             Delivery Address
                         </div>
                         <p>{{$order->ORDR_ADRS}}</p>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="font-bold">
                             Note
                         </div>
                         <p>{{$order->ORDR_NOTE}}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="font-bold">
+                            Source
+                        </div>
+                        <p>{{$order->ORSC_NAME}}: {{$order->CLNT_SRNO}}-{{$order->CLNT_NAME}}</p>
                     </div>
                 </div>
             </div>
@@ -106,6 +112,7 @@
                     <li class="nav-item"> <a class="nav-link" role="tab" data-toggle="tab" href="#driver">Assign Driver</a> </li>
                     <li class="nav-item"> <a class="nav-link" role="tab" data-toggle="tab" href="#payment ">Payments</a> </li>
                     <li class="nav-item"> <a class="nav-link" role="tab" data-toggle="tab" href="#settings">Edit Order Info</a> </li>
+                    <li class="nav-item"> <a class="nav-link" role="tab" data-toggle="tab" href="#timeline">Timeline</a> </li>
                 </ul>
             </div>
             <!-- Tab panes -->
@@ -174,8 +181,9 @@
                         </ul>
                         @switch($order->ORDR_STTS_ID)
                         @case(1)
-                        <button class="btn btn-warning mr-2" id=readyButton onclick="confirmAndGoTo('{{url($setOrderReadyUrl)}}', 'Set Order as Ready')" {{($isOrderReady) ? '' : "disabled"}}>Order Is
-                            Ready For Shipment</button>
+                        <button class="btn btn-warning mr-2" id=readyButton onclick="confirmAndGoTo('{{url($setOrderReadyUrl)}}', 'Set Order as Ready')" {{($isOrderReady) ? '' : "disabled"}}>
+                            Order Is Ready For Shipment
+                        </button>
                         <button class="btn btn-danger mr-2" onclick="confirmAndGoTo('{{url($setOrderCancelledUrl)}}', 'Cancel the Order')">Cancel Order</button>
                         @break
                         @case(2)
@@ -191,8 +199,8 @@
                         <button class="btn btn-info mr-2" onclick="confirmAndGoTo('{{url('orders/details/' . $order->ORDR_RTRN_ID)}}', 'Go to the Return Order')">
                             Check Return Order</button>
                         @endif
-                        <button class="btn btn-success mr-2" onclick="confirmAndGoTo('{{url($setOrderDeliveredUrl)}}', 'Set Order as Delivered')" 
-                        @if($remainingMoney !=0) disabled @endif>Set Order as Delivered</button>
+                        <button class="btn btn-success mr-2" onclick="confirmAndGoTo('{{url($setOrderDeliveredUrl)}}', 'Set Order as Delivered')" @if($remainingMoney !=0) disabled @endif>Set Order as
+                            Delivered</button>
                         <button class="btn btn-danger mr-2" onclick="confirmAndGoTo('{{url($setOrderCancelledUrl)}}', 'Cancel the Order')">Cancel Order</button>
                         @break
                         @case(4)
@@ -218,7 +226,6 @@
                                 <thead>
                                     <th>Ready?</th>
                                     <th>Model</th>
-                                    <th>Color</th>
                                     <th>Size</th>
                                     <th>Quantity</th>
                                     <th>Price</th>
@@ -238,12 +245,11 @@
                                                 <i class=" fas fa-exclamation-triangle" style="color:#fec107">
                                                     @endif
                                         </td>
-                                        <td>{{$item->PROD_NAME}}</td>
-                                        <td>{{$item->COLR_NAME}}</td>
-                                        <td>{{$item->SIZE_NAME}}</td>
+                                        <td>{{$item->BRND_NAME}}-{{$item->MODL_UNID}}</td>
+                                        <td>{{$item->ORIT_SIZE}}</td>
                                         <td>{{$item->ORIT_CUNT}}</td>
-                                        <td>{{$item->PROD_PRCE - $item->PROD_OFFR}}</td>
-                                        <td>{{$item->ORIT_CUNT * ($item->PROD_PRCE - $item->PROD_OFFR)}}</td>
+                                        <td>{{$item->FNSH_PRCE}}</td>
+                                        <td>{{$item->ORIT_CUNT * $item->FNSH_PRCE}}</td>
                                         @if($order->ORDR_STTS_ID==1 || $isPartiallyReturned)
                                         <td>
                                             <div class="btn-group">
@@ -258,7 +264,9 @@
                                                 @else
                                                 <div class="dropdown-menu">
                                                     @if(!$item->ORIT_VRFD)
+                                                    @if($isInventory)
                                                     <button class="dropdown-item" onclick="toggleReady({{$item->id}}, this)">Set as Ready!</button>
+                                                    @endif
                                                     @else
                                                     <button class="dropdown-item" onclick="toggleReady({{$item->id}}, this)">Remove Ready Flag!</button>
                                                     @endif
@@ -284,7 +292,11 @@
                                                         <input type=hidden name=itemID value="{{$item->id}}">
                                                         <div class="form-group col-md-12 m-t-0">
                                                             <h5>Amount</h5>
-                                                            <input type="number" step=1 class="form-control form-control-line" name=count value="{{$item->ORIT_CUNT}}" required>
+                                                            <input type="number" step=1 class="form-control form-control-line" name=count value="{{$item->ORIT_CUNT}}"
+                                                            @if($isPartiallyReturned)
+                                                            max={{$item->ORIT_CUNT}}
+                                                            @endif
+                                                            required>
                                                         </div>
 
                                                     </div>
@@ -317,22 +329,35 @@
                                 </div>
 
                                 <div class="row col-lg-12 nopadding">
-                                    <div class="col-lg-9">
+                                    <div class="col-lg-6">
                                         <div class="input-group mb-2">
-                                            <select name=item[] class="form-control select2 custom-select" id=inventory1 onchange="changeMax(inventory1)" style="width: 100%" required>
-                                                <option disabled hidden selected value="">Model</option>
-                                                @foreach($inventory as $item)
-                                                <option value="{{ $item->id }}">
-                                                    {{$item->product->PROD_NAME}} - {{$item->color->COLR_NAME}} - {{$item->size->SIZE_NAME}} - Available:{{$item->INVT_CUNT}}</option>
+                                            <select name=item[] class="form-control select2 custom-select" style="width:100%" required>
+                                                <option disabled hidden selected value="">Pick a Model</option>
+                                                @foreach($finished as $item)
+                                                <option value="{{ $item->id }}">{{$item->BRND_NAME}} - {{$item->MODL_UNID}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
-
+                                    <div class="col-lg-3">
+                                        <div class="input-group mb-2">
+                                            <select name=size[] class="form-control select2  custom-select" style="width:100%"  required>
+                                                <option disabled hidden selected value="">Pick a Size</option>
+                                                <option value="36">36</option>
+                                                <option value="38">38</option>
+                                                <option value="40">40</option>
+                                                <option value="42">42</option>
+                                                <option value="44">44</option>
+                                                <option value="46">46</option>
+                                                <option value="48">48</option>
+                                                <option value="50">50</option>
+                                            </select>
+                                        </div>
+                                    </div>
 
                                     <div class="col-lg-3">
                                         <div class="input-group mb-3">
-                                            <input type="number" step=1 id=count1 class="form-control amount" placeholder="Items Count" min=0 name=count[] aria-describedby="basic-addon11" required>
+                                            <input type="number" step=1 id=count class="form-control amount" placeholder="Items Count" min=0 name=count[] aria-describedby="basic-addon11" required>
                                             <div class="input-group-append">
                                                 <button class="btn btn-success" id="dynamicAddButton" type="button" onclick="addToab();"><i class="fa fa-plus"></i></button>
                                             </div>
@@ -452,6 +477,7 @@
                             <h6 class="card-subtitle">Edit Order Info, Notes and Address</h6>
                             @if($order->ORDR_STTS_ID < 4 ) <form class="form pt-3" method="post" action="{{ url($paymentURL) }}" enctype="multipart/form-data">
                                 <div class="form-group">
+                                    
                                     <label>Area</label>
                                     <div class="input-group mb-3">
                                         <select name=area id=areaSel class="select2 form-control custom-select" style="width: 100%; height:36px;" required>
@@ -490,6 +516,23 @@
                     </div>
                 </div>
 
+                <div class="tab-pane" id="timeline" role="tabpanel">
+                    <div class="card-body">
+                        <h4 class="card-title">Order history</h4>
+                        <h6 class="card-subtitle">Check all order changes & events</h6>     
+                        <ul class="list-group">
+                            @foreach($timeline as $event)
+                            <a href="javascript:void(0)" class="list-group-item list-group-item-action flex-column align-items-start">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1 text-dark">{{$event->DASH_USNM}}</h5>
+                                    <small>{{$event->created_at}}</small>
+                                </div>
+                                <p class="mb-1">{{$event->TMLN_TEXT}}</p>
+                            </a>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -631,14 +674,29 @@
    divtest.setAttribute("class", "nopadding row col-lg-12 removeclass" + room);
    var rdiv = 'removeclass' + room;
    var concatString = "";
-   concatString +=   '<div class="col-lg-9">\
+   concatString +=   '<div class="col-lg-6">\
                                 <div class="input-group mb-2">\
-                                    <select name=item[] class="form-control select2  custom-select" id=inventory' + room + ' onchange="changeMax(inventory' + room + ')" required>\
+                                    <select name=item[] class="form-control select2  custom-select" required>\
                                         <option disabled hidden selected value="">Model</option>\
-                                        @foreach($inventory as $item)\
+                                        @foreach($finished as $item)\
                                         <option value="{{ $item->id }}">\
-                                            {{$item->product->PROD_NAME}} - {{$item->color->COLR_NAME}} - {{$item->size->SIZE_NAME}} - Available:{{$item->INVT_CUNT}}</option>\
+                                            {{$item->BRND_NAME}} - {{$item->MODL_UNID}} - Price: {{$item->FNSH_PRCE}}EGP</option>\
                                         @endforeach\
+                                    </select>\
+                                </div>\
+                            </div>\
+                            <div class="col-lg-3">\
+                                <div class="input-group mb-2">\
+                                    <select name=size[] class="form-control select2  custom-select" required>\
+                                        <option disabled hidden selected value="">Pick a Size</option>\
+                                        <option value="36">36</option>\
+                                        <option value="38">38</option>\
+                                        <option value="40">40</option>\
+                                        <option value="42">42</option>\
+                                        <option value="44">44</option>\
+                                        <option value="46">46</option>\
+                                        <option value="48">48</option>\
+                                        <option value="50">50</option>\
                                     </select>\
                                 </div>\
                             </div>';
@@ -665,11 +723,5 @@
 
     }
    
-   function changeMax(callerID) {
-       itemIndex = callerID.id.substring(9, callerID.id.length)
-        count = document.getElementById('count' + itemIndex) 
-        optionString = callerID.options[callerID.selectedIndex].innerHTML
-        count.max = optionString.substring(optionString.indexOf(":", optionString.length-10)+1 ,optionString.length)
-   }
 </script>
 @endsection

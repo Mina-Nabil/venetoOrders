@@ -10,7 +10,7 @@ class OrderItem extends Model
     public $timestamps = false;
 
     public $fillable = [
-        "ORIT_INVT_ID", "ORIT_CUNT" 
+        "ORIT_FNSH_ID", "ORIT_CUNT", "ORIT_SIZE" 
     ];
     public $attributes = [
         "ORIT_CUNT" => 0
@@ -21,8 +21,4 @@ class OrderItem extends Model
         return $this->belongsTo("App\Models\Order", "ORIT_ORDR_ID", "id");
     }
 
-    public function inventory()
-    {
-        return $this->belongsTo("App\Models\Inventory", "ORIT_INVT_ID", "id");
-    }
 }

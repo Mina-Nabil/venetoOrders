@@ -48,49 +48,12 @@ Route::post("orders/insert", "OrdersController@insert");
 Route::post("orders/change/quantity", "OrdersController@changeQuantity");
 
 
-//Inventory
-Route::get("inventory/new/entry", "InventoryController@entry");
-Route::post("inventory/insert/entry", "InventoryController@insert");
-Route::get("inventory/current/stock", "InventoryController@stock");
-Route::get("inventory/transactions", "InventoryController@transactions");
-Route::get("inventory/transaction/{code}", "InventoryController@transactionDetails");
-
-//Products 
-Route::get('products/show/all', 'ProductsController@home');
-Route::get('products/sale', 'ProductsController@sale');
-Route::get('products/new', 'ProductsController@new');
-Route::get('products/filter/category', 'ProductsController@filterCategory');
-Route::post('products/category', 'ProductsController@showCategory');
-Route::post('products/subcategory', 'ProductsController@showSubCategory');
-Route::get('products/show/catg/sub/{id}', 'ProductsController@home');
-Route::get('products/details/{id}', 'ProductsController@details');
-Route::get('products/add', 'ProductsController@add');
-Route::post('producs/add/image/{id}', 'ProductsController@attachImage');
-Route::get('products/setimage/{prodID}/{imageID}', 'ProductsController@setMainImage');
-Route::post('products/setchart/{prodID}', 'ProductsController@setChartImage');
-Route::get('products/unsetchart/{prodID}', 'ProductsController@unsetChartImage');
-Route::post('products/delete/image/{id}', 'ProductsController@deleteImage');
-Route::post('products/linktags/{id}', 'ProductsController@linkTags');
-Route::post('products/insert', 'ProductsController@insert');
-Route::get('products/edit/{id}', 'ProductsController@edit');
-Route::post('products/update', 'ProductsController@update');
-
-
-//Users
-Route::get('users/show/all','UsersController@home');
-Route::get('users/show/latest','UsersController@latest');
-Route::get('users/show/top', 'UsersController@top');
-Route::get('users/edit/{id}', 'UsersController@edit');
-Route::get('users/add', 'UsersController@add');
-Route::get('users/profile/{id}', 'UsersController@profile');
-Route::post('users/insert', 'UsersController@insert');
-Route::post('users/update', 'UsersController@update');
 
 //Payment Options
 Route::get('paymentoptions/show', 'PaymentOptionsController@home');
 Route::get('paymentoptions/toggle/{id}', 'PaymentOptionsController@toggle');
 
-//Areas
+//Drivers
 Route::get('drivers/show', 'DriversController@home');
 Route::get('drivers/edit/{id}', 'DriversController@edit');
 Route::get('drivers/toggle/{id}', 'DriversController@toggle');
@@ -104,46 +67,11 @@ Route::get('areas/toggle/{id}', 'AreasController@toggle');
 Route::post('areas/insert', 'AreasController@insert');
 Route::post('areas/update', 'AreasController@update');
 
-//Tags
-Route::get('tags/show', 'TagsController@home');
-Route::get('tags/edit/{id}', 'TagsController@edit');
-Route::post('tags/insert', 'TagsController@insert');
-Route::post('tags/update', 'TagsController@update');
-
-//Colors
-Route::get('colors/show', 'ColorsController@home');
-Route::get('colors/edit/{id}', 'ColorsController@edit');
-Route::post('colors/insert', 'ColorsController@insert');
-Route::post('colors/update', 'ColorsController@update');
-
-//Icons
-Route::get('icons/show', 'IconsController@home');
-Route::get('icons/edit/{id}', 'IconsController@edit');
-Route::post('icons/insert', 'IconsController@insert');
-Route::post('icons/update', 'IconsController@update');
-
-//Sizes
-Route::get('sizes/show', 'SizesController@home');
-Route::get('sizes/edit/{id}', 'SizesController@edit');
-Route::post('sizes/insert', 'SizesController@insert');
-Route::post('sizes/update', 'SizesController@update');
-
-//Charts
-Route::get('charts/show', 'ChartsController@home');
-Route::get('charts/edit/{id}', 'ChartsController@edit');
-Route::get('charts/toggle/{id}', 'ChartsController@toggle');
-Route::post('charts/insert', 'ChartsController@insert');
-Route::post('charts/update', 'ChartsController@update');
-
-//Categories
-Route::get('categories/show', 'CategoriesController@home');
-Route::get('categories/edit/{id}', 'CategoriesController@editCategory');
-Route::get('subcategories/edit/{id}', 'CategoriesController@editSubCategory');
-Route::post('categories/insert', 'CategoriesController@insertCategory');
-Route::post('subcategories/insert', 'CategoriesController@insertSubCategory');
-Route::post('categories/update', 'CategoriesController@updateCategory');
-Route::post('subcategories/update', 'CategoriesController@updateSubCategory');
-
+//Sources
+Route::get('sources/show', 'OrderSourcesController@home');
+Route::get('sources/edit/{id}', 'OrderSourcesController@edit');
+Route::post('sources/insert', 'OrderSourcesController@insert');
+Route::post('sources/update', 'OrderSourcesController@update');
 
 //Dashboard users
 Route::get("dash/users/all", 'DashUsersController@index');
