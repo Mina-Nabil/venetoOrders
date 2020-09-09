@@ -157,8 +157,12 @@ class OrdersController extends Controller
             $orderItemArray = $this->getOrderItemsArray($request);
             foreach ($orderItemArray as $item) {
                 $orderItem = $order->order_items()->firstOrNew(
-                    ['ORIT_FNSH_ID' => $item['ORIT_FNSH_ID'], "ORIT_SIZE" => $item['ORIT_SIZE']]
+                    ['ORIT_FNSH_ID' => $item['ORIT_FNSH_ID'], "ORIT_SIZE" => $item['ORIT_SIZE'], "ORIT_PRCE" => $item['ORIT_PRCE']]
                 );
+                if ($orderItem->ORDR_VRFD == 1) {
+                    $finished = Finished::findOrfail($item->ORIT_FNSH_ID);
+                    $finished->incrementSizeQuantity($item->ORIT_SIZE, $item->ORIT_CUNT);
+                }
                 $orderItem->ORIT_CUNT += $item['ORIT_CUNT'];
                 $orderItem->ORIT_SIZE = $item['ORIT_SIZE'];
                 $orderItem->ORIT_VRFD = 0;
@@ -201,11 +205,9 @@ class OrdersController extends Controller
             $isReturned = true;
             foreach ($order->order_items as $item) {
                 $finished = Finished::findOrfail($item->ORIT_FNSH_ID);
-                $finished->FNSH_CUNT += $item->ORIT_CUNT;
-                if (!$finished->save()) {
-                    $isReturned = false;
+                $isReturned = $finished->incrementSizeQuantity($item->ORIT_SIZE, $item->ORIT_CUNT);
+                if (!$isReturned)
                     break;
-                }
             }
             if ($isReturned) {
                 $order->ORDR_STTS_ID = 5;
@@ -433,7 +435,7 @@ class OrdersController extends Controller
             $oldTotal = $order->ORDR_TOTL;
             $order->recalculateTotal();
             Client::insertTrans($order->source->ORSC_CLNT_ID, 0, 0, 0, 0, $oldTotal - $order->ORDR_TOTL, "Automatically Added from Orders System", "Item deleted on Order(" . $order->id . ")");
-            $order->addTimeline("Items deleted, worth: " . $oldTotal - $order->ORDR_TOTL . "EGP");
+            $order->addTimeline("Items deleted, worth: " . ($oldTotal - $order->ORDR_TOTL) . "EGP");
         });
         return redirect("orders/details/" . $order->id);
     }
@@ -486,6 +488,7 @@ class OrdersController extends Controller
                 $finished = Finished::findOrFail($orderItem->ORIT_FNSH_ID);
                 $finished->incrementSizeQuantity($orderItem->ORIT_CUNT, $orderItem->ORIT_SIZE);
                 $orderItem->ORIT_CUNT = $request->count;
+                $orderItem->ORIT_PRCE = $request->price;
                 $orderItem->ORIT_VRFD = 0;
                 $orderItem->save();
                 $oldTotal = $order->ORDR_TOTL;
@@ -621,7 +624,7 @@ class OrdersController extends Controller
 
             array_push(
                 $retArr,
-                ["ORIT_FNSH_ID" => $item, "ORIT_CUNT" => $request->count[$index], "ORIT_SIZE" => $request->size[$index]]
+                ["ORIT_FNSH_ID" => $item, "ORIT_CUNT" => $request->count[$index], "ORIT_PRCE" => $request->price[$index], "ORIT_SIZE" => $request->size[$index]]
             );
         }
         return $retArr;
@@ -632,7 +635,7 @@ class OrdersController extends Controller
         $retArr = array();
         foreach ($request->item as $index => $item) {
             array_push($retArr, new OrderItem(
-                ["ORIT_FNSH_ID" => $item, "ORIT_CUNT" => $request->count[$index], "ORIT_SIZE" => $request->size[$index]]
+                ["ORIT_FNSH_ID" => $item, "ORIT_CUNT" => $request->count[$index], "ORIT_PRCE" => $request->price[$index], "ORIT_SIZE" => $request->size[$index]]
             ));
         }
         return $retArr;
@@ -642,8 +645,8 @@ class OrdersController extends Controller
     {
         $total = 0;
         foreach ($request->item as $index => $item) {
-            $price = Finished::findOrFail($item)->FNSH_PRCE;
-            $total += $request->count[$index] * $price;
+            //$price = Finished::findOrFail($item)->FNSH_PRCE;
+            $total += $request->count[$index] * $request->price[$index];
         }
         return $total;
     }

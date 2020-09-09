@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 //Site
-Route::get("site/home", 'SiteController@home');
+Route::get("sources/feed", 'OrderSourcesController@feed');
 
 
 //Orders
@@ -83,5 +83,5 @@ Route::post("dash/users/update", 'DashUsersController@update');
 Route::get('logout', 'HomeController@logout')->name('logout');
 Route::get('/login', 'HomeController@login')->name('login');
 Route::post('/login', 'HomeController@authenticate')->name('login');
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/', 'HomeController@index')->name('home');
+Route::get('/home', 'OrdersController@active')->name('home');
+Route::get('/', 'OrdersController@active')->name('home');

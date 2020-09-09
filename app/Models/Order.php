@@ -53,8 +53,8 @@ class Order extends Model
     {
         $total = 0;
         foreach ($this->order_items as $item) {
-            $price = Finished::findOrFail($item->ORIT_FNSH_ID)->FNSH_PRCE;
-            $total += $item->ORIT_CUNT * $price;
+            //$price = Finished::findOrFail($item->ORIT_FNSH_ID)->FNSH_PRCE;
+            $total += $item->ORIT_CUNT * $item->ORIT_PRCE;
         }
         $this->ORDR_TOTL = $total;
         $this->save();
@@ -125,7 +125,7 @@ class Order extends Model
         $ret['items'] = DB::table('order_items')->join("finished", "ORIT_FNSH_ID", "=", "finished.id")
             ->join("brands", "FNSH_BRND_ID", "=", "brands.id")
             ->join("models", "FNSH_MODL_ID", "=", "models.id")
-            ->select("order_items.*", "BRND_NAME", "MODL_NAME", "MODL_UNID", "ORIT_CUNT", "ORIT_VRFD", "FNSH_PRCE")
+            ->select("order_items.*", "BRND_NAME", "MODL_NAME", "MODL_UNID", "ORIT_CUNT", "ORIT_VRFD", "ORIT_PRCE")
             ->where("ORIT_ORDR_ID", "=", $id)
             ->get();
 

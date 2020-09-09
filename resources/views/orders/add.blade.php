@@ -114,9 +114,9 @@
                         </div>
 
                         <div class="row col-lg-12">
-                            <div class="col-lg-6">
+                            <div class="col-lg-3">
                                 <div class="input-group mb-2">
-                                    <select name=item[] class="form-control select2  custom-select" style="width:100%"  required>
+                                    <select name=item[] class="form-control select2  custom-select" style="width:100%" required>
                                         <option disabled hidden selected value="">Model</option>
                                         @foreach($finished as $item)
                                         <option value="{{ $item->id }}">
@@ -127,7 +127,7 @@
                             </div>
                             <div class="col-lg-3">
                                 <div class="input-group mb-2">
-                                    <select name=size[] class="form-control select2  custom-select" style="width:100%"  required>
+                                    <select name=size[] class="form-control select2  custom-select" style="width:100%" required>
                                         <option disabled hidden selected value="">Pick a Size</option>
                                         <option value="36">36</option>
                                         <option value="38">38</option>
@@ -140,11 +140,17 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-lg-3">
+                                <div class="input-group mb-3">
+                                    <input type="number" step=0.01 id=price class="form-control amount" placeholder="Item Price" min=0 name=price[] aria-describedby="basic-addon11" required>
+
+                                </div>
+                            </div>
 
 
                             <div class="col-lg-3">
                                 <div class="input-group mb-3">
-                                    <input type="number" step=1 class="form-control amount" placeholder="Items Count" min=0 name=count[] aria-describedby="basic-addon11" required>
+                                    <input type="number" step=1 id=count class="form-control amount" placeholder="Items Count" min=0 name=count[] aria-describedby="basic-addon11" required>
                                     <div class="input-group-append">
                                         <button class="btn btn-success" id="dynamicAddButton" type="button" onclick="addToab();"><i class="fa fa-plus"></i></button>
                                     </div>
@@ -152,11 +158,23 @@
                             </div>
                         </div>
                     </div>
+                    <div class=row>
+                        <div class="col-lg-6">
+                            <h4 class="card-title">Number of Items</h4>
+                            <h6 class="card-subtitle" id=itemsCount>0</h6>
+                            
+                        </div>
+                        <div class="col-lg-6">
+                            <h4 class="card-title">Total Price</h4>
+                            <h6 class="card-subtitle" id=totalPrice>0EGP</h6>
+                        </div>
+                    </div>
 
                     <button type="submit" class="btn btn-success mr-2">Submit</button>
                     @if($isCancel)
                     <a href="{{url($homeURL) }}" class="btn btn-dark">Cancel</a>
                     @endif
+                    <button type="button" onclick="calculatePrice()" class="btn btn-info mr-2">Calculate</button>
                 </div>
             </div>
         </form>
@@ -176,7 +194,7 @@
    divtest.setAttribute("class", "nopadding row col-lg-12 removeclass" + room);
    var rdiv = 'removeclass' + room;
    var concatString = "";
-   concatString +=   '<div class="col-lg-6">\
+   concatString +=   '<div class="col-lg-3">\
                                 <div class="input-group mb-2">\
                                     <select name=item[] class="form-control select2  custom-select" required>\
                                         <option disabled hidden selected value="">Model</option>\
@@ -202,6 +220,11 @@
                                     </select>\
                                 </div>\
                             </div>';
+   concatString += '   <div class="col-lg-3">\
+                                        <div class="input-group mb-3">\
+                                            <input type="number" step=0.01 id=price class="form-control amount" placeholder="Item Price" min=0 name=price[]\ aria-describedby="basic-addon11" required>\
+                                        </div>\
+                                    </div>';
    concatString +=                    " <div class='col-lg-3'>\
                                <div class='input-group mb-3'>\
                                    <input type='number' step=1 class='form-control amount' placeholder='Items Count' min=0 id=count" + room + "\
@@ -223,6 +246,26 @@
    function removeToab(rid) {
     $('.removeclass' + rid).remove();
 
+    }
+
+    function calculatePrice(){
+        counts = document.getElementsByName('count[]')
+        prices = document.getElementsByName('price[]')
+        count = 0;
+        totalPrice = 0;
+        i = 0;
+
+        counts.forEach(element => {
+          count += parseInt(element.value)  
+          totalPrice += (parseInt(element.value) * parseInt(prices[i++].value))
+        });
+
+        totalDiv = document.getElementById('itemsCount')
+        totalDiv.innerHTML = count
+
+        priceDiv = document.getElementById('totalPrice')
+        priceDiv.innerHTML = totalPrice + "EGP"
+        
     }
    
 </script>

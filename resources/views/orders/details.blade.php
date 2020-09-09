@@ -52,9 +52,9 @@
                         <p> {{$order->ORDR_GEST_NAME}}
                             {{-- @if(!$order->ORDR_GEST_NAME)
                             <a href="{{url('users/profile/' . $order->ORDR_USER_ID )}}">
-                                @endif
-                                {{($order->ORDR_GEST_NAME) ? $order->ORDR_GEST_NAME . " (Guest)": $order->USER_NAME . " (User)"}}
-                                @if(!$order->ORDR_GEST_NAME)
+                            @endif
+                            {{($order->ORDR_GEST_NAME) ? $order->ORDR_GEST_NAME . " (Guest)": $order->USER_NAME . " (User)"}}
+                            @if(!$order->ORDR_GEST_NAME)
                             </a>
                             @endif --}}
                         </p>
@@ -248,8 +248,8 @@
                                         <td>{{$item->BRND_NAME}}-{{$item->MODL_UNID}}</td>
                                         <td>{{$item->ORIT_SIZE}}</td>
                                         <td>{{$item->ORIT_CUNT}}</td>
-                                        <td>{{$item->FNSH_PRCE}}</td>
-                                        <td>{{$item->ORIT_CUNT * $item->FNSH_PRCE}}</td>
+                                        <td>{{$item->ORIT_PRCE}}</td>
+                                        <td>{{$item->ORIT_CUNT * $item->ORIT_PRCE}}</td>
                                         @if($order->ORDR_STTS_ID==1 || $isPartiallyReturned)
                                         <td>
                                             <div class="btn-group">
@@ -290,13 +290,16 @@
                                                     @csrf
                                                     <div class="modal-body">
                                                         <input type=hidden name=itemID value="{{$item->id}}">
+                                                        @if(!$isPartiallyReturned)
+                                                        <div class="form-group col-md-12 m-t-0">
+                                                            <h5>Price</h5>
+                                                            <input type="number" step=0.01 class="form-control form-control-line" name=price value="{{$item->ORIT_PRCE}}" required>
+                                                        </div>
+                                                        @endif
                                                         <div class="form-group col-md-12 m-t-0">
                                                             <h5>Amount</h5>
-                                                            <input type="number" step=1 class="form-control form-control-line" name=count value="{{$item->ORIT_CUNT}}"
-                                                            @if($isPartiallyReturned)
-                                                            max={{$item->ORIT_CUNT}}
-                                                            @endif
-                                                            required>
+                                                            <input type="number" step=1 class="form-control form-control-line" name=count value="{{$item->ORIT_CUNT}}" @if($isPartiallyReturned)
+                                                                max={{$item->ORIT_CUNT}} @endif required>
                                                         </div>
 
                                                     </div>
@@ -329,19 +332,19 @@
                                 </div>
 
                                 <div class="row col-lg-12 nopadding">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-3">
                                         <div class="input-group mb-2">
                                             <select name=item[] class="form-control select2 custom-select" style="width:100%" required>
                                                 <option disabled hidden selected value="">Pick a Model</option>
                                                 @foreach($finished as $item)
-                                                <option value="{{ $item->id }}">{{$item->BRND_NAME}} - {{$item->MODL_UNID}}</option>
+                                            <option value="{{ $item->id }}">{{$item->BRND_NAME}} - {{$item->MODL_UNID}}, Price: {{$item->FNSH_PRCE}}EGP</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="input-group mb-2">
-                                            <select name=size[] class="form-control select2  custom-select" style="width:100%"  required>
+                                            <select name=size[] class="form-control select2  custom-select" style="width:100%" required>
                                                 <option disabled hidden selected value="">Pick a Size</option>
                                                 <option value="36">36</option>
                                                 <option value="38">38</option>
@@ -352,6 +355,12 @@
                                                 <option value="48">48</option>
                                                 <option value="50">50</option>
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="input-group mb-3">
+                                            <input type="number" step=0.01 id=count class="form-control amount" placeholder="Item Price" min=0 name=price[] aria-describedby="basic-addon11" required>
+                                         
                                         </div>
                                     </div>
 
@@ -477,7 +486,7 @@
                             <h6 class="card-subtitle">Edit Order Info, Notes and Address</h6>
                             @if($order->ORDR_STTS_ID < 4 ) <form class="form pt-3" method="post" action="{{ url($paymentURL) }}" enctype="multipart/form-data">
                                 <div class="form-group">
-                                    
+
                                     <label>Area</label>
                                     <div class="input-group mb-3">
                                         <select name=area id=areaSel class="select2 form-control custom-select" style="width: 100%; height:36px;" required>
@@ -519,7 +528,7 @@
                 <div class="tab-pane" id="timeline" role="tabpanel">
                     <div class="card-body">
                         <h4 class="card-title">Order history</h4>
-                        <h6 class="card-subtitle">Check all order changes & events</h6>     
+                        <h6 class="card-subtitle">Check all order changes & events</h6>
                         <ul class="list-group">
                             @foreach($timeline as $event)
                             <a href="javascript:void(0)" class="list-group-item list-group-item-action flex-column align-items-start">
@@ -674,7 +683,7 @@
    divtest.setAttribute("class", "nopadding row col-lg-12 removeclass" + room);
    var rdiv = 'removeclass' + room;
    var concatString = "";
-   concatString +=   '<div class="col-lg-6">\
+   concatString +=   '<div class="col-lg-3">\
                                 <div class="input-group mb-2">\
                                     <select name=item[] class="form-control select2  custom-select" required>\
                                         <option disabled hidden selected value="">Model</option>\
@@ -700,6 +709,11 @@
                                     </select>\
                                 </div>\
                             </div>';
+   concatString += '    <div class="col-lg-3">\
+                                        <div class="input-group mb-3">\
+                                            <input type="number" step=0.01 id=count class="form-control amount" placeholder="Item Price" min=0 name=price[]\ aria-describedby="basic-addon11" required>\
+                                        </div>\
+                                    </div>';
    concatString +=                    " <div class='col-lg-3'>\
                                <div class='input-group mb-3'>\
                                    <input type='number' step=1 class='form-control amount' placeholder='Items Count' min=0 id=count" + room + "\

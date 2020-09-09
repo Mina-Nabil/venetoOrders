@@ -69,6 +69,20 @@ class OrderSourcesController extends Controller
         return redirect($this->homeURL);
     }
 
+    public function feed(){
+        $clients = Client::all();
+        $feeded = OrderSource::all('ORSC_CLNT_ID')->pluck('ORSC_CLNT_ID')->all();
+        foreach($clients as $client){
+            if(!in_array($client->id, $feeded)){
+                $source = new OrderSource();
+                $source->ORSC_NAME = $client->CLNT_NAME;
+                $source->ORSC_CLNT_ID = $client->id;
+                $source->save();
+            }
+        }
+        return redirect($this->homeURL);
+    }
+
     public function update(Request $request)
     {
         $request->validate([

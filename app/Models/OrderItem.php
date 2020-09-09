@@ -10,7 +10,7 @@ class OrderItem extends Model
     public $timestamps = false;
 
     public $fillable = [
-        "ORIT_FNSH_ID", "ORIT_CUNT", "ORIT_SIZE" 
+        "ORIT_FNSH_ID", "ORIT_CUNT", "ORIT_SIZE" , "ORIT_PRCE" 
     ];
     public $attributes = [
         "ORIT_CUNT" => 0

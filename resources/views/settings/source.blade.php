@@ -48,10 +48,25 @@
                     @if($isCancel)
                     <a href="{{url($homeURL) }}" class="btn btn-dark">Cancel</a>
                     @endif
+                    <button type="button" onclick="confirmAndGoTo('{{url('sources/feed')}}', 'Add all missing Clients as Order Sources')" class="btn btn-success mr-2">Add All New Clients</button>
                 </form>
             </div>
         </div>
     </div>
 
 </div>
+<script>
+    function confirmAndGoTo(url, action){
+            Swal.fire({
+                text: "Are you sure you want to " + action + "?",
+                icon: "warning",
+                showCancelButton: true,
+            }).then((isConfirm) => {
+        if(isConfirm.value){
+            window.location.href = url;
+            }
+        });
+    }
+</script>
+
 @endsection
