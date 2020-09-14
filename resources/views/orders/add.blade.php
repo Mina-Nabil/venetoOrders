@@ -257,7 +257,7 @@
 
         counts.forEach(element => {
           count += parseInt(element.value)  
-          totalPrice += (parseInt(element.value) * parseInt(prices[i++].value))
+          totalPrice += (parseInt(element.value) * parseFloat(prices[i++].value))
         });
 
         totalDiv = document.getElementById('itemsCount')
