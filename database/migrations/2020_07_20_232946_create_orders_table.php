@@ -64,7 +64,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->foreignId("ORIT_ORDR_ID")->constrained("orders");
             $table->unsignedBigInteger("ORIT_FNSH_ID");
-            $table->foreign("ORIT_FNSH_ID")->references("id")->on("finished");
+            //$table->foreign("ORIT_FNSH_ID")->references("id")->on("finished");
             $table->unsignedInteger("ORIT_SIZE");
             $table->tinyInteger("ORIT_CUNT")->default(1);
         });
