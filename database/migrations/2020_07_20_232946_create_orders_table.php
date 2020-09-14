@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->string("ORSC_NAME")->unique();
             $table->unsignedBigInteger("ORSC_CLNT_ID");
-            $table->foreign("ORSC_CLNT_ID")->references("id")->on("clients");
+            //$table->foreign("ORSC_CLNT_ID")->references("id")->on("clients");
         });
 
         Schema::create('areas', function (Blueprint $table){
