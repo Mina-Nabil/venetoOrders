@@ -32,6 +32,13 @@ class DatabaseSeeder extends Seeder
             "DASH_TYPE_ID" => 1,
         ]);
 
+        DB::table('dash_users')->insert([
+            "DASH_USNM" => "admin",
+            "DASH_FLNM" => "Peter Nabil",
+            "DASH_PASS" => bcrypt('peto@veneto'),           
+            "DASH_TYPE_ID" => 1,
+        ]);
+
         DB::table('order_status')->insert([
             "STTS_NAME" => "New"
         ]);
