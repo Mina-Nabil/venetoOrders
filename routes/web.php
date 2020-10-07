@@ -46,6 +46,7 @@ Route::post("orders/add/items/{id}", "OrdersController@insertNewItems");
 Route::get("orders/add", "OrdersController@addNew");
 Route::post("orders/insert", "OrdersController@insert");
 Route::post("orders/change/quantity", "OrdersController@changeQuantity");
+Route::get("orders/invoice/{id}" , "OrdersController@invoice");
 
 
 

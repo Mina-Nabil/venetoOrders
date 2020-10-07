@@ -34,22 +34,22 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-2">
-                        <div class="font-bold">
+                        <div class="font-weight-normal">
                             Ordered On
                         </div>
-                        <p>{{$order->ORDR_OPEN_DATE}}</p>
+                        <p class="font-weight-bold">{{$order->ORDR_OPEN_DATE}}</p>
                     </div>
                     <div class="col-md-2">
-                        <div class="font-bold">
+                        <div class="font-weight-normal">
                             Area
                         </div>
-                        <p>{{$order->AREA_NAME}}</p>
+                        <p class="font-weight-bold">{{$order->AREA_NAME}}</p>
                     </div>
                     <div class="col-md-2">
-                        <div class="font-bold">
+                        <div class="font-weight-normal">
                             Client Name
                         </div>
-                        <p> {{$order->ORDR_GEST_NAME}}
+                        <p class="font-weight-bold">{{$order->ORDR_GEST_NAME}}
                             {{-- @if(!$order->ORDR_GEST_NAME)
                             <a href="{{url('users/profile/' . $order->ORDR_USER_ID )}}">
                             @endif
@@ -60,40 +60,40 @@
                         </p>
                     </div>
                     <div class="col-md-2">
-                        <div class="font-bold">
+                        <div class="font-weight-normal">
                             Client Phone
                         </div>
-                        <p>{{($order->ORDR_GEST_MOBN) ? $order->ORDR_GEST_MOBN : $order->USER_MOBN}}</p>
+                        <p class="font-weight-bold">{{($order->ORDR_GEST_MOBN) ? $order->ORDR_GEST_MOBN : $order->USER_MOBN}}</p>
                     </div>
                     <div class="col-md-2">
-                        <div class="font-bold">
+                        <div class="font-weight-normal">
                             Payment Option
                         </div>
-                        <p>{{$order->PYOP_NAME}}</p>
+                        <p class="font-weight-bold">{{$order->PYOP_NAME}}</p>
                     </div>
                     <div class="col-md-2">
-                        <div class="font-bold">
+                        <div class="font-weight-normal">
                             Total {{($order->ORDR_DISC > 0) ? "(Discount)" : ""}}
                         </div>
-                        <p>{{$order->ORDR_TOTL ." EGP"}} {{($order->ORDR_DISC > 0) ? "(" .$order->ORDR_DISC. "EGP)" : ""}}</p>
+                        <p class="font-weight-bold">{{$order->ORDR_TOTL ." EGP"}} {{($order->ORDR_DISC > 0) ? "(" .$order->ORDR_DISC. "EGP)" : ""}}</p>
                     </div>
                     <div class="col-md-4">
-                        <div class="font-bold">
+                        <div class="font-weight-normal">
                             Delivery Address
                         </div>
-                        <p>{{$order->ORDR_ADRS}}</p>
+                        <p class="font-weight-bold">{{$order->ORDR_ADRS}}</p>
                     </div>
                     <div class="col-md-4">
-                        <div class="font-bold">
+                        <div class="font-weight-normal">
                             Note
                         </div>
-                        <p>{{$order->ORDR_NOTE}}</p>
+                        <p class="font-weight-bold">{{$order->ORDR_NOTE}}</p>
                     </div>
                     <div class="col-md-4">
-                        <div class="font-bold">
+                        <div class="font-weight-normal">
                             Source
                         </div>
-                        <p>{{$order->ORSC_NAME}}: {{$order->CLNT_SRNO}}-{{$order->CLNT_NAME}}</p>
+                        <p class="font-weight-bold">{{$order->ORSC_NAME}}: {{$order->CLNT_SRNO}}-{{$order->CLNT_NAME}}</p>
                     </div>
                 </div>
             </div>
@@ -120,8 +120,20 @@
                 <!--Status tab-->
                 <div class="tab-pane active" id="status" role="tabpanel">
                     <div class="card-body">
-                        <h4 class="card-title">Order Status</h4>
-                        <h6 class="card-subtitle">Showing Order Status Summary before proceeding to delivery</h6>
+                        <div class=row>
+                            <div class="col-lg-8">
+                                <h4 class="card-title">Order Status</h4>
+                                <h6 class="card-subtitle">Showing Order Status Summary before proceeding to delivery</h6>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="align-self-center text-right">
+                                    <div class="d-flex justify-content-end align-items-center">
+                                        <a href="{{url('orders/invoice/'.$order->id)}}" class="btn btn-success d-none d-lg-block m-l-15">Invoice</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <ul>
                             @if(isset($order->ORDR_DASH_ID) && is_numeric($order->ORDR_DASH_ID))
                             <li>
@@ -338,7 +350,7 @@
                                             <select name=item[] class="form-control select2 custom-select" style="width:100%" required>
                                                 <option disabled hidden selected value="">Pick a Model</option>
                                                 @foreach($finished as $item)
-                                            <option value="{{ $item->id }}">{{$item->BRND_NAME}} - {{$item->MODL_UNID}}, Price: {{$item->FNSH_PRCE}}EGP</option>
+                                                <option value="{{ $item->id }}">{{$item->BRND_NAME}} - {{$item->MODL_UNID}}, Price: {{$item->FNSH_PRCE}}EGP</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -361,7 +373,7 @@
                                     <div class="col-lg-3">
                                         <div class="input-group mb-3">
                                             <input type="number" step=0.01 id=count class="form-control amount" placeholder="Item Price" min=0 name=price[] aria-describedby="basic-addon11" required>
-                                         
+
                                         </div>
                                     </div>
 

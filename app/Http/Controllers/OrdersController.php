@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use convert_ar ;
+
 class OrdersController extends Controller
 {
     public $data;
@@ -516,6 +518,19 @@ class OrdersController extends Controller
         $order->ORDR_NOTE = $request->note;
         $order->ORDR_AREA_ID = $request->area;
         return redirect("orders/details/" . $order->id);
+    }
+
+    public function invoice($id){
+        $data = Order::getOrderDetails($id); 
+        $numberStr = number_format($data['order']->ORDR_TOTL, 2);
+        $numArr = explode('.', $numberStr);
+        $decimal = str_replace(",", "", $numArr[1]);
+        $wholeNum = str_replace(",", "", $numArr[0]);
+        $wholeConverter = new convert_ar($wholeNum, "male");
+        $decimalConverter = new convert_ar($decimal, "male");
+
+        $data['totalInArabic'] = $wholeConverter->convert_number() . " جنيها مصريا ";
+        return view('orders.invoice', $data);
     }
 
     ////////////////////////////Insert Order from dashboard///////////////////////////
