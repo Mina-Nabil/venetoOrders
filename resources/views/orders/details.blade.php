@@ -128,7 +128,7 @@
                             <div class="col-lg-4">
                                 <div class="align-self-center text-right">
                                     <div class="d-flex justify-content-end align-items-center">
-                                        <a href="{{url('orders/invoice/'.$order->id)}}" class="btn btn-success d-none d-lg-block m-l-15">Invoice</a>
+                                        <a href="{{url('orders/invoice/'.$order->id)}}" target="_blank" class="btn btn-success d-none d-lg-block m-l-15">Invoice</a>
                                     </div>
                                 </div>
                             </div>
