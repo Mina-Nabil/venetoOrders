@@ -480,7 +480,7 @@ class OrdersController extends Controller
                 $oldTotal = $order->ORDR_TOTL;
                 $order->recalculateTotal();
                 Client::insertTrans($order->source->ORSC_CLNT_ID, 0, 0, 0, 0, $oldTotal - $order->ORDR_TOTL, "Automatically Added from Orders System", "Item deleted on Order(" . $order->id . ")");
-                $order->addTimeline("Items returned, worth: " . $oldTotal - $order->ORDR_TOTL . "EGP");
+                $order->addTimeline("Items returned, worth: " . ($oldTotal) - ($order->ORDR_TOTL ?? 0) . "EGP");
             } elseif ($order->ORDR_STTS_ID != 1) { //if it is not still new
                 return redirect("orders/details/" . $orderItem->ORIT_ORDR_ID);
             } else {
