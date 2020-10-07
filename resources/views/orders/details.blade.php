@@ -486,6 +486,7 @@
                             <h4 class="card-title">Order Info</h4>
                             <h6 class="card-subtitle">Edit Order Info, Notes and Address</h6>
                             @if($order->ORDR_STTS_ID < 4 ) <form class="form pt-3" method="post" action="{{ url($paymentURL) }}" enctype="multipart/form-data">
+                                @csrf
                                 <div class="form-group">
 
                                     <label>Area</label>
