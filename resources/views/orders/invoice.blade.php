@@ -28,7 +28,7 @@
                         <div class="pull-left text-right">
                             <address>
                                 <h3>العميل</h3>
-                                <h4 class="font-bold" style="font-size: 25px;">{{$order->CLNT_NAME}}</h4>
+                                <h4 class="font-bold" style="font-size: 25px;">{{$order->ORDR_GEST_NAME}}</h4>
                                 <p class="text-muted m-l-30">{{($order->ORDR_ADRS) ?? ''}}
                                     <br/> {{($order->CLNT_MOBN) ?? ''}}</p>
                                     <p class="m-t-30"><b>تاريخ الفاتوره :</b>  {{$order->created_at}}</p>
