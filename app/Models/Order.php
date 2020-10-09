@@ -60,7 +60,7 @@ class Order extends Model
         $this->save();
     }
 
-    public static function getOrdersByDate(bool $currentMonth = true, int $month = -1, int $year = -1, int $state = -1)
+    public static function getOrdersByDate(bool $currentMonth = true, int $month = -1, int $year = -1, int $state = -1, int $type = 1)
     {
 
         $startDate = '';
@@ -91,19 +91,26 @@ class Order extends Model
         } else {
             $query = $query->where("ORDR_STTS_ID", ">", 3);
         }
-        $query->whereBetween("ORDR_DLVR_DATE", [$startDate, $endDate]);
+        $query = $query->where("ORDR_ONLN", $type);
+        $query = $query->whereBetween("ORDR_DLVR_DATE", [$startDate, $endDate]);
 
         return $query->get();
     }
 
-    public static function getActiveOrders($state = -1)
+    public static function getActiveOrders($state = -1, $type = 1)
     {
         $query = self::tableQuery();
         if ($state > 0 && $state < 6) {
             $query = $query->where("ORDR_STTS_ID", "=", $state);
         } else {
-            $query = $query->where("ORDR_STTS_ID", "=", 1)->orWhere("ORDR_STTS_ID", "=", 1)->orWhere("ORDR_STTS_ID", "=", 2)->orWhere("ORDR_STTS_ID", "=", 3);
+            $query = $query->where([
+                ["ORDR_STTS_ID", "=", 1, 'or'],
+                ["ORDR_STTS_ID", "=", 2, 'or'],
+                ["ORDR_STTS_ID", "=", 3, 'or'],
+            ]);
         }
+        $query = $query->where("ORDR_ONLN", $type);
+
         return $query->get();
     }
 
@@ -139,15 +146,26 @@ class Order extends Model
         return $ret;
     }
 
-    public static function getOrdersCountByState($state, $startDate = null, $endDate = null)
+    public static function getOrdersCountByState($state, $startDate = null, $endDate = null, $type = 1)
     {
         $query = DB::table("orders")->where("ORDR_STTS_ID", $state);
 
         if (!is_null($startDate) && !is_null($endDate)) {
-            $query->whereBetween('ORDR_DLVR_DATE', [$startDate, $endDate]);
+            $query = $query->whereBetween('ORDR_DLVR_DATE', [$startDate, $endDate]);
         }
-
+        $query = $query->where("ORDR_ONLN", $type);
         return $query->get()->count();
+    }
+
+    public static function getNextSerialNumber($type)
+    {
+        $latestID = self::latest('id')->where('ORDR_ONLN', $type)->first()->ORDR_SRNO ?? 0;
+        $yearBaseCode = date('y') . "0000";
+       
+        if ($yearBaseCode > $latestID)
+            return $yearBaseCode + 1;
+        else
+            return $latestID + 1;
     }
 
     public static function getSalesIncome($month, $year, $catg = -1, $subCatg = -1)

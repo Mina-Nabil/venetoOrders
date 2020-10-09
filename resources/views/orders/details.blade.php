@@ -63,7 +63,7 @@
                         <div class="font-weight-normal">
                             Client Phone
                         </div>
-                        <p class="font-weight-bold">{{($order->ORDR_GEST_MOBN) ? $order->ORDR_GEST_MOBN : $order->USER_MOBN}}</p>
+                        <p class="font-weight-bold">{{($order->ORDR_GEST_MOBN) ? $order->ORDR_GEST_MOBN : $order->USER_MOBN ?? ''}}</p>
                     </div>
                     <div class="col-md-2">
                         <div class="font-weight-normal">
@@ -110,7 +110,9 @@
                     <li class="nav-item"> <a class="nav-link" role="tab" data-toggle="tab" href="#details">Order Details</a> </li>
                     <li class="nav-item"> <a class="nav-link" role="tab" data-toggle="tab" href="#additems">Add Items</a> </li>
                     <li class="nav-item"> <a class="nav-link" role="tab" data-toggle="tab" href="#driver">Assign Driver</a> </li>
+                    @if(!$isOffline)
                     <li class="nav-item"> <a class="nav-link" role="tab" data-toggle="tab" href="#payment ">Payments</a> </li>
+                    @endif
                     <li class="nav-item"> <a class="nav-link" role="tab" data-toggle="tab" href="#settings">Edit Order Info</a> </li>
                     <li class="nav-item"> <a class="nav-link" role="tab" data-toggle="tab" href="#timeline">Timeline</a> </li>
                 </ul>
@@ -183,6 +185,10 @@
                                 </p>
                                 @elseif($isFullyReturned)
                                 <p class="text-muted">Total returned items cost {{$order->ORDR_TOTL}}
+                                </p>
+                                @elseif($isOffline)
+                                <p class="text-muted">Order total added to client balance
+                                    <i class="fas fa-check-circle" style="color:lightgreen"></i>
                                 </p>
                                 @else
                                 <p class="text-muted">Payment fully collected
@@ -439,7 +445,7 @@
                     </div>
                 </div>
 
-
+                @if(!$isOffline)
                 <!--Add Item tab-->
                 <div class="tab-pane" id="payment" role="tabpanel">
                     <div class="card-body">
@@ -490,7 +496,7 @@
                             </form>
                     </div>
                 </div>
-
+                @endif
                 <!--Settings tab-->
                 <div class="tab-pane " id="settings" role="tabpanel">
                     <div class="card-body">

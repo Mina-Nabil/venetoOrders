@@ -144,12 +144,21 @@
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav">
 
-                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cart-plus"></i><span class="hide-menu">Orders</span></a>
+                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cart-plus"></i><span class="hide-menu">Online Orders</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{url('orders/active')}}">Active Orders</a></li>
-                                <li><a href="{{url('orders/month')}}">Current Month</a></li>
-                                <li><a href="{{url('orders/load/history')}}">History</a></li>
-                                <li><a href="{{url('orders/add')}}">Place an Order</a></li>
+                                <li><a href="{{url('orders/active/1')}}">Active Orders</a></li>
+                                <li><a href="{{url('orders/month/1')}}">Current Month</a></li>
+                                <li><a href="{{url('orders/load/history/1')}}">History</a></li>
+                                <li><a href="{{url('orders/add/1')}}">Place an Order</a></li>
+                            </ul>
+                        </li>
+
+                        <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-cart-plus"></i><span class="hide-menu">Offline Orders</span></a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{{url('orders/active/2')}}">Active Orders</a></li>
+                                <li><a href="{{url('orders/month/2')}}">Current Month</a></li>
+                                <li><a href="{{url('orders/load/history/2')}}">History</a></li>
+                                <li><a href="{{url('orders/add/2')}}">Place an Order</a></li>
                             </ul>
                         </li>
 

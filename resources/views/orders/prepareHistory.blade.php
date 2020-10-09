@@ -10,7 +10,7 @@ function goToHistory(){
     let selectedMonth   = monthSel.options[monthSel.selectedIndex].value;
     let selectedYear    = yearSel.options[yearSel.selectedIndex].value;
 
-    window.location.href = '{{url('orders/history')}}' + '/' + selectedYear + '/' + selectedMonth + '/-1';
+    window.location.href = '{{url('orders/history')}}' + '/' + {{$type}} + '/' + selectedYear + '/' + selectedMonth + '/-1';
 
 }
 </script>

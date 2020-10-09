@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="card card-body printableArea">
-            <h3><strong><b>فاتوره</b> </strong><span class="pull-right">#{{sprintf('%06d', $order->id)}}</span></h3>
+            <h3><strong><b>فاتوره</b> </strong><span class="pull-right">#{{($order->ORDR_SRNO > 0) ? $order->ORDR_SRNO : sprintf('%06d', $order->id)}}</span></h3>
             <hr>
             <div class="row">
                     <!-- <div class="col-lg-3">                 
@@ -30,7 +30,7 @@
                                 <h3>العميل</h3>
                                 <h4 class="font-bold" style="font-size: 25px;">{{$order->ORDR_GEST_NAME}}</h4>
                                 <p class="text-muted m-l-30">{{($order->ORDR_ADRS) ?? ''}}
-                                    <br/> {{($order->CLNT_MOBN) ?? ''}}</p>
+                                    <br/> {{($order->ORDR_GEST_MOBN) ?? ''}}</p>
                                     <p class="m-t-30"><b>تاريخ الفاتوره :</b>  {{$order->created_at}}</p>
                                 </address>
                             </div>

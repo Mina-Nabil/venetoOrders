@@ -19,13 +19,13 @@ Route::get("sources/feed", 'OrderSourcesController@feed');
 
 
 //Orders
-Route::get("orders/active", "OrdersController@active");
-Route::get("orders/month", "OrdersController@monthly");
-Route::get("orders/month/{id}", "OrdersController@monthly");
-Route::get("orders/state/{id}", "OrdersController@state");
-Route::get("orders/history/{year}/{month}", "OrdersController@history");
-Route::get("orders/history/{year}/{month}/{state}", "OrdersController@history");
-Route::get("orders/load/history", "OrdersController@loadHistory");
+Route::get("orders/active/{type}", "OrdersController@active");
+Route::get("orders/month/{type}", "OrdersController@monthly");
+Route::get("orders/month/{type}/{id}", "OrdersController@monthly");
+Route::get("orders/state/{type}/{id}", "OrdersController@state");
+Route::get("orders/history/{type}/{year}/{month}", "OrdersController@history");
+Route::get("orders/history/{type}/{year}/{month}/{state}", "OrdersController@history");
+Route::get("orders/load/history/{type}", "OrdersController@loadHistory");
 Route::get("orders/details/{id}", "OrdersController@details");
 Route::get("orders/edit/details", "OrdersController@editOrderInfo");
 Route::get("orders/set/new/{id}", "OrdersController@setNew");
@@ -43,8 +43,8 @@ Route::post("orders/collect/delivery", "OrdersController@collectDeliveryPayment"
 Route::post("orders/set/discount", "OrdersController@setDiscount");
 Route::post("orders/assign/driver", "OrdersController@assignDriver");
 Route::post("orders/add/items/{id}", "OrdersController@insertNewItems");
-Route::get("orders/add", "OrdersController@addNew");
-Route::post("orders/insert", "OrdersController@insert");
+Route::get("orders/add/{type}", "OrdersController@addNew");
+Route::post("orders/insert/{type}", "OrdersController@insert");
 Route::post("orders/change/quantity", "OrdersController@changeQuantity");
 Route::get("orders/invoice/{id}" , "OrdersController@invoice");
 
