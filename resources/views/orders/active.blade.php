@@ -8,7 +8,7 @@
             <!-- Column -->
             <div class="col-md-6 col-lg-4 col-xlg-3">
                 <div class="card">
-                    <a href="{{url('orders/state/' . $type . '1')}}">
+                    <a href="{{url('orders/state/' . $type . '/1')}}">
                         <div class="box bg-info text-center">
                             <h1 class="font-light text-white">{{$newCount}}</h1>
                             <h6 class="text-white">New</h6>
@@ -19,7 +19,7 @@
             <!-- Column -->
             <div class="col-md-6 col-lg-4 col-xlg-3">
                 <div class="card">
-                    <a href="{{url('orders/state/' . $type . '2')}}">
+                    <a href="{{url('orders/state/' . $type . '/2')}}">
                         <div class="box bg-warning text-center">
                             <h1 class="font-light text-white">{{$readyCount}}</h1>
                             <h6 class="text-white">Ready</h6>
@@ -30,7 +30,7 @@
             <!-- Column -->
             <div class="col-md-6 col-lg-4 col-xlg-3">
                 <div class="card">
-                    <a href="{{url('orders/state/' . $type . '3')}}">
+                    <a href="{{url('orders/state/' . $type . '/3')}}">
                         <div class="box bg-dark text-center">
                             <h1 class="font-dark text-light">{{$inDeliveryCount}}</h1>
                             <h6 class="text-white">In Delivery</h6>
