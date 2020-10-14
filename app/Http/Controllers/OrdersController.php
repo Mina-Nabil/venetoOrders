@@ -64,7 +64,7 @@ class OrdersController extends Controller
         $this->data['deliveredCount'] = Order::getOrdersCountByState(4, $startDate, $endDate, $type);
         $this->data['cancelledCount'] = Order::getOrdersCountByState(5, $startDate, $endDate, $type);
         $this->data['returnedCount'] = Order::getOrdersCountByState(6, $startDate, $endDate, $type);
-        $this->data['historyURL'] = "orders/month/" . $type . "/";
+        $this->data['historyURL'] = "orders/month/" . $type ;
         return view("orders.history", $this->data);
     }
 
