@@ -42,13 +42,13 @@ class OrdersController extends Controller
     {
         $this->initTableArr(false, $stateID, -1, -1, $type);
         if ($stateID > 0 && $stateID < 4) {
-            $this->data['newCount'] = Order::getOrdersCountByState(1, $type);
-            $this->data['readyCount'] = Order::getOrdersCountByState(2, $type);
-            $this->data['inDeliveryCount'] = Order::getOrdersCountByState(3, $type);
+            $this->data['newCount'] = Order::getOrdersCountByState(1, null, null, $type);
+            $this->data['readyCount'] = Order::getOrdersCountByState(2, null, null,  $type);
+            $this->data['inDeliveryCount'] = Order::getOrdersCountByState(3, null, null,  $type);
         } elseif ($stateID > 3 && $stateID < 7) {
-            $this->data['deliveredCount'] = Order::getOrdersCountByState(4, $type);
-            $this->data['cancelledCount'] = Order::getOrdersCountByState(5, $type);
-            $this->data['returnedCount'] = Order::getOrdersCountByState(6, $type);
+            $this->data['deliveredCount'] = Order::getOrdersCountByState(4,  null, null, $type);
+            $this->data['cancelledCount'] = Order::getOrdersCountByState(5, null, null,  $type);
+            $this->data['returnedCount'] = Order::getOrdersCountByState(6, null, null,  $type);
             return view("orders.history", $this->data);
         } else {
             abort(404);
@@ -64,7 +64,7 @@ class OrdersController extends Controller
         $this->data['deliveredCount'] = Order::getOrdersCountByState(4, $startDate, $endDate, $type);
         $this->data['cancelledCount'] = Order::getOrdersCountByState(5, $startDate, $endDate, $type);
         $this->data['returnedCount'] = Order::getOrdersCountByState(6, $startDate, $endDate, $type);
-        $this->data['historyURL'] = "orders/month";
+        $this->data['historyURL'] = "orders/month/" . $type . "/";
         return view("orders.history", $this->data);
     }
 
