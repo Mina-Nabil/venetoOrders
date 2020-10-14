@@ -35,6 +35,7 @@ class OrdersController extends Controller
         $this->data['newCount'] = Order::getOrdersCountByState(1, null, null, $type);
         $this->data['readyCount'] = Order::getOrdersCountByState(2, null, null, $type);
         $this->data['inDeliveryCount'] = Order::getOrdersCountByState(3, null, null, $type);
+    
         return view("orders.active", $this->data);
     }
     public function state(int $type, int $stateID)
@@ -79,7 +80,7 @@ class OrdersController extends Controller
         $this->initTableArr(false, $state, $month, $year, $type);
         $startDate  = $this->getStartDate($month, $year);
         $endDate    = $this->getEndDate($month, $year);
-        $this->data['historyURL'] = url('orders/history/' . $year . '/' . $month);
+        $this->data['historyURL'] = url('orders/history' . $type . '/' . $year . '/' . $month);
         $this->data['deliveredCount'] = Order::getOrdersCountByState(4, $startDate, $endDate, $type);
         $this->data['cancelledCount'] = Order::getOrdersCountByState(5, $startDate, $endDate, $type);
         $this->data['returnedCount'] = Order::getOrdersCountByState(6, $startDate, $endDate, $type);
@@ -642,6 +643,7 @@ class OrdersController extends Controller
             'ORDR_DLVR_DATE',
             'ORDR_TOTL'
         ];
+        $this->data['type'] = $type;
     }
 
     private function getOrderItemsArray(Request $request)
