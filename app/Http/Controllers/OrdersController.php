@@ -518,10 +518,11 @@ class OrdersController extends Controller
             "id" => "required",
 
         ]);
-        $order = Order::findOrfail($request->od);
+        $order = Order::findOrfail($request->id);
         $order->ORDR_ADRS = $request->address;
         $order->ORDR_NOTE = $request->note;
         $order->ORDR_AREA_ID = $request->area;
+        $order->save();
         return redirect("orders/details/" . $order->id);
     }
 

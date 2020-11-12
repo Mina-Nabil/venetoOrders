@@ -20,29 +20,35 @@ class Finished extends Model
                             ->join("raw", "TYPS_RAW_ID", '=', 'raw.id')
                             ->select("finished.id", "brands.BRND_NAME", "models.MODL_UNID", "models.MODL_IMGE", "types.TYPS_NAME", "raw.RAW_NAME")
                             ->selectRaw("SUM(FNSH_36_AMNT + FNSH_38_AMNT + FNSH_40_AMNT + FNSH_42_AMNT + FNSH_44_AMNT + FNSH_46_AMNT + FNSH_48_AMNT + FNSH_50_AMNT + FNSH_52_AMNT) as itemsCount")
-                            ->where("FNSH_36_AMNT"  , '!=', '0')
-                            ->orWhere("FNSH_38_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_40_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_42_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_44_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_46_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_48_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_50_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_52_AMNT"  , '!=', '0' )
+                            ->where('FNSH_HDDN', 0)
+                            ->where([
+                                ["FNSH_36_AMNT", '!=', '0', 'or'],
+                                ["FNSH_38_AMNT", '!=', '0', 'or'],
+                                ["FNSH_40_AMNT", '!=', '0', 'or'],
+                                ["FNSH_42_AMNT", '!=', '0', 'or'],
+                                ["FNSH_44_AMNT", '!=', '0', 'or'],
+                                ["FNSH_46_AMNT", '!=', '0', 'or'],
+                                ["FNSH_48_AMNT", '!=', '0', 'or'],
+                                ["FNSH_50_AMNT", '!=', '0', 'or'],
+                                ["FNSH_52_AMNT", '!=', '0', 'or'],
+                                ])
                             ->groupBy('finished.id')
                             ->get();
         $ret['totals'] = DB::table("finished")->join("models", "FNSH_MODL_ID", '=', 'models.id')
                             ->join("brands", "FNSH_BRND_ID", '=', "brands.id")
                             ->selectRaw("SUM(FNSH_36_AMNT) as total36, SUM(FNSH_38_AMNT) as total38, SUM(FNSH_40_AMNT) as total40, SUM(FNSH_42_AMNT) as total42, SUM(FNSH_44_AMNT) as total44, SUM(FNSH_46_AMNT) as total46, SUM(FNSH_48_AMNT) as total48, SUM(FNSH_50_AMNT) as total50, SUM(FNSH_52_AMNT) as total52 ")
-                            ->where("FNSH_36_AMNT"  , '!=', '0')
-                            ->orWhere("FNSH_38_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_40_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_42_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_44_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_46_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_48_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_50_AMNT"  , '!=', '0' )   
-                            ->orWhere("FNSH_52_AMNT"  , '!=', '0' )
+                            ->where('FNSH_HDDN', 0)
+                            ->where([
+                                ["FNSH_36_AMNT", '!=', '0', 'or'],
+                                ["FNSH_38_AMNT", '!=', '0', 'or'],
+                                ["FNSH_40_AMNT", '!=', '0', 'or'],
+                                ["FNSH_42_AMNT", '!=', '0', 'or'],
+                                ["FNSH_44_AMNT", '!=', '0', 'or'],
+                                ["FNSH_46_AMNT", '!=', '0', 'or'],
+                                ["FNSH_48_AMNT", '!=', '0', 'or'],
+                                ["FNSH_50_AMNT", '!=', '0', 'or'],
+                                ["FNSH_52_AMNT", '!=', '0', 'or'],
+                                ])
                             ->get()->first();
         return $ret;
     }
@@ -50,6 +56,7 @@ class Finished extends Model
         $ret['data'] = DB::table("finished")->join("models", "FNSH_MODL_ID", '=', 'models.id')
                             ->join("brands", "FNSH_BRND_ID", '=', "brands.id")
                             ->select("finished.*", "brands.BRND_NAME", "models.MODL_UNID")
+                            ->where('FNSH_HDDN', 0)
                             ->get();
         return $ret['data'];
     }

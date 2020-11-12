@@ -27,7 +27,6 @@ Route::get("orders/history/{type}/{year}/{month}", "OrdersController@history");
 Route::get("orders/history/{type}/{year}/{month}/{state}", "OrdersController@history");
 Route::get("orders/load/history/{type}", "OrdersController@loadHistory");
 Route::get("orders/details/{id}", "OrdersController@details");
-Route::get("orders/edit/details", "OrdersController@editOrderInfo");
 Route::get("orders/set/new/{id}", "OrdersController@setNew");
 Route::get("orders/set/ready/{id}", "OrdersController@setReady");
 Route::get("orders/set/cancelled/{id}", "OrdersController@setCancelled");
