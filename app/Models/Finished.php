@@ -103,8 +103,7 @@ class Finished extends Model
                         "FNSH_44_AMNT" => $amount44, 
                         "FNSH_46_AMNT" => $amount46, 
                         "FNSH_48_AMNT" => $amount48, 
-                        "FNSH_50_AMNT" => $amount50, 
-                        "FNSH_PRCE" => $price, 
+                        "FNSH_50_AMNT" => $amount50
                     ]);
                 }
                 else {
