@@ -32,7 +32,7 @@
                             <td>{{$row->itemsCount}}</td>
                             <td>{{$row->ORDR_OPEN_DATE}}</td>
                             <td>{{$row->ORDR_DLVR_DATE}}</td>
-                            <td>{{$row->ORDR_TOTL}}</td>
+                            <td>{{number_format($row->ORDR_TOTL)}}</td>
                             <?php $total += $row->ORDR_TOTL ?>
                         </tr>
                         @endforeach
