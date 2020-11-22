@@ -49,7 +49,7 @@
     // Total revenue chart
     // ============================================================== 
     new Chartist.Line('.total-revenue4', {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', ' ']
         , series: [
             <?php
              foreach($graphs as $graph){ 
