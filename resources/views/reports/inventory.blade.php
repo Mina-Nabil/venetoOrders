@@ -26,8 +26,8 @@
                             <td>{{$row->BRND_NAME}}</td>
                             <td>{{$row->MODL_NAME}}-{{$row->MODL_UNID}}</td>
                             <td>{{$row->soldCount}}</td>
-                            <td>{{$row->averagePrice}}</td>
-                            <td>{{$row->totalSold}}</td>
+                            <td>{{number_format($row->averagePrice)}}</td>
+                            <td>{{number_format($row->totalSold)}}</td>
                             <?php $totalCount += $row->soldCount ?>
                             <?php $totalPrice += $row->totalSold ?>
                         </tr>
