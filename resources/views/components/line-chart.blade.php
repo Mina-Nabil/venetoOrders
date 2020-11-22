@@ -29,7 +29,7 @@
 
             @foreach($totals as $total)
             <div class="col-lg-{{$width}} col-md-6 m-b-30 m-t-20 text-center">
-                <h1 class="m-b-0 font-light">{{$total['value']}}{{$total['unit'] ?? ''}}</h1>
+                <h1 class="m-b-0 font-light">{{number_format($total['value'])}}{{$total['unit'] ?? ''}}</h1>
                 <h6 class="text-muted">{{$total['title']}}</h6>
             </div>
             @endforeach
