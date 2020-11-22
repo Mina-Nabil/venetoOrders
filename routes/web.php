@@ -16,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 
 //Reports
 Route::get("reports/prepare/sales", 'ReportsController@prepareSales');
+Route::post("reports/load/sales", 'ReportsController@sales');
+Route::get("reports/prepare/inventory", 'ReportsController@prepareInventory');
+Route::post("reports/load/inventory", 'ReportsController@inventory');
 
 
 //Orders
