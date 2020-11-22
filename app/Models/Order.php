@@ -243,7 +243,7 @@ class Order extends Model
             ->join("brands", "FNSH_BRND_ID", "=", "brands.id")->join("models", "FNSH_MODL_ID", "=", "models.id")
             ->select(["BRND_NAME", "MODL_NAME", "MODL_UNID"])
             ->selectRaw("SUM(ORIT_CUNT) as soldCount, SUM(ORIT_PRCE) as totalSold , AVG(ORIT_PRCE) as averagePrice ")
-            ->groupBy("order_items.id")
+            ->groupBy("models.MODL_UNID")
             ->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('Y-m-01 00:00:00'), $end->format('Y-m-t 23:59:59')]);
         if ($type != -1) {
             $query = $query->where('ORDR_ONLN', $type);
@@ -270,7 +270,7 @@ class Order extends Model
 
     public static function getInventoryMonthlyTotal($type = null, DateTime $date)
     { //status = 4 delivered
-        $query = DB::table("order_items")->join("orders", "ORIT_ORDR_ID", '=', 'orders.id')->groupBy("order_items.id")
+        $query = DB::table("order_items")->join("orders", "ORIT_ORDR_ID", '=', 'orders.id')
             ->selectRaw("SUM(ORIT_CUNT) as soldCount")->where("ORDR_STTS_ID", 4)
             ->whereBetween("ORDR_DLVR_DATE", [$date->format('Y-m-01 00:00:00'), $date->format('Y-m-t 23:59:59')]);
         if ($type !== null) {
