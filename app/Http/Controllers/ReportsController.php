@@ -10,10 +10,10 @@ use Illuminate\Support\Collection;
 class ReportsController extends Controller
 {
 
-    function prepareSales()
+    function prepareSales($year = null)
     {
-        $offlineArr = Order::getSalesChartData(0);
-        $onlineArr = Order::getSalesChartData(1);
+        $offlineArr = Order::getSalesChartData(0, $year);
+        $onlineArr = Order::getSalesChartData(1, $year);
         $data['graphData'] = ['0' => $offlineArr['data'], '1' => $onlineArr['data']];
         $data['graphMax'] = max($offlineArr['max'], $onlineArr['max']);
         $data['graphTotal'] = [
@@ -22,7 +22,11 @@ class ReportsController extends Controller
         ];
         $data['chartTitle'] = "Sales Totals";
         $data['chartSubtitle'] = "Current Year Sales Summary";
+        $data['formTitle'] = "Load Sales";
+        $data['formSubtitle'] = "Load All Delivered Sales by Date";
         $data['formURL'] = url('reports/load/sales');
+        $data['prepareURL'] = url('reports/prepare/sales');
+        $data['years'] = Order::getOrderYears();
         return view("reports.prepare", $data);
     }
 
@@ -37,11 +41,35 @@ class ReportsController extends Controller
         return view('reports.sales', $data);
     }
 
-    function prepareInventory()
+    function prepareInventory($year = null)
     {
+        $data['years'] = Order::getOrderYears();
+
+        $offlineArr = Order::getInventoryChartData(0, $year);
+        $onlineArr = Order::getInventoryChartData(1, $year);
+        $data['graphData'] = ['0' => $offlineArr['data'], '1' => $onlineArr['data']];
+        $data['graphMax'] = max($offlineArr['max'], $onlineArr['max']);
+        $data['graphTotal'] = [
+            ["title" => "Items Sold Online", "value" => $onlineArr['total'],],
+            ["title" => "Items Sold Offline", "value" => $offlineArr['total']]
+        ];
+        $data['chartTitle'] = "Sold Items Totals";
+        $data['chartSubtitle'] = "Current Year Summary";
+        $data['formTitle'] = "Load Sold Items";
+        $data['formSubtitle'] = "Load All Delivered Items by Date";
+        $data['formURL'] = url('reports/load/inventory');
+        $data['prepareURL'] = url('reports/prepare/inventory');
+        return view("reports.prepare", $data);
     }
 
     function inventory(Request $request)
     {
+        $start = new DateTime($request->from);
+        $end = new DateTime($request->to);
+
+        $data['items'] = Order::getInventoryReport($start, $end, $request->type);
+        $data['start'] = $start;
+        $data['end']    = $end;
+        return view('reports.inventory', $data);
     }
 }
