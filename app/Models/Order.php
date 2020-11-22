@@ -199,13 +199,13 @@ class Order extends Model
     }
 
     //////////////static reports functions
-    public static function getSalesChartData($year = null)
+    public static function getSalesChartData($type=null, $year = null)
     {
         $salesArr['data'] = [];
         $max = 0;
         $total = 0;
         for ($i = 1; $i <= 12; $i++) {
-            $salesArr['data'][$i] = self::getMonthlyTotal(new DateTime("01-" . $i . "-" . ($year ?? now()->format('Y'))));
+            $salesArr['data'][$i] = self::getMonthlyTotal($type, new DateTime("01-" . $i . "-" . ($year ?? now()->format('Y'))));
             $total += $salesArr['data'][$i] ;
             if($max < $salesArr['data'][$i]) $max=$salesArr['data'][$i];
         }
@@ -215,10 +215,13 @@ class Order extends Model
         return $salesArr;
     }
 
-    public static function getMonthlyTotal(DateTime $date)
+    public static function getMonthlyTotal($type = null, DateTime $date)
     { //status = 4 delivered
-        return DB::table("orders")->selectRaw("SUM(ORDR_TOTL) as totalSales")->where("ORDR_STTS_ID", 4)
-            ->whereBetween("ORDR_DLVR_DATE", [$date->format('Y-m-01 00:00:00'), $date->format('Y-m-t 23:59:59')])
-            ->get()->first()->totalSales ?? 0;
+        $query = DB::table("orders")->selectRaw("SUM(ORDR_TOTL) as totalSales")->where("ORDR_STTS_ID", 4)
+            ->whereBetween("ORDR_DLVR_DATE", [$date->format('Y-m-01 00:00:00'), $date->format('Y-m-t 23:59:59')]);
+        if($type !== null ) {
+            $query = $query->where("ORDR_ONLN", $type);
+        }
+        return $query->get()->first()->totalSales ?? 0;
     }
 }

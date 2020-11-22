@@ -11,12 +11,14 @@ class ReportsController extends Controller
 
     function prepareSales()
     {
-        $chartArr = Order::getSalesChartData();
-        $data['graphData'] = $chartArr['data'];
-        $data['graphMax'] = $chartArr['max'];
-        $data['graphTotal'] = [[
-            "title" => "Total Sales", "value" => $chartArr['total']
-        ]];
+        $offlineArr = Order::getSalesChartData(0);
+        $onlineArr = Order::getSalesChartData(1);
+        $data['graphData'] =['0' => $offlineArr['data'],'1' => $onlineArr['data']];
+        $data['graphMax'] = max($offlineArr['max'], $onlineArr['max'] );
+        $data['graphTotal'] = [
+           [ "title" => "Total Online Sales", "value" => $onlineArr['total'],],
+           [ "title" => "Total Offline Sales", "value" => $offlineArr['total']]
+        ];
         $data['chartTitle'] = "Sales Totals";
         $data['chartSubtitle'] = "Current Year Sales Summary";
 

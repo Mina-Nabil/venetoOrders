@@ -47,9 +47,13 @@
     new Chartist.Line('.user-analytics', {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', ' ']
         , series: [
-       [ {{implode(', ', $graphs)}}]
-
-      ]
+            <?php
+             foreach($graphs as $graph){ 
+                 echo('[' . implode(', ', $graph) . '],') ;
+             } 
+            ?>
+            ]
+      
     }, {
         high: '{{$max}}'
         , low: 0
