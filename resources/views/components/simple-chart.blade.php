@@ -16,10 +16,11 @@
                         <h3>{{$chartTitle}}</h3>
                         <h6 class="card-subtitle">{{$chartSubtitle}}</h6>
                         <div class="row">
+                        
                             @foreach($totals as $total)
                             <div class="col-lg-12 m-t-40">
-                                <h1 class="m-b-0 font-light">{{$total->value}}</h1>
-                                <h6 class="text-muted">{{$total->title}}</h6>
+                                <h1 class="m-b-0 font-light">{{number_format($total['value'])}}</h1>
+                                <h6 class="text-muted">{{$total['title']}}</h6>
                             </div>
                             @endforeach
                         </div>
@@ -46,15 +47,15 @@
     new Chartist.Line('.user-analytics', {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
         , series: [
-        [0, 2, 3.5, 0, 13, 1, 4]
+       [ {{implode(', ', $graphs)}}]
 
       ]
     }, {
-        high: 25
+        high: '{{$max}}'
         , low: 0
         , showArea: true
         , lineSmooth: Chartist.Interpolation.simple({
-            divisor: 10
+            divisor: 100
         })
         , fullWidth: true
         , chartPadding: 0
@@ -63,9 +64,9 @@
       ], // As this is axis specific we need to tell Chartist to use whole numbers only on the concerned axis
         axisY: {
             onlyInteger: true
-            , offset: 20
+            , offset: 100
             , labelInterpolationFnc: function (value) {
-                return (value / 1) + 'k';
+                return (value / 1000) + 'k';
             }
         }
     });

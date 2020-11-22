@@ -164,9 +164,8 @@
 
                         <li> <a class="has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="fas fa-chart-bar"></i><span class="hide-menu"> Reports</span></a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="{{url('suppliers/trans/prepare')}}">Inventory</a></li>
-                                <li><a href="{{url('suppliers/trans/quick')}}">Sales</a></li>
-                                <li><a href="{{url('suppliers/show')}}">Users</a></li>
+                                <li><a href="{{url('reports/prepare/inventory')}}">Inventory</a></li>
+                                <li><a href="{{url('reports/prepare/sales')}}">Sales</a></li>
                             </ul>
                         </li>
 

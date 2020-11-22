@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Site
-Route::get("sources/feed", 'OrderSourcesController@feed');
+//Reports
+Route::get("reports/prepare/sales", 'ReportsController@prepareSales');
 
 
 //Orders

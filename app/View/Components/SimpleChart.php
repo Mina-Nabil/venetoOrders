@@ -10,16 +10,18 @@ class SimpleChart extends Component
     public $chartTitle;
     public $chartSubtitle;
     public $graphs;
+    public $max;
     public $totals;
     /**
      * Create a new component instance.
      *
      * @return void
      */
-    public function __construct($chartTitle, $chartSubtitle='', $graphs, $totals=[]){
+    public function __construct($chartTitle, $chartSubtitle='', $graphs, $max, $totals=[]){
         $this->chartTitle = $chartTitle;
         $this->chartSubtitle = $chartSubtitle;
         $this->graphs = $graphs;
+        $this->max = $max;
         $this->totals = $totals;
     }
 

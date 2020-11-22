@@ -161,7 +161,7 @@ class Order extends Model
     {
         $latestID = self::latest('id')->where('ORDR_ONLN', $type)->first()->ORDR_SRNO ?? 0;
         $yearBaseCode = date('y') . "0000";
-       
+
         if ($yearBaseCode > $latestID)
             return $yearBaseCode + 1;
         else
@@ -196,5 +196,29 @@ class Order extends Model
         $timeline->TMLN_ORDR_ID = $this->id;
         $timeline->TMLN_TEXT    = $text;
         $timeline->save();
+    }
+
+    //////////////static reports functions
+    public static function getSalesChartData($year = null)
+    {
+        $salesArr['data'] = [];
+        $max = 0;
+        $total = 0;
+        for ($i = 1; $i <= 12; $i++) {
+            $salesArr['data'][$i] = self::getMonthlyTotal(new DateTime("01-" . $i . "-" . ($year ?? now()->format('Y'))));
+            $total += $salesArr['data'][$i] ;
+            if($max < $salesArr['data'][$i]) $max=$salesArr['data'][$i];
+        }
+        
+        $salesArr['max'] = $max;
+        $salesArr['total'] = $total;
+        return $salesArr;
+    }
+
+    public static function getMonthlyTotal(DateTime $date)
+    { //status = 4 delivered
+        return DB::table("orders")->selectRaw("SUM(ORDR_TOTL) as totalSales")->where("ORDR_STTS_ID", 4)
+            ->whereBetween("ORDR_DLVR_DATE", [$date->format('Y-m-01 00:00:00'), $date->format('Y-m-t 23:59:59')])
+            ->get()->first()->totalSales ?? 0;
     }
 }
