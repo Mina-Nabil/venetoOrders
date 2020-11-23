@@ -242,7 +242,7 @@ class Order extends Model
         $query = DB::table("order_items")->join("orders", "ORIT_ORDR_ID", '=', 'orders.id')->join("finished", "ORIT_FNSH_ID", "=", "finished.id")
             ->join("brands", "FNSH_BRND_ID", "=", "brands.id")->join("models", "FNSH_MODL_ID", "=", "models.id")
             ->select(["BRND_NAME", "MODL_NAME", "MODL_UNID"])
-            ->selectRaw("SUM(ORIT_CUNT) as soldCount, SUM(ORIT_PRCE) as totalSold , AVG(ORIT_PRCE) as averagePrice ")
+            ->selectRaw("SUM(ORIT_CUNT) as soldCount, (ORIT_PRCE * ORIT_PRCE) as totalSold , AVG(ORIT_PRCE) as averagePrice ")
             ->groupBy("models.id", "brands.id")
             ->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('Y-m-01 00:00:00'), $end->format('Y-m-t 23:59:59')]);
         if ($type != -1) {
