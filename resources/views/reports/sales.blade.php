@@ -18,6 +18,7 @@
                             <th>Ordered</th>
                             <th>Delivered</th>
                             <th>Total</th>
+                            <th>Address</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -31,8 +32,9 @@
                             <td>{{$row->PYOP_NAME}}</td>
                             <td>{{$row->itemsCount}}</td>
                             <td>{{(new DateTime($row->ORDR_OPEN_DATE))->format('d-M-Y H:i')}}</td>
-                            <td>{{new DateTime($row->ORDR_DLVR_DATE))->format('d-M-Y H:i')}}</td>
+                            <td>{{(new DateTime($row->ORDR_DLVR_DATE))->format('d-M-Y H:i')}}</td>
                             <td>{{number_format($row->ORDR_TOTL)}}</td>
+                            <td></td>
                             <?php $total += $row->ORDR_TOTL ?>
                         </tr>
                         @endforeach
@@ -47,6 +49,7 @@
                             <td></td>
                             <td><strong> Total:</strong></td>
                             <td><strong>{{number_format($total)}} </strong></td>
+                            <td></td>
                         </tr>
                     </tfoot>
                 </table>
