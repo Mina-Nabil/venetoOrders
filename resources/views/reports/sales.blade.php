@@ -30,8 +30,8 @@
                             <td>{{$row->AREA_NAME}}</td>
                             <td>{{$row->PYOP_NAME}}</td>
                             <td>{{$row->itemsCount}}</td>
-                            <td>{{$row->ORDR_OPEN_DATE}}</td>
-                            <td>{{$row->ORDR_DLVR_DATE}}</td>
+                            <td>{{(new DateTime($row->ORDR_OPEN_DATE))->format('d-M-Y H:i')}}</td>
+                            <td>{{new DateTime($row->ORDR_DLVR_DATE))->format('d-M-Y H:i')}}</td>
                             <td>{{number_format($row->ORDR_TOTL)}}</td>
                             <?php $total += $row->ORDR_TOTL ?>
                         </tr>
