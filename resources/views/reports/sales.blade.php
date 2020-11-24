@@ -28,13 +28,14 @@
                         <tr>
                             <td>{{$row->id}}</td>
                             <td>{{$row->ORDR_GEST_NAME}}</td>
-                            <td>{{$row->AREA_NAME}}</td>
+                            <td>
+                                <button type="button" style="padding:.1rem" class="btn btn-secondary" data-container="body" title="{{$row->AREA_NAME}}" data-toggle="popover" data-placement="bottom"
+                                    data-content="{{$row->ORDR_ADRS}}" data-original-title="Address:"></button></td>
                             <td>{{$row->PYOP_NAME}}</td>
                             <td>{{$row->itemsCount}}</td>
                             <td>{{(new DateTime($row->ORDR_OPEN_DATE))->format('d-M-Y')}}</td>
                             <td>{{(new DateTime($row->ORDR_DLVR_DATE))->format('d-M-Y')}}</td>
                             <td>{{number_format($row->ORDR_TOTL)}}</td>
-                            <td></td>
                             <?php $total += $row->ORDR_TOTL ?>
                         </tr>
                         @endforeach
@@ -49,11 +50,6 @@
                             <td></td>
                             <td><strong> Total:</strong></td>
                             <td><strong>{{number_format($total)}} </strong></td>
-                            <td>
-                                <button type="button" style="padding:.1rem" class="btn btn-secondary" data-container="body" title="" data-toggle="popover" data-placement="bottom"
-                                data-content="{{$row->ORDR_ADRS}}" data-original-title="Address:"></button>
-
-                            </td>
                         </tr>
                     </tfoot>
                 </table>
