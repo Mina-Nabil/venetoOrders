@@ -41,7 +41,7 @@ class Order extends Model
 
     public function paymentOption()
     {
-        return $this->belongsTo("payment_options", "ORDR_AREA_ID", "id");
+        return $this->belongsTo("payment_options", "ORDR_PYOP_ID", "id");
     }
 
     public function source()

@@ -51,7 +51,7 @@
                             <td><strong>{{number_format($total)}} </strong></td>
                             <td>
                                 <button type="button" style="padding:.1rem" class="btn btn-secondary" data-container="body" title="" data-toggle="popover" data-placement="bottom"
-                                data-content="{{$row->ORDR_GEST_ADRS}}" data-original-title="Address:"></button>
+                                data-content="{{$row->ORDR_ADRS}}" data-original-title="Address:"></button>
 
                             </td>
                         </tr>
