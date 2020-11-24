@@ -18,7 +18,6 @@
                             <th>Ordered</th>
                             <th>Delivered</th>
                             <th>Total</th>
-                            <th>Address</th>
                         </tr>
                     </thead>
                     <tbody>
