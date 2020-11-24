@@ -28,7 +28,7 @@
                             <td>{{$row->id}}</td>
                             <td>{{$row->ORDR_GEST_NAME}}</td>
                             <td>
-                                <button type="button" style="padding:.1rem; min-width: 80%" class="btn btn-secondary" data-container="body" title="{{$row->AREA_NAME}}" data-toggle="popover" data-placement="bottom"
+                                <button type="button" style="padding:.1rem; min-width: 100%" class="btn btn-secondary" data-container="body" title="{{$row->AREA_NAME}}" data-toggle="popover" data-placement="bottom"
                                     data-content="{{$row->ORDR_ADRS}}" data-original-title="Address:">{{$row->AREA_NAME}}</button></td>
                             <td>{{$row->PYOP_NAME}}</td>
                             <td>{{$row->itemsCount}}</td>
