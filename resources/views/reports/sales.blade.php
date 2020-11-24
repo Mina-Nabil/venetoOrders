@@ -29,7 +29,7 @@
                             <td>{{$row->ORDR_GEST_NAME}}</td>
                             <td>
                                 <button type="button" style="padding:.1rem" class="btn btn-secondary" data-container="body" title="{{$row->AREA_NAME}}" data-toggle="popover" data-placement="bottom"
-                                    data-content="{{$row->ORDR_ADRS}}" data-original-title="Address:"></button></td>
+                                    data-content="{{$row->ORDR_ADRS}}" data-original-title="Address:">{{$row->AREA_NAME}}</button></td>
                             <td>{{$row->PYOP_NAME}}</td>
                             <td>{{$row->itemsCount}}</td>
                             <td>{{(new DateTime($row->ORDR_OPEN_DATE))->format('d-M-Y')}}</td>
