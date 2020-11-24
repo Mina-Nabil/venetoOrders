@@ -215,7 +215,7 @@
                     <div class="col-md-7 align-self-center text-right">
                         <div class="d-flex justify-content-end align-items-center">
                             <a style="font-family: 'Oswald'" href="{{url('orders/add')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fa fa-plus-circle"></i> Add Order</a>
-                            <a style="font-family: 'Oswald'" href="{{url('orders/active')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fas fa-info-circle"></i> Check Orders </a>
+                            <a style="font-family: 'Oswald'" href="{{url('orders/active/1')}}" class="btn btn-info d-none d-lg-block m-l-15"><i class="fas fa-info-circle"></i> Check Orders </a>
                         </div>
                     </div>
                 </div>
