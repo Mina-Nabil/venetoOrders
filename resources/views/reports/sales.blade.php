@@ -49,7 +49,11 @@
                             <td></td>
                             <td><strong> Total:</strong></td>
                             <td><strong>{{number_format($total)}} </strong></td>
-                            <td></td>
+                            <td>
+                                <button type="button" style="padding:.1rem" class="btn btn-secondary" data-container="body" title="" data-toggle="popover" data-placement="bottom"
+                                data-content="{{$op->ORDR_GEST_ADRS}}" data-original-title="Address:"></button>
+
+                            </td>
                         </tr>
                     </tfoot>
                 </table>
