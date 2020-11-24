@@ -133,7 +133,7 @@ class Finished extends Model
         ]);
     }
 
-    public function incrementSizeQuantity($quantity, $size){
+    public function incrementSizeQuantity($size, $quantity){
         switch($size){
             case 36:
                 $this->FNSH_36_AMNT = $this->FNSH_36_AMNT + $quantity;
