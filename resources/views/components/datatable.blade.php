@@ -78,7 +78,7 @@
                         @elseif(array_key_exists('title', $att))
                         <td title="{{ $item->{$att['title']['titleAtt']} }}" >{{ $item->{$att['title']['textAtt']} }}</td>
                         @elseif(array_key_exists('longText', $att))
-                        <td title="{{ $item->{$att['longText']['att']} }}" >{{(strlen($item->{$att['longText']['att']}) > $att['longText']['limit'] ?? 12) ? mb_substr($item->{$att['longText']['att']},0,$att['longText']['max'] ?? 22, "utf-8") . "..." :  $item->{$att['longText']['att']}}}</td>
+                        <td title="{{ $item->{$att['longText']['att']} }}" >{{(strlen($item->{$att['longText']['att']}) > ($att['longText']['limit'] ?? 12)) ? mb_substr($item->{$att['longText']['att']},0,($att['longText']['max'] ?? 22), "utf-8") . "..." :  $item->{$att['longText']['att']}}}</td>
                         @elseif(array_key_exists('date', $att))
                         <td>{{ $item->{$att['date']['att']}->format($att['date']['format'])  }}</td>
                         @elseif(array_key_exists('dateStr', $att))
