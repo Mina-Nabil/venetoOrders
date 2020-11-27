@@ -617,7 +617,7 @@ class OrdersController extends Controller
             $this->data['items']    = Order::getOrdersByDate(false, $month, $year, $state, $type);
         }
         $this->data['cardTitle'] = true;
-        $this->data['cols'] = ['#', 'Client', 'Status', 'Area', 'Adrs', 'Items', 'Ordered', 'Closed', 'Sum', 'Driver'];
+        $this->data['cols'] = ['#', 'Client', 'Status', 'Area', 'Address', 'Items', 'Ordered', 'Closed', 'Sum', 'Driver'];
         $this->data['atts'] = [
             ['attUrl' => ['url' => "orders/details", "shownAtt" => 'id', "urlAtt" => 'id']],
             ['attOrAtt' => ['basicAtt' => "ORDR_GEST_NAME", "otherAtt" => 'ORSC_NAME']],
