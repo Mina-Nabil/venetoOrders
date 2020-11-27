@@ -14,6 +14,7 @@
                             <th>Client</th>
                             <th>Area</th>
                             <th>Address</th>
+                            <th>Driver</th>
                             <th>Items #</th>
                             <th>Ordered</th>
                             <th>Delivered</th>
@@ -29,6 +30,7 @@
                             <td>{{$row->ORDR_GEST_NAME}}</td>
                             <td>{{$row->AREA_NAME}}</td>
                             <td title="{{$row->ORDR_ADRS}}">{{(strlen($row->ORDR_ADRS) > 12) ? mb_substr($row->ORDR_ADRS,0,22, "utf-8") . "..." :  $row->ORDR_ADRS}}</td>
+                            <td>{{$row->DRVR_NAME}}</td>
                             <td>{{$row->itemsCount}}</td>
                             <td>{{(new DateTime($row->ORDR_OPEN_DATE))->format('d-m-Y H:i')}}</td>
                             <td>{{(new DateTime($row->ORDR_DLVR_DATE))->format('d-m-Y H:i')}}</td>
