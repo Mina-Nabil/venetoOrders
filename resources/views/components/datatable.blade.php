@@ -78,7 +78,7 @@
                         @elseif(array_key_exists('date', $att))
                         <td>{{ $item->{$att['date']['att']}->format($att['date']['format'])  }}</a></td>
                         @elseif(array_key_exists('dateStr', $att))
-                        <td>{{  (new DateTime($item->{$att['dateStr']['att']) )}->format($att['dateStr']['format'])  }}</a></td>
+                        <td>{{  (new DateTime($item->{$att['dateStr']['att']}))->format($att['dateStr']['format'])  }}</a></td>
                         @elseif(array_key_exists('attUrl', $att))
                         <td><a href="{{ url($att['attUrl']['url'] . '/' . $item->{$att['attUrl']['urlAtt']}) }}">{{ $item->{$att['attUrl']['shownAtt']}  }}</a></td>
                         @elseif(array_key_exists('urlOrStatic', $att))
