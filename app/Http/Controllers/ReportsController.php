@@ -68,13 +68,13 @@ class ReportsController extends Controller
     {
         $start = new DateTime($request->from);
         $end = new DateTime($request->to);
-        if ($request->detailed)
+        if ($request->detailed && $request->detailed==true)
             $data['items'] = Order::getDetailedInventoryReport($start, $end, $request->type);
         else
             $data['items'] = Order::getInventoryReport($start, $end, $request->type);
         $data['start'] = $start;
         $data['end']    = $end;
-        $data['detailed'] = $request->detailed ?? false;
+        $data['detailed'] = ($request->detailed && $request->detailed==true) ? true : false;
         return view('reports.inventory', $data);
     }
 }
