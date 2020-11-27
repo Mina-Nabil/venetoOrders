@@ -13,7 +13,7 @@
                             <th>#</th>
                             <th>Client</th>
                             <th>Area</th>
-                            <th>Payment</th>
+                            <th>Address</th>
                             <th>Items #</th>
                             <th>Ordered</th>
                             <th>Delivered</th>
@@ -27,13 +27,11 @@
                         <tr>
                             <td>{{$row->id}}</td>
                             <td>{{$row->ORDR_GEST_NAME}}</td>
-                            <td>
-                                <button type="button" style="padding:.1rem; min-width: 100%" class="btn btn-secondary" data-container="body" title="{{$row->AREA_NAME}}" data-toggle="popover" data-placement="bottom"
-                                    data-content="{{$row->ORDR_ADRS}}" data-original-title="Address:">{{$row->AREA_NAME}}</button></td>
-                            <td>{{$row->PYOP_NAME}}</td>
+                            <td>{{$row->AREA_NAME}}</td>
+                            <td title="{{$row->ORDR_ADRS}}" style="width: 150px; text-overflow: ellipsis;  white-space: nowrap;  ">{{$row->ORDR_ADRS}}</td>
                             <td>{{$row->itemsCount}}</td>
-                            <td>{{(new DateTime($row->ORDR_OPEN_DATE))->format('d-M-Y')}}</td>
-                            <td>{{(new DateTime($row->ORDR_DLVR_DATE))->format('d-M-Y')}}</td>
+                            <td>{{(new DateTime($row->ORDR_OPEN_DATE))->format('d-m-Y H:i')}}</td>
+                            <td>{{(new DateTime($row->ORDR_DLVR_DATE))->format('d-m-Y H:i')}}</td>
                             <td>{{number_format($row->ORDR_TOTL)}}</td>
                             <?php $total += $row->ORDR_TOTL ?>
                         </tr>
