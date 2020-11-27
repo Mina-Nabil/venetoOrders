@@ -76,7 +76,7 @@
                             </a>
                         </td>
                         @elseif(array_key_exists('title', $att))
-                        <td title="{{$item->{$att['title']['titleAtt']}}}" >{{ $item->{$att['title']['textAtt'])} }}</td>
+                        <td title="{{$item->{$att['title']['titleAtt']}}}" >{{ $item->{$att['title']['textAtt']} }}</td>
                         @elseif(array_key_exists('date', $att))
                         <td>{{ $item->{$att['date']['att']}->format($att['date']['format'])  }}</td>
                         @elseif(array_key_exists('dateStr', $att))
