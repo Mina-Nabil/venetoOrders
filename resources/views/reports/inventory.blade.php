@@ -29,7 +29,7 @@
                             <td>{{$row->BRND_NAME}}</td>
                             <td>{{$row->MODL_NAME}}-{{$row->MODL_UNID}}</td>
                             @if($detailed)
-                            <th>{{$row->ORIT_SIZE}}</th>
+                            <td>{{$row->ORIT_SIZE}}</td>
                             @endif
                             <td>{{$row->soldCount}}</td>
                             <td>{{number_format($row->averagePrice)}}</td>
