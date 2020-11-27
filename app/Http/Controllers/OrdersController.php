@@ -640,8 +640,8 @@ class OrdersController extends Controller
             'AREA_NAME',
             'PYOP_NAME',
             'itemsCount',
-            'ORDR_OPEN_DATE',
-            'ORDR_DLVR_DATE',
+            ['dateStr' => ['att' => 'ORDR_OPEN_DATE', 'format' =>  'd-m-Y H:i']],
+            ['dateStr' => ['att' => 'ORDR_DLVR_DATE', 'format' =>  'd-m-Y H:i']],
             'ORDR_TOTL'
         ];
         $this->data['type'] = $type;
