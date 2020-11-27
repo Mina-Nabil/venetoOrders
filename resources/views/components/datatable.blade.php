@@ -76,11 +76,11 @@
                             </a>
                         </td>
                         @elseif(array_key_exists('title', $att))
-                        <td>{{ $item->{$att['title']['titleAtt']}->format($att['title']['textAtt'])  }}</a></td>
+                        <td title="{{$item->{$att['title']['titleAtt']}}}" >{{ $item->{$att['title']['textAtt'])} }}</td>
                         @elseif(array_key_exists('date', $att))
-                        <td>{{ $item->{$att['date']['att']}->format($att['date']['format'])  }}</a></td>
+                        <td>{{ $item->{$att['date']['att']}->format($att['date']['format'])  }}</td>
                         @elseif(array_key_exists('dateStr', $att))
-                        <td>{{  (new DateTime($item->{$att['dateStr']['att']}))->format($att['dateStr']['format'])  }}</a></td>
+                        <td>{{  (new DateTime($item->{$att['dateStr']['att']}))->format($att['dateStr']['format'])  }}</td>
                         @elseif(array_key_exists('attUrl', $att))
                         <td><a href="{{ url($att['attUrl']['url'] . '/' . $item->{$att['attUrl']['urlAtt']}) }}">{{ $item->{$att['attUrl']['shownAtt']}  }}</a></td>
                         @elseif(array_key_exists('urlOrStatic', $att))
