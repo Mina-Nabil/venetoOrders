@@ -617,7 +617,7 @@ class OrdersController extends Controller
             $this->data['items']    = Order::getOrdersByDate(false, $month, $year, $state, $type);
         }
         $this->data['cardTitle'] = true;
-        $this->data['cols'] = ['id', 'Client', 'Status', 'Area', 'Payment',  'Items', 'Ordered On', 'Closed On', 'Total'];
+        $this->data['cols'] = ['id', 'Client', 'Status', 'Area', 'Driver',  'Items', 'Ordered On', 'Closed On', 'Total'];
         $this->data['atts'] = [
             ['attUrl' => ['url' => "orders/details", "shownAtt" => 'id', "urlAtt" => 'id']],
             ['attOrAtt' => ['basicAtt' => "ORDR_GEST_NAME", "otherAtt" => 'ORSC_NAME']],
@@ -638,7 +638,7 @@ class OrdersController extends Controller
                 ]
             ],
             'AREA_NAME',
-            'PYOP_NAME',
+            'DRVR_NAME',
             'itemsCount',
             ['dateStr' => ['att' => 'ORDR_OPEN_DATE', 'format' =>  'd-m-Y H:i']],
             ['dateStr' => ['att' => 'ORDR_DLVR_DATE', 'format' =>  'd-m-Y H:i']],
