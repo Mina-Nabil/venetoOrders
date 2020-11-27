@@ -27,6 +27,7 @@ class ReportsController extends Controller
         $data['formURL'] = url('reports/load/sales');
         $data['prepareURL'] = url('reports/prepare/sales');
         $data['years'] = Order::getOrderYears();
+        $data['showDetails'] = false;
         return view("reports.prepare", $data);
     }
 
@@ -59,6 +60,7 @@ class ReportsController extends Controller
         $data['formSubtitle'] = "Load All Delivered Items by Date";
         $data['formURL'] = url('reports/load/inventory');
         $data['prepareURL'] = url('reports/prepare/inventory');
+        $data['showDetails'] = true;
         return view("reports.prepare", $data);
     }
 
@@ -66,10 +68,13 @@ class ReportsController extends Controller
     {
         $start = new DateTime($request->from);
         $end = new DateTime($request->to);
-
-        $data['items'] = Order::getInventoryReport($start, $end, $request->type);
+        if ($request->details)
+            $data['items'] = Order::getInventoryReport($start, $end, $request->type);
+        else
+            $data['items'] = Order::getDetailedInventoryReport($start, $end, $request->type);
         $data['start'] = $start;
         $data['end']    = $end;
+        $data['detailed'] = $request->details ?? false;
         return view('reports.inventory', $data);
     }
 }

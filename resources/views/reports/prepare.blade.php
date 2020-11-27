@@ -71,6 +71,14 @@
                             </div>
                         </div>
                     </div>
+                    @if ($showDetails)
+                    <div class="col-lg-12 bt-switch">
+                        <label>Details</label>
+                        <div class="input-group mb-3 ">
+                            <input type="checkbox" data-size="large" data-on-color="info" data-off-color="warning" data-on-text="Yes" data-off-text="No" name="detailed">
+                        </div>
+                    </div>
+                    @endif
                     <button type="submit" class="btn btn-success mr-2">Submit</button>
 
                 </form>

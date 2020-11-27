@@ -12,6 +12,9 @@
                         <tr>
                             <th>Brand</th>
                             <th>Model</th>
+                            @if($detailed)
+                            <th>Size</th>
+                            @endif
                             <th>Sold</th>
                             <th>Average Price</th>
                             <th>Total Price</th>
@@ -25,6 +28,9 @@
                         <tr>
                             <td>{{$row->BRND_NAME}}</td>
                             <td>{{$row->MODL_NAME}}-{{$row->MODL_UNID}}</td>
+                            @if($detailed)
+                            <th>{{$row->ORIT_SIZE}}</th>
+                            @endif
                             <td>{{$row->soldCount}}</td>
                             <td>{{number_format($row->averagePrice)}}</td>
                             <td>{{number_format($row->totalSold)}}</td>

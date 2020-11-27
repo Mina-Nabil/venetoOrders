@@ -252,6 +252,20 @@ class Order extends Model
         return $query->get();
     }
 
+    public static function getDetailedInventoryReport(DateTime $start, DateTime $end, $type = -1)
+    {
+        $query = DB::table("order_items")->join("orders", "ORIT_ORDR_ID", '=', 'orders.id')->join("finished", "ORIT_FNSH_ID", "=", "finished.id")
+            ->join("brands", "FNSH_BRND_ID", "=", "brands.id")->join("models", "FNSH_MODL_ID", "=", "models.id")
+            ->select(["BRND_NAME", "MODL_NAME", "MODL_UNID", "ORIT_SIZE"])
+            ->selectRaw("SUM(ORIT_CUNT) as soldCount , AVG(ORIT_PRCE) as averagePrice , (AVG(ORIT_PRCE) * SUM(ORIT_CUNT)) as totalSold")
+            ->groupBy("models.id", "brands.id", "ORIT_SIZE")
+            ->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('Y-m-01 00:00:00'), $end->format('Y-m-t 23:59:59')]);
+        if ($type != -1) {
+            $query = $query->where('ORDR_ONLN', $type);
+        }
+        return $query->get();
+    }
+
 
     public static function getInventoryChartData($type = null, $year = null)
     {
