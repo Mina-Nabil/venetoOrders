@@ -637,7 +637,7 @@ class OrdersController extends Controller
                     'urlAtt'        =>  'id'
                 ]
             ],
-            'AREA_NAME',
+            ['title' =>  [ 'titleAtt' => 'ORDR_ADRS' , 'textAtt' => 'AREA_NAME']],
             'DRVR_NAME',
             'itemsCount',
             ['dateStr' => ['att' => 'ORDR_OPEN_DATE', 'format' =>  'd-m-Y H:i']],

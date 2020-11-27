@@ -75,6 +75,8 @@
                                     {{ $att['toggle']['states'][$item->{$att['toggle']['att']}]  }}</button>
                             </a>
                         </td>
+                        @elseif(array_key_exists('title', $att))
+                        <td>{{ $item->{$att['title']['titleAtt']}->format($att['title']['textAtt'])  }}</a></td>
                         @elseif(array_key_exists('date', $att))
                         <td>{{ $item->{$att['date']['att']}->format($att['date']['format'])  }}</a></td>
                         @elseif(array_key_exists('dateStr', $att))
