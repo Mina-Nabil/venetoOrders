@@ -184,6 +184,7 @@ class Order extends Model
             ->join("order_sources", "ORDR_ORSC_ID", "=", "order_sources.id")
             ->Leftjoin("dash_users", "ORDR_DASH_ID", "=", "dash_users.id")
             ->Leftjoin("order_items", "ORIT_ORDR_ID", "=", "orders.id")
+            ->Leftjoin("drivers", "ORDR_DRVR_ID", "=", "drivers.id")
             ->join("payment_options", "ORDR_PYOP_ID", "=", "payment_options.id")
             ->select("orders.*", "order_status.STTS_NAME", "dash_users.DASH_USNM", "areas.AREA_NAME", "payment_options.PYOP_NAME", "ORSC_NAME")->selectRaw("SUM(ORIT_CUNT) as itemsCount")
             ->groupBy("orders.id", "orders.ORDR_STTS_ID", "orders.ORDR_OPEN_DATE", "order_status.STTS_NAME", "areas.AREA_NAME", "payment_options.PYOP_NAME");
