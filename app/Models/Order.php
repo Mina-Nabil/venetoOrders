@@ -256,7 +256,7 @@ class Order extends Model
     {
         $query = DB::table("order_items", "t1")->join("orders", "ORIT_ORDR_ID", '=', 'orders.id')->join("finished", "ORIT_FNSH_ID", "=", "finished.id")
             ->join("brands", "FNSH_BRND_ID", "=", "brands.id")->join("models", "FNSH_MODL_ID", "=", "models.id")
-            ->select(["BRND_NAME", "MODL_NAME", "MODL_UNID", "ORIT_SIZE"])
+            ->select(["BRND_NAME", "MODL_NAME", "MODL_UNID"])
             ->selectRaw("SUM(ORIT_CUNT) as soldCount , AVG(ORIT_PRCE) as averagePrice , (AVG(ORIT_PRCE) * SUM(ORIT_CUNT)) as totalSold  ,  
                         (SELECT COUNT(t2.id) FROM order_items as t2 WHERE t1.ORIT_SIZE = 36) as total36 ,
                         (SELECT COUNT(t2.id) FROM order_items as t2 WHERE t1.ORIT_SIZE = 38) as total38 ,
