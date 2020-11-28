@@ -255,8 +255,8 @@ class Order extends Model
     public static function getDetailedInventoryReport(DateTime $start, DateTime $end, $type = -1)
     {
         $query = DB::table("order_items", "t1")->join("orders", "ORIT_ORDR_ID", '=', 'orders.id')->join("finished", "ORIT_FNSH_ID", "=", "finished.id")
-            ->join("brands", "FNSH_BRND_ID", "=", "brands.id")->join("models as m1", "FNSH_MODL_ID", "=", "models.id")
-            ->select(["BRND_NAME", "MODL_NAME", "MODL_UNID"])
+            ->join("brands", "FNSH_BRND_ID", "=", "brands.id")->join("models as m1", "FNSH_MODL_ID", "=", "m1.id")
+            ->select(["BRND_NAME", "m1.MODL_NAME", "m1.MODL_UNID"])
             ->selectRaw("SUM(ORIT_CUNT) as soldCount , AVG(ORIT_PRCE) as averagePrice , (AVG(ORIT_PRCE) * SUM(ORIT_CUNT)) as totalSold  ,  
                         (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, brands as b2, models as m2 WHERE oi2.ORIT_FNSH_ID=f2.id AND f2.FNSH_BRND_ID=b2.id AND f2.FNSH_MODL_ID=m2.id AND m2.id = m1.id AND oi2.ORIT_SIZE = 36) as total36 ,
                         (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, brands as b2, models as m2 WHERE oi2.ORIT_FNSH_ID=f2.id AND f2.FNSH_BRND_ID=b2.id AND f2.FNSH_MODL_ID=m2.id AND m2.id = m1.id AND oi2.ORIT_SIZE = 38) as total38 ,

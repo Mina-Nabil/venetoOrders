@@ -31,6 +31,16 @@
 
                         <?php $totalCount=0; ?>
                         <?php $totalPrice=0; ?>
+                        @if($detailed)
+                        <?php $total36=0; ?>
+                        <?php $total38=0; ?>
+                        <?php $total40=0; ?>
+                        <?php $total42=0; ?>
+                        <?php $total44=0; ?>
+                        <?php $total46=0; ?>
+                        <?php $total48=0; ?>
+                        <?php $total50=0; ?>
+                        @endif
                         @foreach ($items as $row)
                         <tr>
                             <td>{{$row->BRND_NAME}}</td>
