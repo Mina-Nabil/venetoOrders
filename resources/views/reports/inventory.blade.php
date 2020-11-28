@@ -54,6 +54,14 @@
                             <td>{{$row->total46 == '' ? 0 : $row->total46}}</td>
                             <td>{{$row->total48 == '' ? 0 : $row->total48}}</td>
                             <td>{{$row->total50 == '' ? 0 : $row->total50}}</td>
+                            <?php $total36+=$row->$total36; ?>
+                            <?php $total38+=$row->$total38; ?>
+                            <?php $total40+=$row->$total40; ?>
+                            <?php $total42+=$row->$total42; ?>
+                            <?php $total44+=$row->$total44; ?>
+                            <?php $total46+=$row->$total46; ?>
+                            <?php $total48+=$row->$total48; ?>
+                            <?php $total50+=$row->$total50; ?>
                             @endif
                             <td>{{$row->soldCount}}</td>
                             <td>{{number_format($row->averagePrice)}}</td>
@@ -67,6 +75,16 @@
                         <tr>
                             <td></td>
                             <td><strong> Total:</strong></td>
+                            @if($detailed)
+                            <td>{{$total36}}</td>
+                            <td>{{$total38}}</td>
+                            <td>{{$total40}}</td>
+                            <td>{{$total42}}</td>
+                            <td>{{$total44}}</td>
+                            <td>{{$total46}}</td>
+                            <td>{{$total48}}</td>
+                            <td>{{$total50}}</td>
+                            @endif
                             <td>{{number_format($totalCount)}}</td>
                             <td>{{number_format($totalPrice/$totalCount)}}</td>
                             <td><strong>{{number_format($totalPrice)}} </strong></td>
