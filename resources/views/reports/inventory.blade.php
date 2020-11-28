@@ -13,7 +13,14 @@
                             <th>Brand</th>
                             <th>Model</th>
                             @if($detailed)
-                            <th>Size</th>
+                            <th>36</th>
+                            <th>38</th>
+                            <th>40</th>
+                            <th>42</th>
+                            <th>44</th>
+                            <th>46</th>
+                            <th>48</th>
+                            <th>50</th>
                             @endif
                             <th>Sold</th>
                             <th>Average Price</th>
@@ -29,7 +36,14 @@
                             <td>{{$row->BRND_NAME}}</td>
                             <td>{{$row->MODL_NAME}}-{{$row->MODL_UNID}}</td>
                             @if($detailed)
-                            <td>{{$row->ORIT_SIZE}}</td>
+                            <td>{{$row->total36}}</td>
+                            <td>{{$row->total38}}</td>
+                            <td>{{$row->total40}}</td>
+                            <td>{{$row->total42}}</td>
+                            <td>{{$row->total44}}</td>
+                            <td>{{$row->total46}}</td>
+                            <td>{{$row->total48}}</td>
+                            <td>{{$row->total50}}</td>
                             @endif
                             <td>{{$row->soldCount}}</td>
                             <td>{{number_format($row->averagePrice)}}</td>

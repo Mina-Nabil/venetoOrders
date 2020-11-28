@@ -254,11 +254,19 @@ class Order extends Model
 
     public static function getDetailedInventoryReport(DateTime $start, DateTime $end, $type = -1)
     {
-        $query = DB::table("order_items")->join("orders", "ORIT_ORDR_ID", '=', 'orders.id')->join("finished", "ORIT_FNSH_ID", "=", "finished.id")
+        $query = DB::table("order_items", "t1")->join("orders", "ORIT_ORDR_ID", '=', 'orders.id')->join("finished", "ORIT_FNSH_ID", "=", "finished.id")
             ->join("brands", "FNSH_BRND_ID", "=", "brands.id")->join("models", "FNSH_MODL_ID", "=", "models.id")
             ->select(["BRND_NAME", "MODL_NAME", "MODL_UNID", "ORIT_SIZE"])
-            ->selectRaw("SUM(ORIT_CUNT) as soldCount , AVG(ORIT_PRCE) as averagePrice , (AVG(ORIT_PRCE) * SUM(ORIT_CUNT)) as totalSold")
-            ->groupBy("models.id", "brands.id", "ORIT_SIZE")
+            ->selectRaw("SUM(ORIT_CUNT) as soldCount , AVG(ORIT_PRCE) as averagePrice , (AVG(ORIT_PRCE) * SUM(ORIT_CUNT)) as totalSold  ,  
+                        (SELECT COUNT(t2.id) FROM order_items as t2 WHERE t1.ORIT_SIZE = 36) as total36 ,
+                        (SELECT COUNT(t2.id) FROM order_items as t2 WHERE t1.ORIT_SIZE = 38) as total38 ,
+                        (SELECT COUNT(t2.id) FROM order_items as t2 WHERE t1.ORIT_SIZE = 40) as total40 ,
+                        (SELECT COUNT(t2.id) FROM order_items as t2 WHERE t1.ORIT_SIZE = 42) as total42 ,
+                        (SELECT COUNT(t2.id) FROM order_items as t2 WHERE t1.ORIT_SIZE = 44) as total44 ,
+                        (SELECT COUNT(t2.id) FROM order_items as t2 WHERE t1.ORIT_SIZE = 46) as total46 ,
+                        (SELECT COUNT(t2.id) FROM order_items as t2 WHERE t1.ORIT_SIZE = 48) as total48 ,
+                        (SELECT COUNT(t2.id) FROM order_items as t2 WHERE t1.ORIT_SIZE = 50) as total50 ")
+            ->groupBy("models.id", "brands.id")
             ->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('Y-m-01 00:00:00'), $end->format('Y-m-t 23:59:59')]);
         if ($type != -1) {
             $query = $query->where('ORDR_ONLN', $type);
