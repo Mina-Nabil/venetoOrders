@@ -203,7 +203,7 @@ class Order extends Model
     public static function getSalesReport(DateTime $start, DateTime $end, $type = -1)
     {
         $query = self::tableQuery();
-        $query = $query->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('\'Y-m-01 00:00:00\''), $end->format('\'Y-m-t 23:59:59\'')]);
+        $query = $query->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('Y-m-01 00:00:00'), $end->format('Y-m-t 23:59:59')]);
         if ($type != -1) {
             $query = $query->where('ORDR_ONLN', $type);
         }
@@ -231,7 +231,7 @@ class Order extends Model
     public static function getMonthlyTotal($type = null, DateTime $date)
     { //status = 4 delivered
         $query = DB::table("orders")->selectRaw("SUM(ORDR_TOTL) as totalSales")->where("ORDR_STTS_ID", 4)
-            ->whereBetween("ORDR_DLVR_DATE", [$date->format('\'Y-m-01 00:00:00\''), $date->format('\'Y-m-t 23:59:59\'')]);
+            ->whereBetween("ORDR_DLVR_DATE", [$date->format('Y-m-01 00:00:00'), $date->format('Y-m-t 23:59:59')]);
         if ($type !== null) {
             $query = $query->where("ORDR_ONLN", $type);
         }
@@ -245,7 +245,7 @@ class Order extends Model
             ->select(["BRND_NAME", "MODL_NAME", "MODL_UNID"])
             ->selectRaw("SUM(ORIT_CUNT) as soldCount , AVG(ORIT_PRCE) as averagePrice , (AVG(ORIT_PRCE) * SUM(ORIT_CUNT)) as totalSold")
             ->groupBy("models.id", "brands.id")
-            ->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('\'Y-m-01 00:00:00\''), $end->format('\'Y-m-t 23:59:59\'')]);
+            ->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('Y-m-01 00:00:00'), $end->format('Y-m-t 23:59:59')]);
         if ($type != -1) {
             $query = $query->where('ORDR_ONLN', $type);
         }
@@ -296,7 +296,7 @@ class Order extends Model
     { //status = 4 delivered
         $query = DB::table("order_items")->join("orders", "ORIT_ORDR_ID", '=', 'orders.id')
             ->selectRaw("SUM(ORIT_CUNT) as soldCount")->where("ORDR_STTS_ID", 4)
-            ->whereBetween("ORDR_DLVR_DATE", [$date->format('\'Y-m-01 00:00:00\''), $date->format('\'Y-m-t 23:59:59\'')]);
+            ->whereBetween("ORDR_DLVR_DATE", [$date->format('Y-m-01 00:00:00'), $date->format('Y-m-t 23:59:59')]);
         if ($type !== null) {
             $query = $query->where("ORDR_ONLN", $type);
         }
