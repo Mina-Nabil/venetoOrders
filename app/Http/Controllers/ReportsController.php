@@ -75,7 +75,6 @@ class ReportsController extends Controller
         $data['start'] = $start;
         $data['end']    = $end;
         $data['detailed'] = ($request->detailed && $request->detailed==true) ? true : false;
-        dd($data['items']);
         return view('reports.inventory', $data);
     }
 }

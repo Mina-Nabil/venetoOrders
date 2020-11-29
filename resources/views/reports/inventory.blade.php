@@ -46,22 +46,22 @@
                             <td>{{$row->BRND_NAME}}</td>
                             <td>{{$row->MODL_NAME}}-{{$row->MODL_UNID}}</td>
                             @if($detailed)
-                            <td>{{$row->total36 ?? 0}}</td>
-                            <td>{{$row->total38 ?? 0}}</td>
-                            <td>{{$row->total40 ?? 0}}</td>
-                            <td>{{$row->total42 ?? 0}}</td>
-                            <td>{{$row->total44 ?? 0}}</td>
-                            <td>{{$row->total46 ?? 0}}</td>
-                            <td>{{$row->total48 ?? 0}}</td>
-                            <td>{{$row->total50 ?? 0}}</td>
-                            <?php $total36+=$row->$total36; ?>
-                            <?php $total38+=$row->$total38; ?>
-                            <?php $total40+=$row->$total40; ?>
-                            <?php $total42+=$row->$total42; ?>
-                            <?php $total44+=$row->$total44; ?>
-                            <?php $total46+=$row->$total46; ?>
-                            <?php $total48+=$row->$total48; ?>
-                            <?php $total50+=$row->$total50; ?>
+                            <td>{{($row->total36 == null) ? 0 : $row->total36}}</td>
+                            <td>{{($row->total38 == null) ? 0 : $row->total38}}</td>
+                            <td>{{($row->total40 == null) ? 0 : $row->total40}}</td>
+                            <td>{{($row->total42 == null) ? 0 : $row->total42}}</td>
+                            <td>{{($row->total44 == null) ? 0 : $row->total44}}</td>
+                            <td>{{($row->total46 == null) ? 0 : $row->total46}}</td>
+                            <td>{{($row->total48 == null) ? 0 : $row->total48}}</td>
+                            <td>{{($row->total50 == null) ? 0 : $row->total50}}</td>
+                            <?php $total36+=($row->$total36??0); ?>
+                            <?php $total38+=($row->$total38??0); ?>
+                            <?php $total40+=($row->$total40??0); ?>
+                            <?php $total42+=($row->$total42??0); ?>
+                            <?php $total44+=($row->$total44??0); ?>
+                            <?php $total46+=($row->$total46??0); ?>
+                            <?php $total48+=($row->$total48??0); ?>
+                            <?php $total50+=($row->$total50??0); ?>
                             @endif
                             <td>{{$row->soldCount}}</td>
                             <td>{{number_format($row->averagePrice)}}</td>
