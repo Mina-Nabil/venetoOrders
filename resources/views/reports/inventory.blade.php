@@ -46,14 +46,14 @@
                             <td>{{$row->BRND_NAME}}</td>
                             <td>{{$row->MODL_NAME}}-{{$row->MODL_UNID}}</td>
                             @if($detailed)
-                            <td>{{($row->total36 == '' || $row->total36 == 0) ? 0 : $row->total36}}</td>
-                            <td>{{($row->total38 == '' || $row->total38 == 0) ? 0 : $row->total38}}</td>
-                            <td>{{($row->total40 == '' || $row->total40 == 0) ? 0 : $row->total40}}</td>
-                            <td>{{($row->total42 == '' || $row->total42 == 0) ? 0 : $row->total42}}</td>
-                            <td>{{($row->total44 == '' || $row->total44 == 0) ? 0 : $row->total44}}</td>
-                            <td>{{($row->total46 == '' || $row->total46 == 0) ? 0 : $row->total46}}</td>
-                            <td>{{($row->total48 == '' || $row->total48 == 0) ? 0 : $row->total48}}</td>
-                            <td>{{($row->total50 == '' || $row->total50 == 0) ? 0 : $row->total50}}</td>
+                            <td>{{$row->total36 ?? 0}}</td>
+                            <td>{{$row->total38 ?? 0}}</td>
+                            <td>{{$row->total40 ?? 0}}</td>
+                            <td>{{$row->total42 ?? 0}}</td>
+                            <td>{{$row->total44 ?? 0}}</td>
+                            <td>{{$row->total46 ?? 0}}</td>
+                            <td>{{$row->total48 ?? 0}}</td>
+                            <td>{{$row->total50 ?? 0}}</td>
                             <?php $total36+=$row->$total36; ?>
                             <?php $total38+=$row->$total38; ?>
                             <?php $total40+=$row->$total40; ?>
