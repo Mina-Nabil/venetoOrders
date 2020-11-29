@@ -86,7 +86,7 @@
                             <td>{{$total50}}</td>
                             @endif
                             <td>{{number_format($totalCount)}}</td>
-                            <td>{{number_format($totalPrice/$totalCount)}}</td>
+                            <td>{{number_format($totalPrice/$totalCount) ?? 0}}</td>
                             <td><strong>{{number_format($totalPrice)}} </strong></td>
                         </tr>
                     </tfoot>
