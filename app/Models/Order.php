@@ -203,7 +203,7 @@ class Order extends Model
     public static function getSalesReport(DateTime $start, DateTime $end, $type = -1)
     {
         $query = self::tableQuery();
-        $query = $query->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('Y-m-01 00:00:00'), $end->format('Y-m-t 23:59:59')]);
+        $query = $query->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('\'Y-m-01 00:00:00\''), $end->format('\'Y-m-t 23:59:59\'')]);
         if ($type != -1) {
             $query = $query->where('ORDR_ONLN', $type);
         }
@@ -231,7 +231,7 @@ class Order extends Model
     public static function getMonthlyTotal($type = null, DateTime $date)
     { //status = 4 delivered
         $query = DB::table("orders")->selectRaw("SUM(ORDR_TOTL) as totalSales")->where("ORDR_STTS_ID", 4)
-            ->whereBetween("ORDR_DLVR_DATE", [$date->format('Y-m-01 00:00:00'), $date->format('Y-m-t 23:59:59')]);
+            ->whereBetween("ORDR_DLVR_DATE", [$date->format('\'Y-m-01 00:00:00\''), $date->format('\'Y-m-t 23:59:59\'')]);
         if ($type !== null) {
             $query = $query->where("ORDR_ONLN", $type);
         }
@@ -245,7 +245,7 @@ class Order extends Model
             ->select(["BRND_NAME", "MODL_NAME", "MODL_UNID"])
             ->selectRaw("SUM(ORIT_CUNT) as soldCount , AVG(ORIT_PRCE) as averagePrice , (AVG(ORIT_PRCE) * SUM(ORIT_CUNT)) as totalSold")
             ->groupBy("models.id", "brands.id")
-            ->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('Y-m-01 00:00:00'), $end->format('Y-m-t 23:59:59')]);
+            ->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('\'Y-m-01 00:00:00\''), $end->format('\'Y-m-t 23:59:59\'')]);
         if ($type != -1) {
             $query = $query->where('ORDR_ONLN', $type);
         }
@@ -258,14 +258,14 @@ class Order extends Model
             ->join("brands as b1", "FNSH_BRND_ID", "=", "b1.id")->join("models as m1", "FNSH_MODL_ID", "=", "m1.id")
             ->select(["b1.BRND_NAME", "m1.MODL_NAME", "m1.MODL_UNID"])
             ->selectRaw("SUM(ORIT_CUNT) as soldCount , AVG(ORIT_PRCE) as averagePrice , (AVG(ORIT_PRCE) * SUM(ORIT_CUNT)) as totalSold  ,  
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 36 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('Y-m-01 00:00:00')} AND {$end->format('Y-m-t 23:59:59')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total36 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 38 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('Y-m-01 00:00:00')} AND {$end->format('Y-m-t 23:59:59')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total38 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 40 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('Y-m-01 00:00:00')} AND {$end->format('Y-m-t 23:59:59')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total40 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 42 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('Y-m-01 00:00:00')} AND {$end->format('Y-m-t 23:59:59')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total42 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 44 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('Y-m-01 00:00:00')} AND {$end->format('Y-m-t 23:59:59')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total44 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 46 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('Y-m-01 00:00:00')} AND {$end->format('Y-m-t 23:59:59')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total46 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 48 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('Y-m-01 00:00:00')} AND {$end->format('Y-m-t 23:59:59')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total48 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 50 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('Y-m-01 00:00:00')} AND {$end->format('Y-m-t 23:59:59')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total50 ")
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 36 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('\'Y-m-01 00:00:00\'')} AND {$end->format('\'Y-m-t 23:59:59\'')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total36 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 38 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('\'Y-m-01 00:00:00\'')} AND {$end->format('\'Y-m-t 23:59:59\'')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total38 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 40 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('\'Y-m-01 00:00:00\'')} AND {$end->format('\'Y-m-t 23:59:59\'')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total40 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 42 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('\'Y-m-01 00:00:00\'')} AND {$end->format('\'Y-m-t 23:59:59\'')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total42 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 44 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('\'Y-m-01 00:00:00\'')} AND {$end->format('\'Y-m-t 23:59:59\'')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total44 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 46 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('\'Y-m-01 00:00:00\'')} AND {$end->format('\'Y-m-t 23:59:59\'')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total46 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 48 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('\'Y-m-01 00:00:00\'')} AND {$end->format('\'Y-m-t 23:59:59\'')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total48 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, orders as o2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_ORDR_ID = o2.id AND o2.ORDR_STTS_ID=4 AND oi2.ORIT_SIZE = 50 AND o2.ORDR_DLVR_DATE BETWEEN {$start->format('\'Y-m-01 00:00:00\'')} AND {$end->format('\'Y-m-t 23:59:59\'')} GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total50 ")
             ->groupBy("m1.id", "b1.id")
             ->where("ORDR_STTS_ID", 4)
             ->whereBetween("ORDR_DLVR_DATE", [$start->format('Y-m-01 00:00:00'), $end->format('Y-m-t 23:59:59')]); //you have to change all totals where clause before changing this
@@ -296,7 +296,7 @@ class Order extends Model
     { //status = 4 delivered
         $query = DB::table("order_items")->join("orders", "ORIT_ORDR_ID", '=', 'orders.id')
             ->selectRaw("SUM(ORIT_CUNT) as soldCount")->where("ORDR_STTS_ID", 4)
-            ->whereBetween("ORDR_DLVR_DATE", [$date->format('Y-m-01 00:00:00'), $date->format('Y-m-t 23:59:59')]);
+            ->whereBetween("ORDR_DLVR_DATE", [$date->format('\'Y-m-01 00:00:00\''), $date->format('\'Y-m-t 23:59:59\'')]);
         if ($type !== null) {
             $query = $query->where("ORDR_ONLN", $type);
         }
