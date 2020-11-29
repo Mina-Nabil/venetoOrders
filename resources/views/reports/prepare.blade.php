@@ -75,7 +75,7 @@
                     <div class="col-lg-12 bt-switch">
                         <label>Details</label>
                         <div class="input-group mb-3 ">
-                            <input type="checkbox" data-size="large" data-on-color="info" data-off-color="warning" data-on-text="Yes" data-off-text="No" name="detailed">
+                            <input type="checkbox" data-size="large" data-on-color="info" data-off-color="warning" data-on-text="Yes" data-off-text="No" value="{{old('detailed')}}" name="detailed">
                         </div>
                     </div>
                     @endif
