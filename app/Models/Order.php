@@ -258,14 +258,14 @@ class Order extends Model
             ->join("brands as b1", "FNSH_BRND_ID", "=", "b1.id")->join("models as m1", "FNSH_MODL_ID", "=", "m1.id")
             ->select(["b1.BRND_NAME", "m1.MODL_NAME", "m1.MODL_UNID"])
             ->selectRaw("SUM(ORIT_CUNT) as soldCount , AVG(ORIT_PRCE) as averagePrice , (AVG(ORIT_PRCE) * SUM(ORIT_CUNT)) as totalSold  ,  
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, brands as b2, models as m2 WHERE oi2.ORIT_FNSH_ID=f2.id AND f2.FNSH_BRND_ID=b2.id AND f2.FNSH_MODL_ID=m2.id AND m2.id = m1.id AND b2.id=b1.id AND oi2.ORIT_SIZE = 36) as total36 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, brands as b2, models as m2 WHERE oi2.ORIT_FNSH_ID=f2.id AND f2.FNSH_BRND_ID=b2.id AND f2.FNSH_MODL_ID=m2.id AND m2.id = m1.id AND b2.id=b1.id AND oi2.ORIT_SIZE = 38) as total38 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, brands as b2, models as m2 WHERE oi2.ORIT_FNSH_ID=f2.id AND f2.FNSH_BRND_ID=b2.id AND f2.FNSH_MODL_ID=m2.id AND m2.id = m1.id AND b2.id=b1.id AND oi2.ORIT_SIZE = 40) as total40 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, brands as b2, models as m2 WHERE oi2.ORIT_FNSH_ID=f2.id AND f2.FNSH_BRND_ID=b2.id AND f2.FNSH_MODL_ID=m2.id AND m2.id = m1.id AND b2.id=b1.id AND oi2.ORIT_SIZE = 42) as total42 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, brands as b2, models as m2 WHERE oi2.ORIT_FNSH_ID=f2.id AND f2.FNSH_BRND_ID=b2.id AND f2.FNSH_MODL_ID=m2.id AND m2.id = m1.id AND b2.id=b1.id AND oi2.ORIT_SIZE = 44) as total44 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, brands as b2, models as m2 WHERE oi2.ORIT_FNSH_ID=f2.id AND f2.FNSH_BRND_ID=b2.id AND f2.FNSH_MODL_ID=m2.id AND m2.id = m1.id AND b2.id=b1.id AND oi2.ORIT_SIZE = 46) as total46 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, brands as b2, models as m2 WHERE oi2.ORIT_FNSH_ID=f2.id AND f2.FNSH_BRND_ID=b2.id AND f2.FNSH_MODL_ID=m2.id AND m2.id = m1.id AND b2.id=b1.id AND oi2.ORIT_SIZE = 48) as total48 ,
-                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2, brands as b2, models as m2 WHERE oi2.ORIT_FNSH_ID=f2.id AND f2.FNSH_BRND_ID=b2.id AND f2.FNSH_MODL_ID=m2.id AND m2.id = m1.id AND b2.id=b1.id AND oi2.ORIT_SIZE = 50) as total50 ")
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_SIZE = 36 GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total36 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_SIZE = 38 GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total38 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_SIZE = 40 GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total40 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_SIZE = 42 GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total42 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_SIZE = 44 GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total44 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_SIZE = 46 GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total46 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_SIZE = 48 GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total48 ,
+                        (SELECT SUM(ORIT_CUNT) FROM order_items as oi2, finished as f2 WHERE oi2.ORIT_FNSH_ID=f2.id AND oi2.ORIT_SIZE = 50 GROUP BY f2.FNSH_BRND_ID, f2.FNSH_MODL_ID) as total50 ")
             ->groupBy("m1.id", "b1.id")
             ->where("ORDR_STTS_ID", 4)->whereBetween("ORDR_DLVR_DATE", [$start->format('Y-m-01 00:00:00'), $end->format('Y-m-t 23:59:59')]);
         if ($type != -1) {
