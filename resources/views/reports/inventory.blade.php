@@ -54,14 +54,14 @@
                             <td>{{($row->total46 == null) ? 0 : $row->total46}}</td>
                             <td>{{($row->total48 == null) ? 0 : $row->total48}}</td>
                             <td>{{($row->total50 == null) ? 0 : $row->total50}}</td>
-                            <?php $total36+=($row->$total36??0); ?>
-                            <?php $total38+=($row->$total38??0); ?>
-                            <?php $total40+=($row->$total40??0); ?>
-                            <?php $total42+=($row->$total42??0); ?>
-                            <?php $total44+=($row->$total44??0); ?>
-                            <?php $total46+=($row->$total46??0); ?>
-                            <?php $total48+=($row->$total48??0); ?>
-                            <?php $total50+=($row->$total50??0); ?>
+                            <?php $total36+=($row->total36??0); ?>
+                            <?php $total38+=($row->total38??0); ?>
+                            <?php $total40+=($row->total40??0); ?>
+                            <?php $total42+=($row->total42??0); ?>
+                            <?php $total44+=($row->total44??0); ?>
+                            <?php $total46+=($row->total46??0); ?>
+                            <?php $total48+=($row->total48??0); ?>
+                            <?php $total50+=($row->total50??0); ?>
                             @endif
                             <td>{{$row->soldCount}}</td>
                             <td>{{number_format($row->averagePrice)}}</td>
