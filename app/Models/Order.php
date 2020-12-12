@@ -52,11 +52,16 @@ class Order extends Model
     public function recalculateTotal()
     {
         $total = 0;
+        $oldPaid = $this->ORDR_PAID;
         foreach ($this->order_items as $item) {
             //$price = Finished::findOrFail($item->ORIT_FNSH_ID)->FNSH_PRCE;
             $total += $item->ORIT_CUNT * $item->ORIT_PRCE;
         }
         $this->ORDR_TOTL = $total;
+        if($this->ORDR_STTS_ID == 4)  { //delivered
+            $this->ORDR_PAID = $total;
+            Client::insertTrans($this->source->ORSC_CLNT_ID, 0, 0, 0, 0, $oldPaid - $total, "Automatically Added from Orders System", "Order(" . $this->id . ") Payment Return");
+        }
         $this->save();
     }
 
