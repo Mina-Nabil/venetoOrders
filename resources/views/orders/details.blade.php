@@ -224,7 +224,12 @@
                         @break
                         @case(4)
                         <button class="btn btn-danger mr-2" onclick="confirmAndGoTo('{{url($returnUrl)}}', 'Return the current Order and all its items')">Return Full Order</button>
+                        @if(!$isPartiallyReturned)
                         <button class="btn btn-primary mr-2" onclick="confirmAndGoTo('{{url($linkNewReturnUrl)}}', 'Link new Return Order')">Link New Return Order</button>
+                        @else
+                        <button class="btn btn-info mr-2" onclick="confirmAndGoTo('{{url('orders/details/' . $order->ORDR_RTRN_ID)}}', 'Go to the Return Order')">
+                            Check Return Order</button>
+                        @endif
                         @break
                         @default
                         @endswitch
