@@ -47,6 +47,7 @@
                             <td></td>
                             <td></td>
                             <td></td>
+                            <td></td>
                             <td><strong> Total:</strong></td>
                             <td><strong>{{number_format($total)}} </strong></td>
                         </tr>
