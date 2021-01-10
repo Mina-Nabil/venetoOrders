@@ -278,7 +278,7 @@ class OrdersController extends Controller
                 $finished = Finished::findOrfail($item->ORIT_FNSH_ID);
                 $isSaved = true;
                 if ($item->ORIT_VRFD)
-                    $isSaved = $finished->incrementSizeQuantity($item->ORIT_CUNT, $item->ORIT_SIZE);
+                    $isSaved = $finished->incrementSizeQuantity($item->ORIT_SIZE, $item->ORIT_CUNT);
                 if (!$isSaved) {
                     $isReturned = false;
                     break;
@@ -408,12 +408,12 @@ class OrdersController extends Controller
         try {
             DB::transaction(function () use ($finished, $item, $order) {
                 if ($item->ORIT_VRFD) {
-                    $finished->incrementSizeQuantity($item->ORIT_CUNT, $item->ORIT_SIZE);
+                    $finished->incrementSizeQuantity($item->ORIT_SIZE, $item->ORIT_CUNT);
                     $item->ORIT_VRFD = 0;
                     $item->save();
                     $order->addTimeline("Item set as Not Ready");
                 } else {
-                    $finished->incrementSizeQuantity(-1 * $item->ORIT_CUNT, $item->ORIT_SIZE);
+                    $finished->incrementSizeQuantity($item->ORIT_SIZE, -1 * $item->ORIT_CUNT);
                     $item->ORIT_VRFD = 1;
                     $item->save();
                     $order->addTimeline("Item set as Ready");
