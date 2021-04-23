@@ -47,7 +47,7 @@
                     buttons: [
                         {
                             extend: 'excel',
-                            title: 'Whale Dashboard',
+                            title: 'Via Veneto',
                             footer: true,
                         }
                     ]
