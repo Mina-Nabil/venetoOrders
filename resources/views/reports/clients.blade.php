@@ -7,7 +7,7 @@
             <h4 class="card-title">All Clients</h4>
             <h6 class="card-subtitle">List all clients registered on the system</h6>
             <div class="table-responsive m-t-5">
-                <table id="myTable" class="table color-bordered-table table-striped full-color-table full-info-table hover-table" data-display-length='-1' data-order="[]">
+                <table id="myTable" class="table color-bordered-table table-striped full-color-table full-info-table hover-table" data-display-length='100' data-order="[]">
                     <thead>
                         <tr>
                             <th>Client Name</th>
