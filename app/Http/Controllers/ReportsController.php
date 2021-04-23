@@ -68,13 +68,20 @@ class ReportsController extends Controller
     {
         $start = new DateTime($request->from);
         $end = new DateTime($request->to);
-        if ($request->detailed && $request->detailed==true)
+        if ($request->detailed && $request->detailed == true)
             $data['items'] = Order::getDetailedInventoryReport($start, $end, $request->type);
         else
             $data['items'] = Order::getInventoryReport($start, $end, $request->type);
         $data['start'] = $start;
         $data['end']    = $end;
-        $data['detailed'] = ($request->detailed && $request->detailed==true) ? true : false;
+        $data['detailed'] = ($request->detailed && $request->detailed == true) ? true : false;
         return view('reports.inventory', $data);
+    }
+
+    function clients()
+    {
+
+        $data['items'] = Order::selectRaw("DISTINCT ORDR_GEST_MOBN, ORDR_GEST_NAME, ORDR_ADRS, AREA_NAME")->join("areas", "ORDR_AREA_ID", "=", "areas.id")->get();
+        return view('reports.clients', $data);
     }
 }

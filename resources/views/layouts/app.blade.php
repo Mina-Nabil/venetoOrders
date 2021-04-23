@@ -167,6 +167,7 @@
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{{url('reports/prepare/inventory')}}">Inventory</a></li>
                                 <li><a href="{{url('reports/prepare/sales')}}">Sales</a></li>
+                                <li><a href="{{url('reports/load/clients')}}">Clients</a></li>
                             </ul>
                         </li>
 

@@ -21,6 +21,7 @@ Route::post("reports/load/sales", 'ReportsController@sales');
 Route::get("reports/prepare/inventory", 'ReportsController@prepareInventory');
 Route::get("reports/prepare/inventory/{year}", 'ReportsController@prepareInventory');
 Route::post("reports/load/inventory", 'ReportsController@inventory');
+Route::get("reports/load/clients", 'ReportsController@clients');
 
 
 //Orders
