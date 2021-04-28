@@ -80,7 +80,7 @@
                         <p style="padding-left: 110px; font-size: 25px;"><strong> اجمالي الفاتوره: &ensp;{{number_format($order->ORDR_TOTL, 2)}} </strong></p>
                     </div>
                     <div class="pull-right m-t-30 text-left">
-                        <p style="padding-left: 110px; font-size: 25px;"><strong> مصاريف شجن : &ensp;{{number_format($order->AREA_RATE, 2)}} </strong></p>
+                        <p style="padding-left: 110px; font-size: 25px;"><strong> مصاريف شحن : &ensp;{{number_format($order->AREA_RATE, 2)}} </strong></p>
                     </div>
                     <div class="pull-right m-t-30 text-right">
                         <hr>
