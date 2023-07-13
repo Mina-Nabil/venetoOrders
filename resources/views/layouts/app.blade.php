@@ -31,7 +31,7 @@
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Oswald" />
 
     <!-- Sweet Alert Notification -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -401,8 +401,8 @@
         });
         const d = new Date();
         const year = d.getFullYear(); // 2019
-        const day = d.getDay();
-        const month = d.getMonth();
+        const day = d.getDate();
+        const month = d.getMonth()+1;
         const formatted = day + "/" + month + "/" + year;
       
 
