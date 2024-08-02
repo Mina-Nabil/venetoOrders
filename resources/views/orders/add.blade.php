@@ -27,7 +27,7 @@
                                     selected
                                     @endif
                                     >
-                                    {{$source->ORSC_NAME}} - Account: {{$source->client_account->CLNT_NAME}}
+                                    {{$source->ORSC_NAME}} - Account: {{$source->client_account?->CLNT_NAME}}
                                 </option>
                                 @endforeach
                             </select>
