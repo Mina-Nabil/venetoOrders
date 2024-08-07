@@ -36,7 +36,7 @@
                             <small class="text-danger">{{ $errors->first('user') }}</small>
                         </div>
 
-                        @if ($isOnline)
+                        {{-- @if ($isOnline) --}}
                             <div class="form-group">
                                 <label>Client Name</label>
                                 <div class="input-group mb-3">
@@ -54,7 +54,7 @@
                                 </div>
                                 <small class="text-danger">{{ $errors->first('guestMob') }}</small>
                             </div>
-                        @endif
+                        {{-- @endif --}}
 
                         <div class="form-group">
                             <label>Area</label>
