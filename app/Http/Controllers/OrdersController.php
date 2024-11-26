@@ -151,8 +151,8 @@ class OrdersController extends Controller
         $data['editInfoURL']             =   url('orders/edit/details');
 
         //remaining money
-        $data['isOffline'] = $data['order']->ORDR_ONLN == 2;
-        $data['remainingMoney']         =  ($data['isOffline']) ? 0 : $data['order']->ORDR_TOTL - $data['order']->ORDR_PAID - $data['order']->ORDR_DISC;
+        // $data['isOffline'] = $data['order']->ORDR_ONLN == 2;
+        $data['remainingMoney']         =  $data['order']->ORDR_TOTL - $data['order']->ORDR_PAID - $data['order']->ORDR_DISC;
 
         return view("orders.details", $data);
     }
