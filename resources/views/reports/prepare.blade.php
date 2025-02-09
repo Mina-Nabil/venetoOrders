@@ -50,7 +50,7 @@
                             <select name=type class="select form-control custom-select" style="width: 100%; height:36px;" required>
                                 <option value="-1" selected>All Sales</option>
                                 <option value="1">Online</option>
-                                <option value="0">Offline</option>
+                                <option value="2">Offline</option>
                             </select>
                         </div>
                         <small class="text-danger">{{$errors->first('gender')}}</small>
